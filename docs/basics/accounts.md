@@ -11,6 +11,7 @@ You will find the settings in Config → Accounts
 | Name | Reference Name for the Account, used also in CI |
 | Typ |  Typ of Account, only checks validation |
 | Is Master | This Account can overwrite other accounts when import data |
+| Is Object | Will not be exported as host, but attributes can be used in the rules |
 | Address | URL or Hostname to the System, depending on the Module |
 | Username | Username for the Account |
 | Password | Password or Secret for the Account |
