@@ -22,6 +22,10 @@ Below you find the Description for the Parameters found in the Admin Panel:
  | Parents | Set parent, Jinja Support |
  | Move Optout | Matching Host will never be moved after intial creation |
  | Update Optout | Attributes of Matching Host will never be <br> Update after inital creation |
+ | Prefix Labels | Every label exported gets the configured prefix |
+ | Update only Prefixed Labels | Syncer will only change labels, which have the given prefix |
+
+
 
 
 
