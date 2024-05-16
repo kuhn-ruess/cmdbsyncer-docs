@@ -50,6 +50,7 @@ nav:
           - Hosttag Management: checkmk/create_hosttags.md
           - Downtime Management: checkmk/create_downtimes.md
           - Folder Pools: checkmk/folder_pools.md
+          - Config Variables: checkmk/config_vars.md
           - Recipes Checkmk:
               - Custom Attributes: checkmk/cmk_attributes.md
               - Create Cluster: checkmk/create_cluster.md
