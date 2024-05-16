@@ -48,6 +48,7 @@ nav:
           - Inventorize Checkmk: checkmk/inventorize.md
           - Rules Management: checkmk/rules_management.md
           - Hosttag Management: checkmk/create_hosttags.md
+          - Downtime Management: checkmk/create_downtimes.md
           - Folder Pools: checkmk/folder_pools.md
           - Recipes Checkmk:
               - Custom Attributes: checkmk/cmk_attributes.md
@@ -57,6 +58,7 @@ nav:
               - Create Multiple HTTP Rules: checkmk/recipe_multiple_http_rules.md
               - Full Agenten Automations: ansible/cmk_agents.md
               - Site Update Automations: ansible/cmk_sites.md
+              - Mange big Environments: checkmk/big_environments.md
       - Cisco Dna: ciscodna/index.md
       - Netbox: netbox/index.md
       - RestApi: restapi/index.md
