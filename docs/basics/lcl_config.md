@@ -18,3 +18,15 @@ config = {
 }
 ```
 
+
+## Global Config Vars
+
+
+| Name |Function |
+| --- | --- |
+| LOWERCASE_HOSTNAMES | (bool) Force Hostnames to be Lowercase |
+
+
+## Modul Specific Config
+
+- [Checkmk Config](/checkmk/config_vars/)

@@ -30,6 +30,7 @@ nav:
         - Filter: basics/filter.md
         - Debug Rules: basics/debug_rules.md
       - Updates:
+        - Changelog: updates/changelog.md
         - Update to 3.5: updates/3-5.md
 
 
