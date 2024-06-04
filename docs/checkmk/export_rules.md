@@ -9,7 +9,7 @@ Here you find their options explained:
 
  |Function     |  Description  |
  | --- | --- |
- |  Move to Folder   |   Hardcode a custom Folder Name in _action_param_ field. <br> You can use Jinja Attributes to Nest a deeper Folder Levels.<br> If a Variable not match, the rule will be ignored.  |
+ |  Move to Folder   |   Hardcode a custom Folder Name in _action_param_ field. <br> You can use Jinja Attributes to build multiple Folder Levels.<br> If a Variable not match, the rule will be ignored.  |
  | Folder by Attribute Name | Pick Attribute by Value and use Key as Foldername |
  | Pool Folder | Matching Host will use a Pool Folder. <br>If not action_param is given, the system will query from all folders.<br>Otherwise you can provide a comma seperated <br>list of Folder Pool Names.<br><br>For more Details, please refer to the [Folder Pool Documentation](folder_pools.md).
  | CMK Atribute by Syncer Attribute | The given Attribute Name will be sent as Checkmk Attribute.<br>This way you can set every Attribute you want<br>like ipaddress of management board.<br>Please refer to the [documentation in Recipes](cmk_attributes.md). |
@@ -22,4 +22,24 @@ Here you find their options explained:
  | Update only Prefixed Labels | Syncer will only change labels, which have the given prefix |
 
 
+## Set Custom Folder Attributes
+The Syncer will Automatically create all needed Folders. If you like, you can overwrite these Folders Checkmk Attributes, including the Visible Name.
 
+The Syntax for that, has nothing to do with the Jinja Syntax, but you can place Jinja Variables in it. 
+You can use in the "Move to Folder" rule, at every Folder Level you want to. Just add the Attributes after a Pipe to the Folder name. Like this:
+
+```
+/my_folder|{'title': "My Nice title', 'tag_something': 'something'}
+```
+
+Same Example when the Folder comes from Jinja, please note where the Pipe is placed:
+
+```
+/{{my_jinja_var}}|{'title': "My Nice title', 'tag_something': 'something'}
+```
+
+And Finally, using Jinja in the Attributes:
+
+```
+/{{my_jinja_var}}|{'title': "{{var_containing_title}}', 'tag_something': 'something'}
+```
