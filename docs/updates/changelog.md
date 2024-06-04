@@ -15,3 +15,7 @@
 ### New Features
 - **Checkmk**:Folder names can now set that they will not be lowercase to keep their case. See [Checkmk Config](/checkmk/config_vars/)
 - **Checkmk**: Folders can now get Attributes and Different Names, managed by Syncer.
+
+
+## Minor Changes
+- **Checkmk**: Modul for Checkmk Rules now supports Jinja for Folder names

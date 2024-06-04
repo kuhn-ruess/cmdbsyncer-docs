@@ -63,6 +63,7 @@ nav:
               - Mange big Environments: checkmk/big_environments.md
       - Cisco Dna: ciscodna/index.md
       - Netbox: netbox/index.md
+      - I-Doit: i-doit/index.md
       - RestApi: restapi/index.md
       - SYS: sys/index.md
   - "Advanced":

@@ -42,7 +42,14 @@ Main Goal is the complete Organization of the Hosts based on CMDB Systems
 * Linux and Windows
 
 ### Netbox
-* Rulebased Export and Import Devices to Netbox
+* Rulebased Export and Import Devices and VMs to/from Netbox
+
+### I-DOIT
+* Rulebased Export and Import Devices to/from I-Doit
+
+
+### BMC Remedy
+* Limited import from BMC Remedy
 
 ### Cisco DNA
 * Import devices and their Interface Information
