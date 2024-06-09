@@ -47,7 +47,6 @@ Main Goal is the complete Organization of the Hosts based on CMDB Systems
 ### I-DOIT
 * Rulebased Export and Import Devices to/from I-Doit
 
-
 ### BMC Remedy
 * Limited import from BMC Remedy
 
@@ -69,3 +68,7 @@ Main Goal is the complete Organization of the Hosts based on CMDB Systems
 
 ## MySQL
 - Import of Mysql Database Tables
+
+
+## Mssql/ FreeDTS/ ODBC
+- Import and Inventorize all kinds of ODBC based Database Connectsion
