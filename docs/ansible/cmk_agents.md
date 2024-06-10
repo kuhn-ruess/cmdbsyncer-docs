@@ -19,7 +19,7 @@ Information are inventorized for example from Checkmk self, like on which site t
 To get the current Status Information about the Host, like is the Agent on Error, is the Bakery registered the inventory function of the Syncer is used. All Information found will be added to the Syncers Database. 
 
 The Command is:
-`./cmdbsyncer checkmk hosts_inventory account`. 
+`./cmdbsyncer checkmk inventorize_hosts account`. 
 
 After the run, you can verify what the Inventory found, when you check a Host in the Frontend and Scroll to inventory:
 
@@ -36,7 +36,9 @@ The following Variables existing in the Ansible Role. You learn later how to set
 | cmk_secret | The Automation Secret for the User |
 | cmk_server | The Site specifc Server for Registrations (Distributed Monitoring) |
 | cmk_main_site | Master Site |
-| cmk_main_server | Master Sites Address (with https://) |
+| cmk_main_server | Master Sites Address (without https://) |
+| cmk_server | Local Site specifc Address (without https://) |
+| cmk_site | Use best from cmk inventory (Rewrite: cmk__label_site to cmk_site) |
 | cmk_install_agent | True if Agent has to be installed |
 | cmk_register_tls | True if TLS Registration has to be done |
 | cmk_register_bakery | True if Bakery Registration as to be done |
@@ -51,7 +53,7 @@ Some of them are already part of the Inventory after you invenorized Checkmk oth
 
 To start easier, you can create a Set of Default rules with this command: 
 
-`./cmdbsyncer ansible seed_cmk_default_rules`
+`./cmdbsyncer rules import_rules ./example_rules/ansibe_cmk_rules.py
 
 
 # Syncer Configuration
