@@ -3,6 +3,7 @@
 ## To Version 3.7
 
 ### General
+- GUI: Simplified Interface, clearer Descriptions in Menue
 - Export of Hosts and Tags to Checkmk, use now all available Processing Power to calculate Rules before importing.
 - Bulk Operations for Checkmk are now Enable as Default
 
@@ -19,6 +20,8 @@
 - **Checkmk**: Folders can now get Attributes and Different Names, managed by Syncer.
 - **Checkmk**: Move to Folder Rule now Supports full Jinja and Replaces Value of Folder rule
 - **Checkmk**: It's possible to create folders but not move the host in
+- **Checkmk**: The Debug Page shows now the Rule Debug was before only was possible in cli
+- **Checkmk**: Export --dry-run and --save-requests to test or just save needed actions to run them later or archive them
 
 
 ## Minor Changes
