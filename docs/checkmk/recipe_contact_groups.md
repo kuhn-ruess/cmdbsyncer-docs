@@ -15,7 +15,7 @@ Using the Import, or the Inventory functions, the Hosts must have the Attributes
 
 ## The Group's Rule
 First we create the Rule for creating the Groups.
-**Rules → Checkmk → CMK Groups Management**<br>
+**Modules → Checkmk → Manage Host-/Contact-/Service- Groups**<br>
 Since the information is clean, you don't need to fill the Rewrite or the Rewrite Title.
 But if you want to change something, could do for example:
 Rewrite: cg_{{name|lower}}
@@ -51,7 +51,7 @@ Then:
 You notice the syncer_id prefix in there. 
 
 ### Setup the Rule
-**Rules → Checkmk → CMK Rules Management**<br>
+**Modules → Checkmk → Create checkmk Setup Rules**<br>
 
 This Rule now can have conditions, that is useful if you want to use {{hostname}} as a placeholder.  In our case, it's only about creating a Checkmk rule, which has a simple label condition. 
 

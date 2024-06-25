@@ -17,7 +17,6 @@ nav:
         - Recipes:
             - UWSGI and Apache: basics/uwsgi_apache.md
             - Debug Requests: basics/debug.md
-            - Change GUI Colors: basics/config_colors.md
       - Principles:
         - Import Systems: basics/import.md
         - Export Systems: basics/export.md
@@ -30,8 +29,7 @@ nav:
         - Filter: basics/filter.md
         - Debug Rules: basics/debug_rules.md
       - Updates:
-        - Changelog: updates/changelog.md
-        - Update to 3.5: updates/3-5.md
+        - Changelog/ Update Notes: updates/changelog.md
 
 
   - "Modules":
@@ -44,13 +42,15 @@ nav:
       - Checkmk:
           - Main: checkmk/index.md
           - Commandline: checkmk/commandline.md
-          - Export Rules: checkmk/export_rules.md
-          - Groups Management: checkmk/groups_management.md
-          - Inventorize Checkmk: checkmk/inventorize.md
-          - Rules Management: checkmk/rules_management.md
-          - Hosttag Management: checkmk/create_hosttags.md
-          - Downtime Management: checkmk/create_downtimes.md
+          - Set Folders and Host Attributes: checkmk/export_rules.md
+          - Host-/ Contact-/ Service-Groups: checkmk/groups_management.md
+          - Checkmk Rules: checkmk/rules_management.md
+          - Hosttags: checkmk/create_hosttags.md
+          - Checkmk Users: checkmk/users.md
+          - Downtimes: checkmk/create_downtimes.md
+          - Business Intelligence: checkmk/bi.md
           - Folder Pools: checkmk/folder_pools.md
+          - Inventorize: checkmk/inventorize.md
           - Config Variables: checkmk/config_vars.md
           - Recipes Checkmk:
               - Custom Attributes: checkmk/cmk_attributes.md
@@ -69,7 +69,6 @@ nav:
   - "Advanced":
      - Build your own Plugin: advanced/own_plugins.md
      - Plugin API: advanced/plugin_api.md
-     - Background Jobs: advanced/background_jobs.md
 
 theme: readthedocs
 

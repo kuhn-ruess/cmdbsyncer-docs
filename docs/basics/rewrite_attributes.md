@@ -8,11 +8,6 @@ So for example if you import an attribute like the ipaddress from a CSV, there w
 
 ## Possible Options:
 
-::: application.modules.rule.models.AttributeRewriteAction
-    options:
-      show_source: false
-      show_bases: false
-      show_root_toc_entry: false
 
 ![](img/rewrite_action.png)
 

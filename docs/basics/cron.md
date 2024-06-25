@@ -6,12 +6,12 @@ You can choose all the Modules the Syncer Offers, and pass an Account which cont
 To use the Feature, create a Cronjob Group:
 
 ## Cronjob Group
-__Config → Cronjobs → Cronjob Group__
+__Modules → Cronjobs → Cronjob Group__
 
 Each Group as an Interval and a Time range in which it should run.  With the Group, you set then the Jobs you want to run, and they will run in that order. If a Job Crashes, the hole Group will stop.  That is to, for example, not to delete hosts if the import failed.
 
 ## State Table
-__Config → Cronjobs → State Table__
+__Modules → Cronjobs → State Table__
 
 The State table keeps one Entry for all of your Groups. There you see the Time when the job runs next, or the last message and if there are errors.
 
@@ -30,7 +30,7 @@ The Command you need to start is:
 And here is the Example including loading the local environment:
 
 ```
-*/5 * * * * cd /var/www/cmdbsyncer && source /var/www/cmdbsyncer/ENV/bin/activate && ./cmdbsyncer cron run_jobs
+*/5 * * * * cd /var/www/cmdbsyncer && source ./ENV/bin/activate && ./cmdbsyncer cron run_jobs
 ```
 
 Or all in Docker:

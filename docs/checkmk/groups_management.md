@@ -12,16 +12,4 @@ Also note, Checkmk has the Limitation that you can't have groups with the same n
 ## Rule Parameters
 The Rule to configure everything you find in:
 
-**Rules → Checkmk → CMK Groups Management**<br>
-
-::: application.modules.checkmk.models.CmkGroupOutcome
-    options:
-      show_source: false
-      show_bases: false
-      show_root_toc_entry: false
-
-::: application.plugins.checkmk_configuration.export_groups
-    options:
-      show_source: false
-      show_bases: false
-      show_root_toc_entry: false
+**Modules → Checkmk → Manage Host-/Contact-/Service - Groups**<br>

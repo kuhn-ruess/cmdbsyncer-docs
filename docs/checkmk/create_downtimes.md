@@ -2,7 +2,7 @@
 Using the known Syncer Rules and the Hosts Attributes, you can create Flexible Downtimes, which can be manged in your CMDB, but then created in Checkmk by the CMDB Syncer.
 
 ## How to configure
-_Rules → Checkmk → Checkmk Downtimes_
+_Modules → Checkmk → Manage Downtimes_
 
 
 | Field | Description |
@@ -23,7 +23,7 @@ _Rules → Checkmk → Checkmk Downtimes_
 
 ## Timezones
 Downtimes in Checkmk need to be Timezone aware.
-The Downtimes you enter in the gui, will have the Timezone of the Server/ Docker Container where you installed the syncer.
+The Downtimes you enter the gui, will have the Timezone of the Server/ Docker Container where you installed the syncer.
 But for the Downtime used in Checkmk, you need to overwrite maybe with the local_config.py.
 
 Example local_config.py:

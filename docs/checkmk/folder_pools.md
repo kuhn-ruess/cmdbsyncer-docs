@@ -5,4 +5,4 @@ A Folder Pool is used if you want to import a high number of Hosts into Checkmk,
 CMK Syncer will also automatically free the seat in the pool if you ignore the hosts, or nor folder_pool Rule matches any more.
 
 You can set them up in:
-**Rules → Checkmk → Folder Pools**
+**Modules → Checkmk → Folder Pools**

@@ -15,6 +15,10 @@ If you have the UWSGI based installation, just reload uwsgi.
 service uwsgi reload
 ```
 
+## Warning:
+Always check Changelog before you Update:
+[Changelog](/updates/changelog)
+
 
 ## Problems
 Sometimes the Application will not start up. In these cases, check the UWSGI Logs in /var/log.

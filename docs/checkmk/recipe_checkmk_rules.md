@@ -8,7 +8,7 @@ Fist in Checkmk create one Example Rule of the Type you want, configure it the w
 
 Copy the Rule Name and the API Value like described [here](recipe_contact_groups.md) and create a new Syncer Rule in 
 
-**Rules → Checkmk → CMK Rules Management**<br>
+**Modules → Checkmk → Create Checkmk Setup Rules**<br>
 
 As Rule Condition, you set for which hosts you want to create the Checkmk Rule.
 Then replace in the API Value with {{HOSTNAME}} where you need it (or use with the same Syntax every other Attribute of the host) and put it in the Value Template Field. 

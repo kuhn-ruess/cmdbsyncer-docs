@@ -7,20 +7,13 @@ The CMDB Syncer can help here in two Ways. He can add custom Attributes to your 
 As alternative, you can use this Feature of Syncer, to create a bigger bunch of rules. And the best here, the Syncer also deletes the rules again, if not needed.
 
 ## Configuration Options
-**Rules → Checkmk → CMK Rules Management**<br>
-Below you find the Description for the Parameters found in the Admin Panel:
+**Modules → Checkmk →Create Checkmk Setup Rules**<br>
 
 
 
 
+# Full Examples
 
+- [Manage Contact Groups](recipe_contact_groups.md).  Check this Example to see how the Feature can be setup.
 
-
-
-
-
-
-
-# Recipes
-- [Manage Contact Groups](recipe_contact_groups.md). Example of course works for all kind of groups.
 

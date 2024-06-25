@@ -1,9 +1,9 @@
 # Checkmk Inventorize 
 The Syncer has the Function [Inventorize](basics/host_labels_inventor.md). This is available to most of the Modules. Here describted is the Checkmk Inventorize Function. Because this Function supports a Web Based Configuration.
 
-**Rules -> Checkmk -> Inventorize Settings**
+**Modules -> Checkmk -> Inventorize from Checkmk Settings**
 
-The Default will already import all cmk Labels. In The Screenshot you see an example how you inventorize a Service directly, and how to Access HW/SW Inventory Data of Checkmk.:
+The Default will already import all cmk Labels. In The Screenshot, you see an example how you inventorize a Service directly, and how to Access HW/SW Inventory Data of Checkmk.:
 ![](img/inventorize_1.png)
 
 

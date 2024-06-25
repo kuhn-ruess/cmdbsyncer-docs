@@ -10,7 +10,7 @@ This feature is also using Syncer Host-Based caching to speed up even the extrac
 ## How to configure
 Go to:
 
-_Rules → Checkmk → Checkmk Tags_
+_Modules→ Checkmk → Manage Hosttags_
 
 Create a new entry.
 
@@ -29,7 +29,7 @@ Create a new entry.
 | Enabled | Enables the Rule |
 
 
-Note: that {{ HOSTNAME }} is replaced by the Hostname. You can use every Host attribute here.
+Note 1: that {{ HOSTNAME }} is replaced by the Hostname. You can use every Host attribute here.
 Also, the Rewrite Fields support custom [Syncer Functions](../advanced/jinja_functions.md).
 
 Note 2: To the rewrite_id field, the cmk_cleanup_tag_id() function is applied automaticly. This is important to know, if you wan't to set tags. Make sure to use that Jinja Function.

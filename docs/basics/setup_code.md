@@ -21,23 +21,26 @@ cd cmdbsyncer
 
 ## Install Pythons Virtual Environment.
 The Syncer Need some Python Libraries. But these we don't want to install into your system.
-Instead, we create a virtual environment. Make sure that you have at least python3.9. The Python Interpreter on your system may have a different Name.
+Instead, we create a virtual environment. Make sure that you have at least python3.10. The Python Interpreter on your system may have a different Name.
 
-Make always sure you are in /var/www/cmdbsyncer
+Always Make sure you are in /var/www/cmdbsyncer
 
-`python3.9 -m venv ENV`
+`python3.10 -m venv ENV`
 
-This Environment needs to be loaded from now on, every time somthing is done with the syncer, also for every Cronjob which you will run.
+This Environment needs to be loaded from now on, every time something is done with the syncer, also for every Cronjob which you will run.
 
 `source ENV/bin/activate`
 
-To this Environment, you install the Python Libraries. This is done with just one Command:
+To this Environment, you install the Python Libraries. This is done with just one command:
 
 `pip install -r requirements.txt`
 
-In Case, you plan to use Ansible, also import theAnsiblee requirements:
+In Case, you plan to use Ansible, also import the Ansible requirements:
 
-`pip install -r ./ansible/requirements.txt`
+`pip install -r requirements-ansible.txt`
+
+
+Extra Database stuff you find in requirements-extras.txt
 
 ## Install Mongodb Server
 The Syncer needs the Mongodb. All you need to do is to install it, with your Packet Manager. Then you are ready to go.
@@ -45,7 +48,7 @@ The Syncer needs the Mongodb. All you need to do is to install it, with your Pac
 
 ## The Web Interface
 
-To have a brief look, you can start the development Server:
+To take a brief look, you can start the development Server:
 
 `flask run --host 0.0.0.0 --port 8080`
 

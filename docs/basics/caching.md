@@ -1,7 +1,7 @@
 # Caching
-Specially if you have servals thousands of hosts, it makes a difference if a process per host takes 1 Second or just a few Millie Seconds. So to speed Syncer processes up, you can enable "USE_CACHE". This will cache then most of the Calculations automatically, until the Cache is deleted. 
-The Cache will automatically delete for a Host if the Import updates his Labels.  If you, of course Change Rules, you need to delete this cache. 
-For that, you will find a "Commit Changes" link in the Panel corner. 
+Specially if you have servals thousands of hosts, it makes a difference if a process per host takes 1 Second or just a few Milli Seconds. So to speed Syncer processes up, a Cache is used.
+The Cache will automatically delete for a Host if the Import updates his Labels.  If you, of course, Change Rules, you need to delete this cache. 
+For that, you will find a "Commit Changes" link in the Navigation top right. 
 
 From the Command line, you can call _./cmdbsyncer sys delete_cache_
 

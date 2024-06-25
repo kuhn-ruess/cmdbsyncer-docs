@@ -25,6 +25,9 @@ config = {
 | Name |Function |
 | --- | --- |
 | LOWERCASE_HOSTNAMES | (bool) Force Hostnames to be Lowercase |
+| STYLE_NAV_BACKGROUND_COLOR |  Background Color for the Navigation Bar |
+| SYLE_NAV_LINK_COLOR | Color of the Navigation Links |
+| HEADER_HINT | Free String shown in the Navigation |
 
 
 ## Modul Specific Config

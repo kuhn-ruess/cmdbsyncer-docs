@@ -7,7 +7,3 @@ Make sure to set for the Condition, if an Attribute or a Host match is required.
 They can match "ANY", what means one matching condition will be enough for the rule to match. If set to "ALL", all conditions need to match. Put "Anyway" and the Rule will match without condition.
 
 ![](img/conditions_2.png)
-
-::: application.modules.rule.models.FullCondition
-    options:
-      show_source: false

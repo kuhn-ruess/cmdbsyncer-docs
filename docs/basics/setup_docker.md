@@ -28,8 +28,9 @@ If you want to import CSV Files into the Syncer, make sure to define a Volume wh
 
 
 ### Resources
-The Syncer does not need many Resources, mainly Disk Space. And at least two CPUs
+The Syncer does not need many Resources, mainly Disk Space. And at least two CPUs.
+But if you have many rules, you will benefit from more CPUs since the Syncer uses for Calculations Multiprocessing all available cores. 
 
 ### UWSGI/ NGINX
-Inside the Container you will find a Python Application. Normally, they are accessed using UWSGI. And many Containers then also contain an NGINX in Front of this UWSGI.  The CMDB Syncer not has this Nginx, since it would be redundant. Most likely, the Reverse proxy in Front of the Container will be a Nginx anyway. And so, your Reverse Proxy can speak directly UWSGI with the Container
+Inside the Container you will find a Python Application. Normally, they are accessed using UWSGI. And many Containers then also contain an NGINX in Front of this UWSGI.  The CMDB Syncer Container has no Nginx, since it would be redundant. Most likely, the Reverse proxy in Front of the Container will be a Nginx anyway. And so, your Reverse Proxy can speak directly UWSGI with the Container on the exposed port.
 
