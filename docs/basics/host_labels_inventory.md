@@ -23,3 +23,18 @@ Example:
 
 In this example, you see Inventory Data of two sources, one is csv, the other is srctest.
 So, the plugin using the key csv, will control all keys with csv/ and the plugin with srctest as key, the others.
+
+
+## Account Options for Inventorize Scripts
+To get the Inventory, every Module has an Inventorize Endpoint. This Endpoint is configured using the Account. For Example you can use the same Checkmk Account to Export and to Inventorize, but it needs some more Options then.
+
+
+| Option                      | Description                                                                                                                                                                                               |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| inventorize_key             | Which prefix should be used for the attributes names                                                                                                                                                      |
+| inventorize_match_by_domain | (not everywhere available yet) if true, the Inventory Data <br>will match by domain Name                                                                                                                  |
+| inventorize_match_attribute | Set an attribute name, then the wanted value.<br> e.g. application=dns. The Data is then only added to this hosts <br>inventory, if the hosts has an application attribute containing dns.          |
+| inventorize_collect_by_key  | Enter an Attribute name.<br> If this Attribute Name is found on the Host, and Contains <br>the Name of another Host, this other Host<br> gets the Attribute added (numerated)<br> containing his hostname |
+
+
+
