@@ -14,3 +14,4 @@ List of config Variables which can be overwritten in local_config.py
 | CMK_LOWERCASE_FOLDERNAMES| Default: True, Folder names are lowercase |
 | CMK_COLLECT_BULK_OPERATIONS| Default: False, Do bulk operations at the end |
 | CMK_GET_HOST_BY_FOLDER| Default: False: Query Hosts by Folder, not with one call.|
+| CMK_DETAILED_LOG | Log for every Host the Attribute Changes done |
