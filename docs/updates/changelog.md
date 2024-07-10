@@ -14,6 +14,7 @@
 - **Mssql**: On Import, Hostnames are only set to lowercase if set in local_config.py. No longer as Default. See [Local Config](/basics/lcl_config)
 - **Checkmk**: Export Rule Value of Folder is deprecated. Replaced by Jinja Support of normal Move Folder Rule.
 - **General**: Jina Placeholder for Hostsname is now always Uppercase HOSTNAME.
+- **Checkmk**: The Checkmk API once allowed, accidentally, that a host could be converted to a cluster. Since that is no longer possible, the Syncer now deletes hosts which should become a cluster to recreate them as such.
 
 ### New Features
 - **Checkmk**:Folder names can now set that they will not be lowercase to keep their case. See [Checkmk Config](/checkmk/config_vars/)
@@ -22,6 +23,10 @@
 - **Checkmk**: It's possible to create folders but not move the host in
 - **Checkmk**: The Debug Page shows now the Rule Debug was before only was possible in cli
 - **Checkmk**: Export --dry-run and --save-requests to test or just save needed actions to run them later or archive them
+- **Checkmk**: Support to Manage DCD (Dynamic Configuration) Rules
+- **Checkmk**: Detailed logging (if enabled) for changes made
+- **Global**: Changes on Import hosts for Labels are now logged inside the Host Objects log
+- **LDAP**: Added Support for Inventorize
 
 
 ### Minor Changes
