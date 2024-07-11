@@ -40,6 +40,8 @@ Main Goal is the complete Organization of the Hosts based on CMDB Systems and a 
 * Management of Checkmk (Fallback) users (Create/ Delete/ Reset Password/ Disable Login)
 * Inventory for Host Attributes (need e.g. for Ansible, like on which site is server on)
 * Inventory of Service Informations, Labels, Tags and HW/SW Inventory possible (can be used e.g. for I-Doit Sync)
+* Create DCD Rules
+* Create and Manage Password Store entries
 
 ### Ansible
 * Rule Based Inventory Source
