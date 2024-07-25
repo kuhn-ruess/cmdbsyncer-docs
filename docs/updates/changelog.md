@@ -3,9 +3,14 @@
 ## To Version 3.7
 
 ### General
-- GUI: Simplified Interface, clearer Descriptions in Menue
+- GUI: Simplified Interface, clearer Descriptions in Menu
 - Export of Hosts and Tags to Checkmk, use now all available Processing Power to calculate Rules before importing.
 - Bulk Operations for Checkmk are now Enable as Default
+
+
+#### Supported Versions
+- Checkmk: API Calls are Adapted to Checkmk 2.3 and some functions may not work on 2.2
+	- Checkmk Rules: On 2.2 the rules will delete and created again all the time due an API change in Checkmk. 
 
 
 ### Interaction Needed
@@ -16,6 +21,7 @@
 - **General**: Jina Placeholder for Hostsname is now always Uppercase HOSTNAME.
 - **Checkmk**: The Checkmk API once allowed, accidentally, that a host could be converted to a cluster. Since that is no longer possible, the Syncer now deletes hosts which should become a cluster to recreate them as such.
 - **General**: Config introduced "CRYPTOGRAPHY_KEY". Please overwrite it, since it is used to encrypt stored passwords in the database
+- **CRON**: The Maintenance Cronjob had a Typo. After Update, you need to reelect this command in the config of the cron group. 
 
 ### New Features
 - **Checkmk**:Folder names can now set that they will not be lowercase to keep their case. See [Checkmk Config](/checkmk/config_vars/)
