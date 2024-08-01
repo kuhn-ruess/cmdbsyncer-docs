@@ -11,6 +11,7 @@
 #### Supported Versions
 - Checkmk: API Calls are Adapted to Checkmk 2.3 and some functions may not work on 2.2
 	- Checkmk Rules: On 2.2 the rules will delete and created again all the time due an API change in Checkmk. 
+- SET local_config: 'CMK_SUPPORT': '2.2' to make version better compatible to old 2.2
 
 
 ### Interaction Needed
