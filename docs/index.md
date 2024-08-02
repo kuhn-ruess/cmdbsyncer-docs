@@ -41,7 +41,7 @@ Main Goal is the complete Organization of the Hosts based on CMDB Systems and a 
 * Inventory for Host Attributes (need e.g. for Ansible, like on which site is server on)
 * Inventory of Service Informations, Labels, Tags and HW/SW Inventory possible (can be used e.g. for I-Doit Sync)
 * Create DCD Rules
-* Create and Manage Password Store entries
+* Create and Manage Password Store (Encryption) entries
 
 ### Ansible
 * Rule Based Inventory Source
