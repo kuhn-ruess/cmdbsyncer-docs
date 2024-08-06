@@ -17,6 +17,7 @@ nav:
         - Recipes:
             - UWSGI and Apache: basics/uwsgi_apache.md
             - Debug Requests: basics/debug.md
+            - RH9 Installation Tipps: basics/install_rh9.md
       - Principles:
         - Import Systems: basics/import.md
         - Export Systems: basics/export.md
@@ -48,6 +49,7 @@ nav:
           - Hosttags: checkmk/create_hosttags.md
           - Checkmk Users: checkmk/users.md
           - Downtimes: checkmk/create_downtimes.md
+          - DCD Rules: checkmk/dcd_rules.md
           - Business Intelligence: checkmk/bi.md
           - Folder Pools: checkmk/folder_pools.md
           - Inventorize: checkmk/inventorize.md

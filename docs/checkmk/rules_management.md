@@ -1,4 +1,4 @@
-# Manage Checkmk Rules
+# Manage Checkmk Setup Rules
 
 Out of the box, it's possible in Checkmk to create Rules with not much effort. This applies to Threshold Rules and also to for Rules which activate Active Checks, for example. But as soon every Check needs a custom Parameter, it gets harder to set up.
 
@@ -10,6 +10,15 @@ As alternative, you can use this Feature of Syncer, to create a bigger bunch of 
 **Modules → Checkmk →Create Checkmk Setup Rules**<br>
 
 
+| Option                  | Description                                                          |
+| ----------------------- | -------------------------------------------------------------------- |
+| Ruleset                 | Checkmk's Ruleset ID                                                 |
+| Folder                  | Folder in Checkmk (Jinja Support)                                    |
+| Folder Index            | Index of Rule in Folder                                              |
+| Comment                 | Rules Comment                                                        |
+| Value Template          | Jinja for the Rules Value (check in CMK)                             |
+| Conditon Label Template | Syntax: label:value, you can use Jinja. {{HOSTNAME}} also available  |
+| Condition Host          | Comma seperated List of Hosts, Jiunja Support including {{HOSTNAME}} |
 
 
 # Full Examples
