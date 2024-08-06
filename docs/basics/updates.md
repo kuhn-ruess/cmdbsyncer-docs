@@ -17,7 +17,7 @@ service uwsgi reload
 
 ## Warning:
 Always check Changelog before you Update:
-[Changelog](/updates/changelog)
+[Changelog](../updates/changelog.md)
 
 
 ## Problems

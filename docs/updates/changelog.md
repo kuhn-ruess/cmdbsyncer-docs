@@ -15,9 +15,9 @@
 
 
 ### Interaction Needed
-- **CSV**: On Import, Hostnames are only set to lowercase if set in local_config.py. No longer as Default. See [Local Config](/basics/lcl_config)
-- **MySQL**: On Import, Hostnames are only set to lowercase if set in local_config.py. No longer as Default. See [Local Config](/basics/lcl_config)
-- **Mssql**: On Import, Hostnames are only set to lowercase if set in local_config.py. No longer as Default. See [Local Config](/basics/lcl_config)
+- **CSV**: On Import, Hostnames are only set to lowercase if set in local_config.py. No longer as Default. See [Local Config](../basics/lcl_config.md)
+- **MySQL**: On Import, Hostnames are only set to lowercase if set in local_config.py. No longer as Default. See [Local Config](../basics/lcl_config.md)
+- **Mssql**: On Import, Hostnames are only set to lowercase if set in local_config.py. No longer as Default. See [Local Config](../basics/lcl_config.md)
 - **Checkmk**: Export Rule Value of Folder is deprecated. Replaced by Jinja Support of normal Move Folder Rule.
 - **General**: Jina Placeholder for Hostsname is now always Uppercase HOSTNAME.
 - **Checkmk**: The Checkmk API once allowed, accidentally, that a host could be converted to a cluster. Since that is no longer possible, the Syncer now deletes hosts which should become a cluster to recreate them as such.
@@ -25,7 +25,7 @@
 - **CRON**: The Maintenance Cronjob had a Typo. After Update, you need to reelect this command in the config of the cron group. 
 
 ### New Features
-- **Checkmk**:Folder names can now set that they will not be lowercase to keep their case. See [Checkmk Config](/checkmk/config_vars/)
+- **Checkmk**:Folder names can now set that they will not be lowercase to keep their case. See [Checkmk Config](../checkmk/config_vars.md)
 - **Checkmk**: Folders can now get Attributes and Different Names, managed by Syncer.
 - **Checkmk**: Move to Folder Rule now Supports full Jinja and Replaces Value of Folder rule
 - **Checkmk**: It's possible to create folders but not move the host in

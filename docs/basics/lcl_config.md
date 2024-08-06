@@ -33,4 +33,4 @@ config = {
 
 ## Modul Specific Config
 
-- [Checkmk Config](/checkmk/config_vars/)
+- [Checkmk Config](../checkmk/config_vars.md)

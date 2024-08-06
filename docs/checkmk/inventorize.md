@@ -1,5 +1,5 @@
 # Checkmk Inventorize 
-The Syncer has the Function [Inventorize](basics/host_labels_inventor.md). This is available to most of the Modules. Here describted is the Checkmk Inventorize Function. Because this Function supports a Web Based Configuration.
+The Syncer has the Function [Inventorize](../basics/host_labels_inventory.md). This is available to most of the Modules. Here describted is the Checkmk Inventorize Function. Because this Function supports a Web Based Configuration.
 
 **Modules -> Checkmk -> Inventorize from Checkmk Settings**
 

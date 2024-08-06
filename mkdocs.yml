@@ -69,6 +69,7 @@ nav:
   - "Advanced":
      - Build your own Plugin: advanced/own_plugins.md
      - Plugin API: advanced/plugin_api.md
+     - Jinja Functions: advanced/jinja_functions.md
 
 theme: readthedocs
 
