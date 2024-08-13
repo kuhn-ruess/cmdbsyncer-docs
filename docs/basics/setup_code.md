@@ -25,7 +25,7 @@ Instead, we create a virtual environment. Make sure that you have at least pytho
 
 Always Make sure you are in /var/www/cmdbsyncer
 
-`python3.10 -m venv ENV`
+`python3.11 -m venv ENV`
 
 This Environment needs to be loaded from now on, every time something is done with the syncer, also for every Cronjob which you will run.
 
@@ -52,7 +52,7 @@ To take a brief look, you can start the development Server:
 
 `flask run --host 0.0.0.0 --port 8080`
 
-But then you should Setup UWSGI. There is an Example with [UWSGI and Apache](uwsgi_apache.md), but it's even easier with NGINX.
+But then you should Setup UWSGI. There is an Example with [UWSGI and Apache](uwsgi_apache.md), but it's even easier with NGINX. Or go with this simpler one, using [mod_wsgi and Apache](install_rh9.md)
 
 
 ## First Steps
