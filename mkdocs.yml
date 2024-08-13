@@ -15,7 +15,7 @@ nav:
         - Cronjobs: basics/cron.md
         - Fileadmin: basics/fileadmin.md
         - Recipes:
-            - mod_wsgi and Apache (RH9): basics/install_rh9.md
+            - mod_wsgi and Apache (eg. RH9): basics/install_wsgi.md
             - UWSGI and Apache: basics/uwsgi_apache.md
             - Debug Requests: basics/debug.md
       - Principles:

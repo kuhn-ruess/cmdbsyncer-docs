@@ -52,7 +52,7 @@ To take a brief look, you can start the development Server:
 
 `flask run --host 0.0.0.0 --port 8080`
 
-But then you should Setup UWSGI. There is an Example with [UWSGI and Apache](uwsgi_apache.md), but it's even easier with NGINX. Or go with this simpler one, using [mod_wsgi and Apache](install_rh9.md)
+But then you should Setup UWSGI. There is an Example with [UWSGI and Apache](uwsgi_apache.md), but it's even easier with NGINX. Or go with this simpler one, using [mod_wsgi and Apache](install_wsgi.md)
 
 
 ## First Steps

@@ -1,7 +1,7 @@
 # How to Setup for Production using UWSGI and Apache
 
 
-Take Care: This Documentation descripes the use with NGINX and UWSGI and I use this Setup normally for my APIs with a lot of traffic. But for the Syncer that could be a bit to much overhead. You can refer to [here](install_rh9.md) to see a way, where you can use apache with mod-wsgi which is a simpler way, since you don't need to run the extra uwsgi deamon. That means you can scipp the uwsgi part here then. 
+Take Care: This Documentation descripes the use with NGINX and UWSGI and I use this Setup normally for my APIs with a lot of traffic. But for the Syncer that could be a bit to much overhead. You can refer to [here](install_wsgi.md) to see a way, where you can use apache with mod-wsgi which is a simpler way, since you don't need to run the extra uwsgi deamon. That means you can scipp the uwsgi part here then. 
 
 
 ## Requirements
@@ -36,7 +36,7 @@ If you left all examples as they are, it would be http[s]://servername/cmdbsynce
 # Known Problems
 
 ## uWSGI Python Version to old on Redhat or Centos
-For Redhat, best use the solution descripted [here](install_rh9.md), but if you want to go the way do this:
+For Redhat, best use the solution descripted [here](install_wsgi.md), but if you want to go the way do this:
 
 -   yum -y install gcc libcap-devel libuuid-devel make openssl-devel python311-devel pcre-devel uwsgi-devel
 -   if needed: yum install rpm-config (if redhat-hardened missing)
