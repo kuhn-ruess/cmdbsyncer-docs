@@ -13,7 +13,6 @@ import logging
 
 config = {
     'LOG_LEVEL' : logging.DEBUG,
-    'LOG_CHANNEL' : logging.StreamHandler(),
     'BASE_PREFIX' : '/cmdbsyncer/'
 }
 ```

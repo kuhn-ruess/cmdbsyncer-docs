@@ -1,5 +1,14 @@
 # Changelog
 
+## General when Update
+Please always check before you update here, if there are changes you need to consider.
+
+After always, please run:
+```
+./cmdbsyncer sys self_configure
+```
+This will automatically adapt config changes if needed, and add needed default values to the local_config.py if you don't have them. For example, the Cryptography key.
+
 ## To Version 3.7
 
 ### General

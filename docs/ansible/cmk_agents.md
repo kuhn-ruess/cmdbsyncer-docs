@@ -36,8 +36,8 @@ The following Variables existing in the Ansible Role. You learn later how to set
 | cmk_secret | The Automation Secret for the User |
 | cmk_server | The Site specifc Server for Registrations (Distributed Monitoring) |
 | cmk_main_site | Master Site |
-| cmk_main_server | Master Sites Address (without https://) |
-| cmk_server | Local Site specifc Address (without https://) |
+| cmk_main_server | Master Sites Address (without https:// or other paths) |
+| cmk_server | Local Site specifc Address (without https:// or other paths) |
 | cmk_site | Use best from cmk inventory (Rewrite: cmk__label_site to cmk_site) |
 | cmk_install_agent | True if Agent has to be installed |
 | cmk_register_tls | True if TLS Registration has to be done |
