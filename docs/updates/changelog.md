@@ -11,6 +11,8 @@ This will automatically adapt config changes if needed, and add needed default v
 
 ## To Version 3.7
 
+After Update, please commit the changes, otherwise there will be an exception on Checkmk Export
+
 ### General
 - GUI: Simplified Interface, clearer Descriptions in Menu
 - Export of Hosts and Tags to Checkmk, use now all available Processing Power to calculate Rules before importing.

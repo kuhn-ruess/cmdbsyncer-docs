@@ -6,9 +6,6 @@ Second one is installing the MongoDB Server. For that, an extra Repository needs
 This Guide is based on a Documentation I got from a Consumer. And the plan is to adapt it to make it prefect. I would appreciate your help here.
 
 
-# Installation Step by Step
-
-
 
 ## Base Requirements for System
 For the Syncer to Run, you need these Dependencies: 

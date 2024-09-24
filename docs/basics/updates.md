@@ -15,7 +15,7 @@ If you have the UWSGI based installation, just reload uwsgi.
 service uwsgi reload
 ```
 
-## Warning:
+__Warning:__
 Always check Changelog before you Update:
 [Changelog](../updates/changelog.md)
 
