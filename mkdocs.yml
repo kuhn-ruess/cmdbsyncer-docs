@@ -17,7 +17,7 @@ nav:
     - Cronjobs: basics/cron.md
     - Fileadmin: basics/fileadmin.md
     - Debug Requests: basics/debug.md
-  - Principles:
+  - Functions:
     - Import Systems: basics/import.md
     - Export Systems: basics/export.md
     - Remove Hosts: basics/maintenance.md
