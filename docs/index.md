@@ -86,3 +86,29 @@ Main Goal is the complete Organization of the Hosts based on CMDB Systems and a 
 
 * Mssql/ FreeDTS/ ODBC
     * Import and Inventorize all kinds of ODBC based Database Connectsion
+
+
+
+## Versioning
+Please note that the Master Branch contains also new Features and possible Bugs.
+Use the Stable Branch to only get bugfixes.
+
+``` mermaid
+graph LR
+S[Start] --> F
+S --> B
+M[Master branch]
+B[Bugfixes]
+F[Features]
+D[Daily Version e.g. 3.8 Daily 08.10.24]
+V[Stable Branch e.g  3.7.1]
+
+M --> D
+
+F --> M
+B --> M
+
+B --> V
+
+```
+

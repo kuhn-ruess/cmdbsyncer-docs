@@ -3,6 +3,13 @@
 The most common way to use the application without Docker is direct from Code. This is easy if the server has an Internet Connections. Updates are easy as git pull then.
 
 
+## Steps
+If you not using docker, that are the steps to make the syncer run:
+``` mermaid
+graph LR
+
+A[Download Repo] --> B[Create Python Environment] --> C[Install Python Requirements] --> D[Setup Mongodb] --> E[Setup Apache with UWsgi]
+```
 
 ## Download Repo
 You need to check out the Code directly from GitHub.  Go to the Repo, and copy the Clone URL to example /var/www. In all examples, this Path is used.
