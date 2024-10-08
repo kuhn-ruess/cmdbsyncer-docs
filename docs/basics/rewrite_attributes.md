@@ -30,6 +30,12 @@ If the Content is already a list like:
 ```
 you are good to go. If not, use Jinja to archive that outcome.
 
+An Example for a prefix would look like this:
+``` python
+[{% for label in get_list(result)%} 'my_prefix/{{label}}',{%endfor%}]
+```
+Please note, that Jinja is used, to build a String, looking like a list again. Therefore the Brackets around and the ticks with the comma.
+
 Now just set for the Value for example the Operation "To String" and the "New Value"
 to yes.
 
