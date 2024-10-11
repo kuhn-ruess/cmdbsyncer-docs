@@ -71,10 +71,10 @@ Main Goal is the complete Organization of the Hosts based on CMDB Systems and a 
 * LDAP
     * Import Objects from LDAP Directories
 
-* RestAPI
+* [RestAPI](/rest_json)
     * Import of Custom Rest APIs
 
-* JSON
+* [JSON](/rest_json/)
     * Import of Json File Structures
 
 * Jira
