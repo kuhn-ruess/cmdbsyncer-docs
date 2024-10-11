@@ -104,10 +104,13 @@ markdown_extensions:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
+copyright: Kuhn & Ruess GmbH <a href="https://kuhn-ruess.de/de/impressum/">Imprint</a>
 extra:
   social:
-    - icon: fontawesome/brands/github-alt
+    - icon: fontawesome/brands/github
       link: https://github.com/kuhn-ruess/cmdbsyncer
+    - icon: fontawesome/solid/house 
+      link: https://kuhn-ruess.de
 
 plugins:
 - search
