@@ -9,6 +9,11 @@ After always, please run:
 ```
 This will automatically adapt config changes if needed, and add needed default values to the local_config.py if you don't have them. For example, the Cryptography key.
 
+## To Version 3.8
+
+### Mongodb Update
+This only applies if you're using the docker-compose files shipped with the Syncer. Otherwise, you can skip that Part. The Version of Mongo Updates from 4.4 to 7.0.14 You can either Back up your Data with the Syncers export function and start with and Empty Database again. Or just first change the MongoDB Version in the Docker File to 5.0, start and login to Syncer, then 6.0, start and login to Syncer and finally to the 7.0.14.  In the Future I will directly add the new Versions the moment they are Stable. So there will not be such a Big Step anymore.
+
 ## To Version 3.7
 
 After Update, please commit the changes, otherwise there will be an exception on Checkmk Export
