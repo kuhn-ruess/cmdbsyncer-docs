@@ -12,7 +12,7 @@ A[Download Repo] --> B[Create Python Environment] --> C[Install Python Requireme
 ```
 
 ## Download Repo
-You need to check out the Code directly from GitHub.  Go to the Repo, and copy the Clone URL to example /var/www. In all examples, this Path is used.
+You need to check out the Code directly from GitHub.  [Go to the Repo](https://github.com/kuhn-ruess/cmdbsyncer), and copy the Clone URL to example /var/www. In all examples, this Path is used.
 
 [Repo](https://github.com/kuhn-ruess/cmdbsyncer)
 

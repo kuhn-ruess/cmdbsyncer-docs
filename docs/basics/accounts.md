@@ -19,7 +19,7 @@ You will find the settings in Accounts
 
 Hint: Maybe you don't need all of the Fields. So, an API for example, could only need a Secret, so you would only need Name, Address and Password.
 
-## Custom Fields
+## Addional Conficurations
 In some cases, like when you create an Account for CSV Files or JSON Files, you need some special Modul-Specific fields for the Parameters. In this case, just save the account once, and the Fields will appear automatically.
 
 

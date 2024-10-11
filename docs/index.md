@@ -23,7 +23,7 @@ Main Goal is the complete Organization of the Hosts based on CMDB Systems and a 
 
 ## Modules
 
-* Checkmk
+* [Checkmk](/checkmk/)
     * Mange full Host Lifecycle (creation, labels, folders, deletion, rules)
     * Tested and performant with more than 140,000 Hosts
     * Sync and Update all possible Host Attributes/ Tags/ Labels
@@ -43,7 +43,7 @@ Main Goal is the complete Organization of the Hosts based on CMDB Systems and a 
     * Create DCD Rules
     * Create and Manage Password Store (Encryption) entries
 
-* Ansible
+* [Ansible](/ansible/)
     * Rule Based Inventory Source
     * All Functions for Checkmk Agent Management (Installation, TLS Registration, Bakery Registration)
         *  Linux and Windows
@@ -51,20 +51,20 @@ Main Goal is the complete Organization of the Hosts based on CMDB Systems and a 
         * Automatic Download of Checkmk Versions if wanted.
 
 
-* Netbox
+* [Netbox](/netbox/)
     * Rulebased Export and Import Devices and VMs to/from Netbox
     * Automatic creation of Categories if wanted.
 
-* I-DOIT
+* [I-DOIT](/i-doit/)
     * Rulebased Export and Import Devices to/from I-Doit
 
 * BMC Remedy
     * Limited import from BMC Remedy
 
-* Cisco DNA
+* [Cisco DNA](/ciscodna/)
     * Import devices and their Interface Information
 
-* CSV
+* [CSV](/csv/)
     * Manage Hosts based on CSV File (Import Source)
     * Add Addional Informationen from CSV Files to your Hosts (eg. Overwrite IP Addresses)
 
@@ -79,7 +79,8 @@ Main Goal is the complete Organization of the Hosts based on CMDB Systems and a 
 
 * Jira
     * Import Objects
-
+*  [JDisc](/jdisc/)
+	* Import Objects
 * MySQL
     * Import and Inventorize Mysql Database Tables
 

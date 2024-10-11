@@ -59,6 +59,8 @@ nav:
       - Mange big Environments: checkmk/big_environments.md
   - Cisco Dna:
     - Cisco DNA Basics: ciscodna/index.md
+  - JDisc:
+    - JDisc Basics: jdisc/index.md
   - Netbox:
     - Netbox Basics: netbox/index.md
   - I-Doit:
