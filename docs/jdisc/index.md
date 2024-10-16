@@ -4,19 +4,37 @@ Starting with Version 3.8 the Syncer has support to Import Data from [JDisc](htt
 
 ## How to Set it Up
 1. Create an [Account](/basics/accounts/) of type JDisc Devices
-2. Set the Fields you want to import from Devices. Used is the GraphQL API. The How to you find below
-3. Import the Data using a [Cron Job](/basics/cron/) or from command line (./cmdbsyncer jdisc import_hosts ACCOUNTNAME)
+2. Set the Fields  or Mode how you want to import. May use the GraphQL API. The How-to you find below
+3. Import the Data using a [Cron Job](/basics/cron/) or from the command line (./cmdbsyncer jdisc import_hosts ACCOUNTNAME)
+## The Account Settings
+![](Pasted%20image%2020241016180411.png)
+If you don't want to import devices as hosts, but as Objects instead, then make sure to set `is_object` and choose an Object type. Just let both settings empty in the normal case of importing hosts.
 
-## The Fields
-In the Account you need to configure the Comma Separated Lists of Fields you would like to import. A default is, of course, set when you save the Account. To Figure out which Fields you need, enter JDiscs GraphiQL Interface and Play around with a query like this:
+You have then multiple Ways of how specifying the Data you want to get from jdisc.
+Save the Account just once, in order to see the default "Addional Configuration"
+
+
+### Default Mode
+In the Default mode, a Default Query is used for devices. It is configured like this:
+![](Pasted%20image%2020241016175755.png)
+
+The Keywords Matter, mode net to be set to devices and fields to default.
+### Custom Fields
+In this Mode, you set for fields the comma separated list of fields you want to get, and in mode the "table" from which.
+
+### Custom Query
+In the Custom Query mode, you can set of course every Graphql Query you want. Just make sure, to also set a matching `mode` field, otherwise the Syncer will fail to read the response.
+Example like this:
+![](Pasted%20image%2020241016180129.png)
+
+## About Fields and Queries
+To Figure out which Fields or query you want to use, enter JDiscs GraphiQL Interface and Play around with a query like this:
 
 
 ![](./attachments/Pasted%20image%2020241011165354.png)
 
-Marked on the Screenshot, you find the Fields you need to Enter.
-Example Account where some Fields are set.
 
-![](./attachments/Pasted%20image%2020241011165737.png)
+
 
 ## Rewrite Fields like role
 You may notice that fields like roles come as a list.
