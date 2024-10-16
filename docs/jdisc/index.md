@@ -16,7 +16,7 @@ Save the Account just once, in order to see the default "Addional Configuration"
 
 ### Default Mode
 In the Default mode, a Default Query is used for devices. It is configured like this:
-![](Pasted%20image%2020241016175755.png)
+![](./attachments/Pasted%20image%2020241016175755.png)
 
 The Keywords Matter, mode net to be set to devices and fields to default.
 ### Custom Fields
@@ -25,7 +25,7 @@ In this Mode, you set for fields the comma separated list of fields you want to 
 ### Custom Query
 In the Custom Query mode, you can set of course every Graphql Query you want. Just make sure, to also set a matching `mode` field, otherwise the Syncer will fail to read the response.
 Example like this:
-![](Pasted%20image%2020241016180129.png)
+![](./attachments/Pasted%20image%2020241016180129.png)
 
 ## About Fields and Queries
 To Figure out which Fields or query you want to use, enter JDiscs GraphiQL Interface and Play around with a query like this:
