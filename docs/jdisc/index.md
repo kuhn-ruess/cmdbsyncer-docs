@@ -4,36 +4,10 @@ Starting with Version 3.8 the Syncer has support to Import Data from [JDisc](htt
 
 ## How to Set it Up
 1. Create an [Account](/basics/accounts/) of type JDisc Devices
-2. Set the Fields  or Mode how you want to import. May use the GraphQL API. The How-to you find below
-3. Import the Data using a [Cron Job](/basics/cron/) or from the command line (./cmdbsyncer jdisc import_hosts ACCOUNTNAME)
+3. Import the Data needed using a [Cron Job](/basics/cron/) or from the command line (./cmdbsyncer jdisc import_XXX ACCOUNTNAME)
+
 ## The Account Settings
-![](Pasted%20image%2020241016180411.png)
-If you don't want to import devices as hosts, but as Objects instead, then make sure to set `is_object` and choose an Object type. Just let both settings empty in the normal case of importing hosts.
-
-You have then multiple Ways of how specifying the Data you want to get from jdisc.
-Save the Account just once, in order to see the default "Addional Configuration"
-
-
-### Default Mode
-In the Default mode, a Default Query is used for devices. It is configured like this:
-![](./attachments/Pasted%20image%2020241016175755.png)
-
-The Keywords Matter, mode net to be set to devices and fields to default.
-### Custom Fields
-In this Mode, you set for fields the comma separated list of fields you want to get, and in mode the "table" from which.
-
-### Custom Query
-In the Custom Query mode, you can set of course every Graphql Query you want. Just make sure, to also set a matching `mode` field, otherwise the Syncer will fail to read the response.
-Example like this:
-![](./attachments/Pasted%20image%2020241016180129.png)
-
-## About Fields and Queries
-To Figure out which Fields or query you want to use, enter JDiscs GraphiQL Interface and Play around with a query like this:
-
-
-![](./attachments/Pasted%20image%2020241011165354.png)
-
-
+In the Account Settings, you just need to set up the URL and Credentials to JDisc. Depending on which command you run later, the objects are imported automatically into the right category.
 
 
 ## Rewrite Fields like role
