@@ -36,3 +36,28 @@ In addition, please note the Second Outcome, since the Management Boards require
 
 And here how to find this example in the CMK API:
 ![](img/api_managementboard.png)
+
+
+## Setting nested attributes like SNMP Community.
+Sometimes you will see that attributes you want to set are in the form of a Dictionary, example the SNMP Community:
+
+``` json
+"snmp_community": {  
+	"type": "v1_v2_community",  
+	"community": "public"  
+}
+```
+
+Good news, the Syncer can detect that format to, converts it and will send it to Checkmk.
+Just set it like this as a custom Checkmk Attribute
+
+```
+snmp_community:{
+"type": "v1_v2_community",
+"community": "public"
+}
+```
+
+Please note that for the Key Name, no Ticks are used.
+
+
