@@ -24,9 +24,5 @@ This helper converts a Attribute List of given List into a Python list, which is
 ## cmk_cleanup_tag_id()
 Cleans a String so that it can serve as Checkmk Hosttag ID. Invalid Chars are replaced by underscore.
 
-
-
-
-
-
-
+##  get_ip4_network()
+Access to a python Function from the module ipaddress. If you call it, `ipaddress.ip_interface()` is called.

@@ -1,5 +1,5 @@
 
-# Netbox
+# DCIM Devices
 If you want to sync your Hosts to Netbox, you find all information how to set this up here.
 Your Hosts will be created as Devices. If you'd like to, you can also Synchronize Interfaces to Netbox.
 As of now, the Source for Interface Data must be Cisco DNA, but this can and will change in the future for a more general support.
@@ -18,7 +18,7 @@ Also, you need to Set up a Reference Field for the Devices, that the Syncer can 
 
 The final Step then is the configuration for the Attributes in Syncer; otherwise there will be an exception when you try to export your Hosts. 
 
-To do so, switch to: Modules → Netbox → Netbox Fields.
+To do so, switch to: Modules → Netbox → DCIM Device.
 
 All about the Fields, follows below.
 

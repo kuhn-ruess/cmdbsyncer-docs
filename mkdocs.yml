@@ -62,7 +62,9 @@ nav:
   - JDisc:
     - JDisc Basics: jdisc/index.md
   - Netbox:
-    - Netbox Basics: netbox/index.md
+    - DCIM Devices: netbox/devices.md
+    - DCIM Interfaces: netbox/Interfaces.md
+    - IPAM IP Addresses: netbox/ipaddresses.md
   - I-Doit:
       - Idoit Basics: i-doit/index.md
   - Rest APIs/ Json:
