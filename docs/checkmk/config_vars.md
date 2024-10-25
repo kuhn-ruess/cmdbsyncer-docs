@@ -11,6 +11,7 @@ List of config Variables which can be overwritten in local_config.py
 | CMK_BULK_DELETE_OPERATIONS            | How many objects for each bulk request                                            |
 | CMK_BULK_UPDATE_HOSTS                 | Default True: Bulk Update Hosts                                                   |
 | CMK_BULK_UPDATE_OPERATIONS            | How many objects for each bulk request                                            |
+| CMK_DONT_DELETE_HOSTS                 | Disable Deletion of hosts when syncing                                            |
 | CMK_LOWERCASE_FOLDERNAMES             | Default: True, Folder names are lowercase                                         |
 | CMK_COLLECT_BULK_OPERATIONS           | Default: False, Do bulk operations at the end                                     |
 | CMK_GET_HOST_BY_FOLDER                | Default: False: Query Hosts by Folder, not with one call.                         |
