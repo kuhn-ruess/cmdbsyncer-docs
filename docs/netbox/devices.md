@@ -52,8 +52,6 @@ Here is a list of some more Netbox Fields you can use:
 
 - serial
 - comment
-- primary_ip4
-- primary_ip6
 - face (rear/front)
 
 
@@ -67,6 +65,8 @@ You need either Sync them with attributes from Syncer, or you can Hard-code thei
 Here you have two examples. The Location ID in the example ist set to the Location with the ID 2 in Netbox. But the Device type automatically is synchronizeded with a Field imported from a Data source: 
 ![](img/nb2.png)
 
+Since Syncer 3.8, all the Fields now support Jinja. That also means, you need to wrap Attributes into brackets like this: `{{attribute}}`. The Advantage of that is, that you can build now new values out of multiple other attributes.
+
 Currently, the Syncer can automatically Sync the following Fields:
 
 - Device Type
@@ -75,12 +75,11 @@ Currently, the Syncer can automatically Sync the following Fields:
 
 ### Special Cases
 The Problem is, that some of the Reference Fields need even a Reverence by themselves.
-These Fields need then to exist on your Host as Attribute
-Here you find the Details to solve that
+You need to make sure that for that Fields also rules exists, else they will fall back to a default.
 
-| Main Fields | Sub Field | Source in Syncer |
-| ----- | ---- | ----- |
-| Device Type | Manufacturer | Needs to be stored as Attribute named __manufacturer__ |
+| Required for | Required extra Field |
+| ----- | ---- | 
+| Device Type | Manufacturer |
 
 
 

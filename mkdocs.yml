@@ -38,6 +38,7 @@ nav:
   - Checkmk:
       - Checkmk Basics: checkmk/index.md
       - Commandline Parameters: checkmk/commandline.md
+      - Account Parameters: checkmk/accounts.md
       - Set Folders and Host Attributes: checkmk/export_rules.md
       - Host-/ Contact-/ Service-Groups: checkmk/groups_management.md
       - Checkmk Rules: checkmk/rules_management.md

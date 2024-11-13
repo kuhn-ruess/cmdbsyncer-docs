@@ -12,16 +12,19 @@ You will find the settings in Accounts
 | Typ |  Typ of Account, only checks validation |
 | Is Master | This Account can overwrite other accounts when import data |
 | Is Object | Will not be exported as host, but attributes can be used in the rules |
+| Object Type | For future function to help filter objects in a better way |
 | Address | URL or Hostname to the System, depending on the Module |
 | Username | Username for the Account |
 | Password | Password or Secret for the Account |
 | Custom Fields | Extra Fields used by plugins |
 
-Hint: Maybe you don't need all of the Fields. So, an API for example, could only need a Secret, so you would only need Name, Address and Password.
+Hint: Maybe you don't need all the Fields. So, an API for example, could only need a Secret, so you would only need Name, Address and Password.
 
 ## Additional Configurations
-In some cases, like when you create an Account for CSV Files or JSON Files, you need some special Modul-Specific fields for the Parameters. In this case, just save the account once, and the Fields will appear automatically.
+In some cases, like when you create an Account for CSV Files or JSON Files, you need some special Model-Specific fields for the Parameters. In this case, just save the account once, and the Fields will appear automatically.
 
+### Documentations by Account Type
+ - [Checkmk](../checkmk/accounts.md)
 
 ## Reference Fields
 In your configuration, you can reference to Fields you set here. So, you can hide Passwords, for example. You just have to use the {{ACCOUNT:...}} Macro.
