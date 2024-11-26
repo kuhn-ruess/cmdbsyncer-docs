@@ -64,6 +64,7 @@ nav:
   - JDisc:
     - JDisc Basics: jdisc/index.md
   - Netbox:
+    - General: netbox/index.md
     - DCIM Devices: netbox/devices.md
     - DCIM Interfaces: netbox/Interfaces.md
     - IPAM IP Addresses: netbox/ipaddresses.md

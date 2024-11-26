@@ -22,6 +22,8 @@ So for example if you import an attribute like the ipaddress from a CSV, there w
 #### Convert List of String
 This function can create multiple new Attributes, out of a list either in a other Attribute or build using Jinja.
 
+![](attachments/Pasted%20image%2020241126150648.png)
+
 To set it up, enter in "Old Attribute Name" the Attribute you get the information from.
 The Content of this attribute can be used as {{result}} in the Field "New Attribute Name".
 If the Content is already a list like:

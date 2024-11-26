@@ -14,6 +14,15 @@ This will automatically adapt config changes if needed, and add needed default v
 ### Mongodb Update
 This only applies if you're using the docker-compose files shipped with the Syncer. Otherwise, you can skip that Part. The Version of Mongo Updates from 4.4 to 7.0.14 You can either Back up your Data with the Syncers export function and start with and Empty Database again. Or just first change the MongoDB Version in the Docker File to 5.0, start and login to Syncer, then 6.0, start and login to Syncer and finally to the 7.0.14.  In the Future I will directly add the new Versions the moment they are Stable. So there will not be such a Big Step anymore.
 
+
+### Netbox
+The Netbox Module is completely rewritten and therefore more flexible and simpler to use. But the catch is, that you need to update your rules. In short:  For Attributes you need to use Jinja Syntax {{ATTRIBUTE}} and no need for Netbox ID's anymore, you can directly use the Name.
+If you have a manual setup, make sure to update the python requirements. A new requirement is pynetbox.
+
+#### VM Import
+The Import of VMs from Inbox is not longer part of the device import.
+It's an own command which has to be set. Also, since now pynetbox is used, it's possible that attribute names change. 
+
 ## To Version 3.7
 
 After Update, please commit the changes, otherwise there will be an exception on Checkmk Export

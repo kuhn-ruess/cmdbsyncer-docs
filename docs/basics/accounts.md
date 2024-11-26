@@ -21,10 +21,23 @@ You will find the settings in Accounts
 Hint: Maybe you don't need all the Fields. So, an API for example, could only need a Secret, so you would only need Name, Address and Password.
 
 ## Additional Configurations
+![](attachments/Pasted%20image%2020241126165050.png)
 In some cases, like when you create an Account for CSV Files or JSON Files, you need some special Model-Specific fields for the Parameters. In this case, just save the account once, and the Fields will appear automatically.
 
 ### Documentations by Account Type
  - [Checkmk](../checkmk/accounts.md)
+
+
+## Extra Plugin Options
+In this section you can set plugin-based account options. That means even when you use the same account for different actions, you can still used action specific parts which you can configure here.
+
+### Object Filter
+When set, the Plugin only uses objects with the given types for the operation.
+
+![](attachments/Pasted%20image%2020241126165023.png)
+
+
+
 
 ## Reference Fields
 In your configuration, you can reference to Fields you set here. So, you can hide Passwords, for example. You just have to use the {{ACCOUNT:...}} Macro.

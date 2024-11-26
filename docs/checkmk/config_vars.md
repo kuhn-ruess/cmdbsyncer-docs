@@ -1,10 +1,9 @@
 # Config Variables
-List of config Variables which can be overwritten in local_config.py
+List of config Variables which can be overwritten in [local_config.py](../basics/lcl_config.md)
 
 
 | Variable                              | Description                                                                       |
 | ------------------------------------- | --------------------------------------------------------------------------------- |
-| CMK_22_23_HANDLE_TAG_LABEL_BUG        | DEBRECATED                                                                        |
 | CMK_BULK_CREATE_HOSTS                 | Default True: Bulk Create Hosts                                                   |
 | CMK_BULK_CREATE_OPERATIONS            | How many objects for each bulk request                                            |
 | CMK_BULK_DELETE_HOSTS                 | Default: True: Bulk Delete Host                                                   |
