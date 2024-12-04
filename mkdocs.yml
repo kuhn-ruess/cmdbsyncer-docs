@@ -51,7 +51,7 @@ nav:
       - Folder Pools: checkmk/folder_pools.md
       - Inventorize Checkmk: checkmk/inventorize.md
       - Local Config Variables: checkmk/config_vars.md
-      - Set a Checkmk Attribute: checkmk/cmk_attributes.md
+      - More about Attributes and Tags: checkmk/cmk_attributes.md
       - Create Cluster in Checkmk: checkmk/create_cluster.md
       - Manage Contact Groups: checkmk/recipe_contact_groups.md
       - Create a Checkmk Rule: checkmk/recipe_checkmk_rules.md
