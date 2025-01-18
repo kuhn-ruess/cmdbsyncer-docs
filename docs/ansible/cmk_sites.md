@@ -48,6 +48,11 @@ Make sure that the operating system will match to the Server Settings.
 
 As a current limit, the System can only manage one Checkmk Site per Server. 
 
+#### Custom Ansible Variables
+For each Site, you can set Ansible Custom Variables if you need special Settings to reach the site. That could be every Variable, supported by Ansible
+
+![](attachments/Pasted%20image%2020250118094335.png)
+
 ### Run the automation
 With the settings done, you can run Ansible now.
 

@@ -20,6 +20,16 @@ You will find the settings in Accounts
 
 Hint: Maybe you don't need all the Fields. So, an API for example, could only need a Secret, so you would only need Name, Address and Password.
 
+## About Objects and Object Types
+The flag `is Object`, basically does not add the imported Object into the Hosts view, but the Object view. But all Attributes of the Objects can still be accessed in Rule. 
+Currently also a object is not exported as Host to other Systems, but with the in 3.8 introduced "Objects Filter" (see below) you can filter that more flexible.
+
+### The Object Types
+Object Types are assigned also on import. They help you later to better filter objects on exports, but some have even more functions.
+
+If the Object Type is set to Host, then the import will not save objects, which would have an invalid Hostname but log an error instead. 
+
+
 ## Additional Configurations
 ![](attachments/Pasted%20image%2020241126165050.png)
 In some cases, like when you create an Account for CSV Files or JSON Files, you need some special Model-Specific fields for the Parameters. In this case, just save the account once, and the Fields will appear automatically.
