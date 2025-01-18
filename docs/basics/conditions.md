@@ -7,3 +7,13 @@ Make sure to set for the Condition, if an Attribute or a Host match is required.
 They can match "ANY", what means one matching condition will be enough for the rule to match. If set to "ALL", all conditions need to match. Put "Anyway" and the Rule will match without condition.
 
 ![](img/conditions_2.png)
+
+
+## Match FAQ
+
+### Match if a Label does NOT exist on an object
+ - Set `Tag Match` to `Match All (*)`, 
+ - Set `Tag` to the Tag you don't want to exist, 
+ - Set Checkbox `Tag Match Negate`
+ - Value Match does not matter
+
