@@ -11,9 +11,17 @@ They can match "ANY", what means one matching condition will be enough for the r
 
 ## Match FAQ
 
-### Match if a Label does NOT exist on an object
+### Match if a Attribute does NOT exist on an object
  - Set `Tag Match` to `Match All (*)`, 
  - Set `Tag` to the Tag you don't want to exist, 
  - Set Checkbox `Tag Match Negate`
  - Value Match does not matter
+
+### Match if a Attribute is empty
+Hint: If you don't want to import Empty Attribute, you can set this with `LABELS_IMPORT_EMPTY=False`, in your local_config.py
+
+- Set `Tag Match` to the desired Attribute Name
+- Set `Value Match` to `Match All (.*)`
+- Set Checkbox `Value Match Negate`
+- Value Match can be empty.
 
