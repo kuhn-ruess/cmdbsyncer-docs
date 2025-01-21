@@ -17,11 +17,10 @@ They can match "ANY", what means one matching condition will be enough for the r
  - Set Checkbox `Tag Match Negate`
  - Value Match does not matter
 
-### Match if a Attribute is empty
-Hint: If you don't want to import Empty Attribute, you can set this with `LABELS_IMPORT_EMPTY=False`, in your local_config.py
+### Match if an Attribute is an empty string
+Hint 1: If you don't want to import an Empty Attribute, you can set this with `LABELS_IMPORT_EMPTY=False`, in your local_config.py
+Hint 2: This works like that since the current 3.8 Version
 
 - Set `Tag Match` to the desired Attribute Name
-- Set `Value Match` to `Match All (.*)`
-- Set Checkbox `Value Match Negate`
-- Value Match can be empty.
-
+- Set `Value Match` to `String Equal`
+- Let `Value Match` empty, since that is a empty String

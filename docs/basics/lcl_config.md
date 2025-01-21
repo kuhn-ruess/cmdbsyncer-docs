@@ -54,6 +54,7 @@ config = {
 | HTTP_MAX_RETRIES           | Number of Retries on failed HTTP Requests                                                      |
 | SWAGGER_ENABLED            | `True or False` Disable or Enable the API Swagger for the Rest API                             |
 | FILEADMIN_PATH             | Path for the Working Folder used in the GUIs Fileadmin                                         |
+| ADVANCED_RULE_DEBUG        | For Development only: If enabled all Condition Matches will print if they match or not         |
 
 
 ## Modul Specific Config
