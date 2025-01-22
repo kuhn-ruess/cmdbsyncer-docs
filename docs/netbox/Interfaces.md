@@ -29,11 +29,9 @@ The Following Functions can be used, to Access these Attributes:
 
 To get the Examples Description:
 ```json
-{{eval(mainip4transport)['networkInterface']['extendedDescription']}}
+{{mainip4transport['networkInterface']['extendedDescription']}}
 ```
 
-Explanation:  eval() is used to convert the string stored as host attribute, back into a dictonary which can be access key: value.
-From there ['networkInterface'] and inside their ['extendedDescription'] can be accessed.
 
 ### Accessing IP and Convert Subnet.
 Our Example contains a IP Address and a Subnet Mask. But that does not meat Netbox Requirements for the IP Address. We need the form `127.30.50.121/32`. Luckly the Syncer has a helper to convert that:
@@ -43,5 +41,36 @@ We just pass the IP Address and the Subnet Mask to it.
 In the Example, the fields `mainipaddress` and `mainip4transport` to create a String (`+`) to create `127.30.50.21/255.255.255.0` and from there it's passed to the Helper:
 
 ```json
-{{ get_ip4_network(mainipaddress+"/"+eval(mainip4transport)['subnetMask']) }}
+{{ get_ip_interface(mainipaddress+"/"+mainip4transport['subnetMask']) }}
 ```
+
+
+
+## Use List Variables
+This Rule can also use [List Mode](../bascis/list_mode.md). Here are some Examples for fields. The Information of course need to Exist on the Syncer Objects.
+
+### For Name:
+
+``` python
+{{HOSTNAME }} 
+{% if LIST_VAR['extendedDescription'] %}
+ {{LIST_VAR['extendedDescription']}}
+{%else%}
+ {{LIST_VAR['description']}}
+{% endif %}
+```
+Here the Interface name Starts with the Host's Name, then if existing the extended description, else the normal description.
+
+### Interfaces Address
+
+```python
+{% for ip in LIST_VAR['ip4Transports'] %}
+{% set ip_address = ip['ipAddress'] %}
+{% set subnet_mask = ip['subnetMask'] %}
+{% if not subnet_mask%}
+{% set subnet_mask = "255.255.255.0" %}
+{% endif %}
+{{ get_ip_interface(ip_address+'/'+subnet_mask) }},
+{% endfor %}
+```
+To helper Variables are used, to store the IP to `ip_address`, and the subnet to `subnet_mask`. And then there is a Fallback if `subnet_mask` is empty.

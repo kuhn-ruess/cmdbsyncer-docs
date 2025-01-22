@@ -24,6 +24,7 @@ nav:
     - Remove Hosts: basics/maintenance.md
     - Hosts, Labels and Inventory: basics/host_labels_inventory.md
     - Conditions: basics/conditions.md
+    - Outcomes List Mode: basics/list_mode.md
     - Custom Attributes: basics/custom_attributes.md
     - Rewrite Attributes: basics/rewrite_attributes.md
     - Rewrite Hostnames: basics/rewrite_hostnames.md
@@ -68,6 +69,7 @@ nav:
     - DCIM Devices: netbox/devices.md
     - DCIM Interfaces: netbox/Interfaces.md
     - IPAM IP Addresses: netbox/ipaddresses.md
+    - IPAM IP Prefixes: netbox/prefixes.md
   - I-Doit:
       - Idoit Basics: i-doit/index.md
   - Rest APIs/ Json:
