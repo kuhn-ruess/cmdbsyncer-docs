@@ -16,7 +16,7 @@ If you then query a host, you see the tables with information about which Rules 
 
 
 ## From Version 3.8
-Since Syncer 3.8, debug_rules is deprecated. This is of all the new Export types which would lead to too many commands.
+Since Syncer 3.8, debug_host is deprecated. This is of all the new Export types which would lead to too many commands.
 
 You now can simply add `--debug` and all Exceptions will Raise, and if you want to debug the outcome of the rules for a singe object, use the export command and add `--debug-fules=objectname`. You can combine that with `--debug` to let exceptions raise, but it's not required.
 ```
