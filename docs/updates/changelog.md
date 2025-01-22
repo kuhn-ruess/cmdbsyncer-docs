@@ -11,6 +11,16 @@ This will automatically adapt config changes if needed, and add needed default v
 
 ## To Version 3.8
 
+### Format of Imported Data
+Before 3.8, every imported Label Value was converted to a String. That was fine in the beginning with simple Labels. But since more and more Jinja is used, it was a pain that Data structures, like Lists and Dicts, first had to be converted back from their string state. 
+This Conversation does not happen anymore. A dict stays a dict, a list stays a list.
+But also, a None, False or True, stays like that. 
+Does this affect you: In short: No.
+Because if you us normal matches, the value will still convert to a string for this match.
+Only if you set to Bool Match, the bool stays like the origin. Although the Bool Match even can convert the strings of True, None or False back. So nothing to worry about.
+But why then, this all?
+In Jinja Templates, you now have all the Flexibility you need to customize Data, Loop etc.pp to your need. 
+
 ### Mongodb Update
 This only applies if you're using the docker-compose files shipped with the Syncer. Otherwise, you can skip that Part. The Version of Mongo Updates from 4.4 to 7.0.14 You can either Back up your Data with the Syncers export function and start with and Empty Database again. Or just first change the MongoDB Version in the Docker File to 5.0, start and login to Syncer, then 6.0, start and login to Syncer and finally to the 7.0.14.  In the Future I will directly add the new Versions the moment they are Stable. So there will not be such a Big Step anymore.
 
