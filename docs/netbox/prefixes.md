@@ -70,4 +70,10 @@ Here the full example using the explained helper variable:
 
 ![](attachments/Pasted%20image%2020250122174134.png)
 
+To copy:
+``` python
+[{% for ip in LIST_VAR['ipv4_addresses'] %}
+'{{get_ip_network(ip)}}',
+{% endfor %}]
+```
 Find all documentation about the List Feature [here](../basics/list_mode.md).

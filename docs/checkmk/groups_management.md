@@ -27,9 +27,21 @@ The Rule to configure everything you find in:
 
 
 ## Example
-Let's say you Hosts have an attribute **application** stating their job.  Then How to set all that **application** attributes to become a Checkmk Contact Group, and use cg_ as a prefix in their Name.
+Let's say you Hosts have an attribute **application** stating their job.  
+Now set all that the **application** attributes to become a Checkmk Contact Group, and use cg_ as a prefix in their Name.
 
-Set __Group Name__ to *Contact Groups*, **Foreach Type** to *Foreach Attribute*, and as **Foreach** you set *application* (application is the attribute your Hosts have). If you just want the attribute value, you're done. But since we want the prefix, we set **Rewrite** to *cg_{{name}}* and **Rewrite Title** just to *{{name}}*. That's it, now "Commit Changes" and export the Groups to Checkmk.
+Set:
+
+1.  __Group Name__ to *Contact Groups*, 
+2. **Foreach Type** to *Foreach Attribute*, 
+3. For **Foreach** you set *application* (application is the attribute your Hosts have).
+
+If you just want the attribute value, you're done. But since we want the prefix, we set:
+
+1. **Rewrite** to *cg_{{name}}*
+2. **Rewrite Title** just to *{{name}}*. 
+
+That's it, now "Commit Changes" and export the Groups to Checkmk.
 
 ## Export from Commandline
 If you want to export the groups to checkmk manually, not using Cron you can do:
