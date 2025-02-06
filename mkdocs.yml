@@ -60,6 +60,8 @@ nav:
       - Full Agenten Automations: ansible/cmk_agents.md
       - Site Update Automations: ansible/cmk_sites.md
       - Mange big Environments: checkmk/big_environments.md
+  - LDAP:
+    - LDAP Import: ldap/index.md
   - Cisco Dna:
     - Cisco DNA Basics: ciscodna/index.md
   - JDisc:
@@ -71,6 +73,9 @@ nav:
     - DCIM Interfaces: netbox/Interfaces.md
     - IPAM IP Addresses: netbox/ipaddresses.md
     - IPAM IP Prefixes: netbox/prefixes.md
+    - Virtualization VMs: netbox/vms.md
+    - Tenancy Contacts: netbox/contacts.md
+    - Plugin Dataflow: netbox/dataflow.md
   - I-Doit:
       - Idoit Basics: i-doit/index.md
   - Rest APIs/ Json:

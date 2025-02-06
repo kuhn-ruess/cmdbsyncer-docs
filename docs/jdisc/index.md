@@ -1,6 +1,10 @@
 # Jdisc
 
-Starting with Version 3.8 the Syncer has support to Import Data from [JDisc](https://jdisc.com)
+Starting with Version 3.8 the Syncer has support to Import Data from [JDisc](https://jdisc.com).
+
+It's possible to Import Devices, Applications and Executables.
+The needed GraphQL Queries are already hardcoded into the Syncer so no need to worry.
+
 
 ## How to Set it Up
 1. Create an [Account](/basics/accounts/) of type JDisc Devices
@@ -18,6 +22,3 @@ That means they have the following Format:
 ![](./attachments/Pasted%20image%2020241011170657.png)
 
 In This Example for the Attribute Name, I change it from roles to role and for the value, I convert the list to use the first value if existing, if not, fall back to undefined. The [helper get_list()](/advanced/jinja_functions) is used.
-
-
-

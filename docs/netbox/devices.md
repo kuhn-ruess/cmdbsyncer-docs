@@ -22,19 +22,3 @@ WARNING: Netbox did a Change in their API and changed a Field from device_role t
 Please note that you need to update your syncer if you run in a problem about missing device_role payload.
 The Syncer in default always works with the current Netbox Version.
 To support older Versions, a chance to make this work is to Downgrade the pynetbox module used by syncer
-
-
-
-
-
-
-
-
-
-
-
- 
-
-
-
-

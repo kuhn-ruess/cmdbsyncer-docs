@@ -10,3 +10,12 @@ Also, you need to Set up a Reference Field for the Devices, that the Syncer can 
 ![](img/netbox_custom_field.png)
 
 The final Step then is the configuration for the Attributes you want to sync; otherwise there will be an exception when you try to export your Hosts. 
+
+
+## Special Options in Rules
+
+The Rules support some options which simplify some cases.
+Refer to [here](../basics/list_mode.md) to learn more.
+
+## Decommission Data
+Hosts and Virtual Machines are automatically Decommissioned in case they are not longer part of the Syncer Database, but have been created by it.
