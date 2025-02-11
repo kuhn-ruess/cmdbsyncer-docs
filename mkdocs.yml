@@ -66,6 +66,8 @@ nav:
     - Cisco DNA Basics: ciscodna/index.md
   - JDisc:
     - JDisc Basics: jdisc/index.md
+  - Jira:
+    - Jira Cloud: jira/index.md
   - Netbox:
     - General: netbox/index.md
     - Account: netbox/account.md

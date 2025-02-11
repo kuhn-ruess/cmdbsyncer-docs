@@ -37,6 +37,7 @@ In some cases, like when you create an Account for CSV Files or JSON Files, you 
 ### Documentations by Account Type
  - [Checkmk](../checkmk/accounts.md)
  - [Netbox](../netbox/account.md)
+ - [Jira](../jira/index.md)
 
 
 ## Extra Plugin Options
