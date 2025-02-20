@@ -13,6 +13,7 @@ nav:
     - First Steps: basics/first_steps.md
     - Config: basics/lcl_config.md
     - Change GUI Colors: basics/change_colors.md
+    - Logging: basics/logging.md
     - Caching: basics/caching.md
     - Accounts: basics/accounts.md
     - Cronjobs: basics/cron.md
