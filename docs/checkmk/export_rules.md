@@ -32,17 +32,17 @@ The Syntax for that, has nothing to do with the Jinja Syntax, but you can place 
 You can use in the "Move to Folder" rule, at every Folder Level you want to. Just add the Attributes after a Pipe to the Folder name. Like this:
 
 ```
-/my_folder | {'title': "My Nice title', 'tag_something': 'something'}
+/my_folder | {'title': 'My Nice title', 'tag_something': 'something'}
 ```
 
 Same Example when the Folder comes from Jinja, please note where the Pipe is placed:
 
 ```
-/{{my_jinja_var}} | {'title': "My Nice title', 'tag_something': 'something'}
+/{{my_jinja_var}} | {'title': 'My Nice title', 'tag_something': 'something'}
 ```
 
 And Finally, using Jinja in the Attributes:
 
 ```
-/{{my_jinja_var}} | {'title': "{{var_containing_title}}', 'tag_something': 'something'}
+/{{my_jinja_var}} | {'title': '{{var_containing_title}}', 'tag_something': 'something'}
 ```
