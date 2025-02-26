@@ -1,4 +1,4 @@
-site_name: Cmdbsyncer Documentation
+site_name: CMDBsyncer Documentation
 nav:
   - Home: index.md
   - How it Works: basics/how_it_works.md
@@ -122,7 +122,7 @@ markdown_extensions:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
-copyright: Kuhn & Ruess GmbH <a href="https://kuhn-ruess.de/de/impressum/">Imprint</a>
+copyright: Kuhn & Rueß GmbH <a href="https://kuhn-ruess.de/de/impressum/">Imprint</a>
 extra:
   social:
     - icon: fontawesome/brands/github
