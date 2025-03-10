@@ -6,13 +6,14 @@ The Syncer allows you to directly import Json Files or Simple Rest APIs, which r
 ## Rest API
 Everything is configured using an [Account](/basics/account/). The Following Options are available:
 
-| Option             | Description                                                 |
-| ------------------ | ----------------------------------------------------------- |
-| `auth_type`        | Empty if you want a Header based auth, else Basic or Digest |
-| `request_headers`  | Send Headers like for Auth or Content Type                  |
-| `data_key`         | Empty or key where the Data will be found.                  |
-| `hostname_field`   | In which field can the Hostname be found                    |
-| `rewrite_hostname` | Jinja if you want to rewrite the hostname                   |
+| Option             | Description                                                     |
+| ------------------ | --------------------------------------------------------------- |
+| `auth_type`        | Empty if you want a Header based auth, else `Basic` or `Digest` |
+| `cert`             | Path to a Certificate for Certificat Based auth                 |
+| `request_headers`  | Send Custom Headers like for Auth or Content Type               |
+| `data_key`         | Empty or key where the Data will be found.                      |
+| `hostname_field`   | In which field can the Hostname be found                        |
+| `rewrite_hostname` | Jinja if you want to rewrite the hostname                       |
 
 
 
