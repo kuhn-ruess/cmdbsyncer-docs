@@ -28,6 +28,7 @@ config = {
 | CRYPTOGRAPHY_KEY           | Key used to encrypt stored passwords                                                           |
 | TIME_STAMP_FORMAT          | Python Formatstring for Date in log                                                            |
 | HOST_LOG_LENGTH            | Number of Events logged to Hosts objects                                                       |
+| CHECK_FOR_VALID_HOSTNAME   | Make sure that if object type is host, the hostname is valid (RFC)                             |
 | ADMIN_SESSION_HOURS        | Hours bevore logout from Admin Panel                                                           |
 | BASE_PREFIX                | Start part for the Url prefixed in links                                                       |
 | SESSION_COOKIE_NAME        | Name of the login Cookie in syncer. Important if running multiple instances                    |
