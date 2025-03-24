@@ -61,4 +61,9 @@ Syntax is:
 
 
 
+# Config Child's
+
+A config Child is just the Child of a Normal Account. It inherits every setting from there, but overwrites the Custom Fields and the Plugin Config (if set)
+
+In this way, you don't need to create multiple Accounts in the case you need e.g. multiple Filters or Plugin Settings for different Situations.
 
