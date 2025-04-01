@@ -67,3 +67,4 @@ A config Child is just the Child of a Normal Account. It inherits every setting 
 
 In this way, you don't need to create multiple Accounts in the case you need e.g. multiple Filters or Plugin Settings for different Situations.
 
+ 
