@@ -19,7 +19,11 @@ __Warning:__
 Always check Changelog before you Update:
 [Changelog](../updates/changelog.md)
 
+The run:
 
+```
+./cmdbsyncer sys self_configure
+```
 ## Problems
 Sometimes the Application will not start up. In these cases, check the UWSGI Logs in /var/log.
 It depends on which files your Distribution will log.

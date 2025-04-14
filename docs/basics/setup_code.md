@@ -53,6 +53,14 @@ Extra Database stuff you find in requirements-extras.txt
 The Syncer needs the Mongodb. All you need to do is to install it, with your Packet Manager. Then you are ready to go.
 
 
+## Configure Defaults
+When the Database is running, run 
+
+```
+./cmdbsyncer sys self_configure
+```
+
+This Should also run after you Update the Syncer
 ## The Web Interface
 
 To take a brief look, you can start the development Server:
