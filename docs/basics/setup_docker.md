@@ -8,8 +8,52 @@ The Dockerfile you found already in the Main Directory of the repo, I guess.
 And if you develop with the syncer, you may want to look into the ./helper command,
 which provides you an environment with live refresh after code changes.
 
+## Docker behind proxy
+If you plan to use Docker behind a proxy, then you have to possibilities to get it running.
 
+### Modify docker-compose.local.yml
+Currently, we do not add proxy settings and provide following setup:
+```dockerfile
+api:
+    build:
+      dockerfile: Dockerfile.local
+    environment:
+      config: compose
+      FLASK_DEBUG: 1
+    ports:
+      - 5003:5003
+    volumes:
+      - ./:/srv
+```
 
+You can add your proxy configuration like this:
+```dockerfile
+  api:
+    build:
+      dockerfile: Dockerfile.local
+    args:
+      HTTPS_PROXY: PROTOCOL://SERVERNAME:PORT
+    environment:
+      config: compose
+      FLASK_DEBUG: 1
+    ports:
+      - 5003:5003
+    volumes:
+      - ./:/srv
+```
+### Add proxy to user environment
+If you want to add the proxy for the user, which is used for Docker, then you can add it directly to his environment. Please use `~/.docker/config.json`:
+```json
+{
+  "proxies": {
+    "default": {
+      "httpProxy": "PROTOCOL://SERVERNAME:PORT",
+      "httpsProxy": "PROTOCOL://SERVERNAME:PORT",
+      "noProxy": "EXCLUDE1,EXCLUDE2,127.0.0.0/8"
+    }
+  }
+}
+```
 
 ## Things to Consider
 
@@ -21,7 +65,7 @@ The Project always needs his MongoDB, like the docker-compose.yml also defines.
 To work with the Project, not all can be done in the Web interface. For example, for Debug and Testing, the Access to the Shell is needed. 
 
 ### Cron Jobs
-The Syncer Needs Cron Jobs. These need to be triggerted using the docker exec command
+The Syncer Needs Cron Jobs. These need to be triggered using the docker exec command
 
 ### CSV Files
 If you want to import CSV Files into the Syncer, make sure to define a Volume where you can place it.
