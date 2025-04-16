@@ -49,6 +49,7 @@ nav:
       - Checkmk Users: checkmk/users.md
       - Downtimes: checkmk/create_downtimes.md
       - DCD Rules: checkmk/dcd_rules.md
+      - Password Store: checkmk/password_store.md
       - Business Intelligence: checkmk/bi.md
       - Folder Pools: checkmk/folder_pools.md
       - Inventorize Checkmk: checkmk/inventorize.md
