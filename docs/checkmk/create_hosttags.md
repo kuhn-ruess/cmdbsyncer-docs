@@ -14,19 +14,18 @@ _Modules→ Checkmk → Manage Hosttags_
 
 Create a new entry.
 
-| Field | Description |
-| :--------|:------------|
-| Group Topic Name | The Category used for the Group in Checkmk |
-| Group Title | The Human Readable Title of the Group, Example: My Locations|
-| Group ID | The internal ID of the group. Example my_locations |
-| Group Help | Help text for the User |
-| Group Single Choice | creates a group with just one on-off choice |
-| Group Multiply by List | Create a set of multiple Groups, based on a list. See docu below|
-| Group Multiply List | Syncer Attribute containing a list, use get_list(), See doco below |
-| Filter by Account | Should the Syncer create the Tags based on Attributes only from objects managed by given Account Name |
-| Rewrite ID | Jinja rewrite for the internal ID of tag. Example: {{name\|lower()}} |
-| Rewrite Title | Jinja rewrite the Human Readable Name of Tag Example: {{HOSTNAME\|capitalize()}}|
-| Enabled | Enables the Rule |
+| Field                  | Description                                                                                           |
+| :--------------------- | :---------------------------------------------------------------------------------------------------- |
+| Group Topic Name       | The Category used for the Group in Checkmk                                                            |
+| Group Title            | The Human Readable Title of the Group, Example: My Locations                                          |
+| Group ID               | The internal ID of the group. Example my_locations                                                    |
+| Group Help             | Help text for the User                                                                                |
+| Group Multiply by List | Create a set of multiple Groups, based on a list. See docu below                                      |
+| Group Multiply List    | Syncer Attribute containing a list, use get_list(), See docu below                                    |
+| Filter by Account      | Should the Syncer create the Tags based on Attributes only from objects managed by given Account Name |
+| Rewrite ID             | Jinja rewrite for the internal ID of tag. Example: {{name\|lower()}}                                  |
+| Rewrite Title          | Jinja rewrite the Human Readable Name of Tag Example: {{HOSTNAME\|capitalize()}}                      |
+| Enabled                | Enables the Rule                                                                                      |
 
 
 Note 1: that {{ HOSTNAME }} is replaced by the Hostname. You can use every Host attribute here.
@@ -42,8 +41,8 @@ In Group Multiply by List, you need to provide a Python list. This is archived w
 
 Example:
 ```
-{{get_list(YOUR_LIST_ATTRIBUTE)|safe}}
-{{get_list(['Name1', 'Name2', "Name3'])|safe}}
+{{YOUR_LIST_ATTRIBUTE|safe}} # real list from attributes
+{{get_list(['Name1', 'Name2', "Name3'])|safe}} # String given by you
 ```
 
 Make sure to use |safe otherwise the System will escape that list

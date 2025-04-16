@@ -34,25 +34,9 @@ You can use the following Settings as Custom Fields:
 
 ## Command line Options
 
-In the following part, you find the possible functions and their Parameters.
+For Historic reasons, this Module was never meant to be configured via accounts.
+Therefore, as default the CLI accepts all the Options as Parameters. To use with an account, use `--account` to specify them.
 
-
-
-::: application.plugins.csv.cli_import_hosts
-    options:
-      show_source: false
-      show_bases: false
-      show_root_toc_entry: false
-    
-::: application.plugins.csv.cli_inventorize_hosts
-    options:
-      show_source: false
-      show_bases: false
-      show_root_toc_entry: false
-
-::: application.plugins.csv.cli_compare_hosts
-    options:
-      show_source: false
-      show_bases: false
-      show_root_toc_entry: false
+## CSV files and Excel → Encoding
+If you have Coding Problems when importing, it's worth a try going to the Accounts settings and change the Encoding from `utf-8`to `utf-8-sig`
 
