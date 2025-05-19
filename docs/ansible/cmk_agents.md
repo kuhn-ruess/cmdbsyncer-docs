@@ -48,6 +48,11 @@ The following Variables existing in the Ansible Role. You learn later how to set
 | cmk_agent_receiver_port | Port for Agent TLS Registration |
 | cmk_discovery | Trigger Checkmk Discovery on Host |
 | cmk_windows_tmp | Temo dir on Windows Server|
+| cmk_server_port | Overwrite the default 443 port of Checkmk |
+| cmk_agent_port | For Firewall: Changed Agent port from 6556 to custom |
+| cmk_server_ip | Use a IP instead of a Hostname when DNS is not available. Also need for Firewall config|
+| configure_firewall | Enable Firewall Configuration for RedHat |
+
 
 Some of them are already part of the Inventory after you invenorized Checkmk others a Hardcoded like Credentials. And finally, there are the condition based, like cmk_register_bakery which only should be true, if the registration is missing. 
 
@@ -79,6 +84,11 @@ Likewise, you can configure if to register to bakery or the TLS. Filter for exam
 You don't need to set the Password value directly in the settings, you can also read it from your Accounts. For that, instead of the Password, just Enter the Macro: {{ACCOUNT:NAME:password}}. Account needs to be uppercase, Name is the Account Name, password can also be every other field or custom field in your account Settings.
 
 ![](img/account_placeholder.png)
+
+## RedHat Firewalls
+You can configure the Firewall Zones and the Checkmk Server IPs to let the Syncer configure the Firewall for you.
+
+You just need to set `configure_firewall` and also the `cmk_server_ip`
 
 
 # Run the job
