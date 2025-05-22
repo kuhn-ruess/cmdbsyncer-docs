@@ -21,6 +21,15 @@ _Modules → Checkmk → Manage Downtimes_
 | Duration | Start Flexible Downtime (Jinja) |
 
 
+## Create Downtime for Single Day
+Instead of having the Downtime Data in your CMDB and just syncing it to Checkmk, you can also set a Downtime for every given day, when a condition for a host is fulfilled.
+Since Version 3.9 you can set:
+
+Start Day: `Today`
+Every: `once`
+
+
+
 ## Timezones
 Downtimes in Checkmk need to be Timezone aware.
 The Downtimes you enter the gui, will have the Timezone of the Server/ Docker Container where you installed the syncer.

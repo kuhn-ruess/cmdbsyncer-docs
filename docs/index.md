@@ -15,17 +15,23 @@ Main goal is the complete organization of the hosts based on CMDB systems and a 
 * Simple Plugin API to integrate own Data Sources
 * Various Debug Options with the ./cmdbsyncer command
 * Rules to control the Synchronization:
-  * Based on Host Attributes
-  * Attribute Rewrites
-  * Filters fur Hosts and Attributes
+	 * Based on Host Attributes
+	 * Attribute Rewrites
+	 * Filters fur Hosts and Attributes
   * Action Rules for Actions in Ansible, Checkmk, Netbox etc.
 * Web Based management for Account Credentials.
+* Encryption of Secrets
+* Cron Management
+* Monitoring Integration
+* Jinja Support for Configuration and Rules
+* RestAPI
+* Ansible Support as Inventory Source
 
 ## Modules
 
 * [Checkmk](/checkmk/)
     * Mange full Host Lifecycle (creation, labels, folders, deletion, rules)
-    * Tested and performant with more than 140,000 Hosts
+    * Tested with more than 140,000 Hosts
     * Sync and Update all possible Host Attributes/ Tags/ Labels
     * Full Support of API Bulk Operations
     * Full management of Checkmk Folders
@@ -33,6 +39,7 @@ Main goal is the complete organization of the hosts based on CMDB systems and a 
     * Creation of Host-, Contact- and Service Groups
     * Create Host Tags and Host Tag Groups
     * Create BI Aggregations
+    * Create all types of Setup Rule
     * Integrated options to prevent to many Updates in Checkmk
     * Full Multiprocessing support for Calculations
     * Command to Active Configuration
@@ -42,6 +49,7 @@ Main goal is the complete organization of the hosts based on CMDB systems and a 
     * Inventory of Service Informations, Labels, Tags and HW/SW Inventory possible (can be used e.g. for I-Doit Sync)
     * Create DCD Rules
     * Create and Manage Password Store (Encryption) entries
+    * Automatic Detection of the Checkmk Version to use the correct API Payloads
 
 * [Ansible](/ansible/)
     * Rule Based Inventory Source
@@ -54,9 +62,17 @@ Main goal is the complete organization of the hosts based on CMDB systems and a 
 * [Netbox](/netbox/)
     * Rulebased Export and Import Devices and VMs to/from Netbox
     * Automatic creation of Categories if wanted.
+    *  Export of Sites
+    *  Export Interfaces
+    *  Export IPAM
+    * Export Contacts
+    * And more
+* PRTG
+	* Import Objects from PRTG to sync them to Checkmk
 
 * [I-DOIT](/i-doit/)
     * Rulebased Export and Import Devices to/from I-Doit
+    * Template Based
 
 * BMC Remedy
     * Limited import from BMC Remedy
@@ -77,39 +93,18 @@ Main goal is the complete organization of the hosts based on CMDB systems and a 
 * [JSON](/rest_json/)
     * Import of Json File Structures
 
-* Jira
+* Jira CMDB on Prem and Cloud:
     * Import Objects
+    
 *  [JDisc](/jdisc/)
 	* Import Objects
+
+* Vmware
+	* Import Attributes
+	* Export Attributes to Vmware VMs
+	
 * MySQL
     * Import and Inventorize Mysql Database Tables
 
-
 * Mssql/ FreeDTS/ ODBC
     * Import and Inventorize all kinds of ODBC based Database Connectsion
-
-
-
-## Versioning
-Please note that the Master Branch contains also new Features and possible Bugs.
-Use the Stable Branch to only get bugfixes.
-
-``` mermaid
-graph LR
-S[Start] --> F
-S --> B
-M[Master branch]
-B[Bugfixes]
-F[Features]
-D[Daily Version e.g. 3.8 Daily 08.10.24]
-V[Stable Branch e.g  3.7.1]
-
-M --> D
-
-F --> M
-B --> M
-
-B --> V
-
-```
-
