@@ -16,5 +16,4 @@ All of them, you can set in you local_config.py
 ## Limiting objects
 It's likely that you have different types of objects in the Syncer Database. In order that the Syncer does not need to calculate on objects not relevant for an operation, it's possible to limit the objects which will be used. That happens directly at Database level, so way faster than just using the normal Filter.
 
-To set this App, switch to the Account for the Operations,  add a Plugin Setting, Select the Operation on which you want to use it, and the objects you would like to use it on.
-
+To set this up, switch to the Account for the Operation,  add a Plugin Setting, Select the Operation on which you want to use it, and the objects you would like to use it on.

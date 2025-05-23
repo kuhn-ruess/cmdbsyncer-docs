@@ -61,6 +61,7 @@ nav:
       - Example Multiple HTTP Rules: checkmk/recipe_multiple_http_rules.md
       - Full Agenten Automations: ansible/cmk_agents.md
       - Site Update Automations: ansible/cmk_sites.md
+      - Bake and Sign Agents: checkmk/bake_sign.md
       - Mange big Environments: checkmk/big_environments.md
   - LDAP:
     - LDAP Import: ldap/index.md

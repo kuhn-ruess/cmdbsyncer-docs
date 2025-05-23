@@ -107,4 +107,4 @@ Main goal is the complete organization of the hosts based on CMDB systems and a 
     * Import and Inventorize Mysql Database Tables
 
 * Mssql/ FreeDTS/ ODBC
-    * Import and Inventorize all kinds of ODBC based Database Connectsion
+    * Import and Inventorize all kinds of ODBC based Database Connections
