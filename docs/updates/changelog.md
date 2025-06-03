@@ -9,6 +9,11 @@ After always, please run:
 ```
 This will automatically adapt config changes if needed, and add needed default values to the local_config.py if you don't have them. For example, the Cryptography key.
 
+
+## To Version 3.9
+If you had Checkmk Custom Attribute Rules, which created multiple outputs because you did a comma seperation, the seperation sign changed from comma to double (\|\|) pipes.
+Please adapt your rules after Update
+
 ## To Version 3.8
 
 ### Format of Imported Data
