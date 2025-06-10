@@ -38,7 +38,9 @@ In some cases, like when you create an Account for CSV Files or JSON Files, you 
  - [Checkmk](../checkmk/accounts.md)
  - [Netbox](../netbox/account.md)
  - [Jira](../jira/index.md)
+ - [Inventorize Options](host_labels_inventory.md/#account-options-for-inventorize-scripts)
 
+### (Almost) Global Available Options
 
 ## Extra Plugin Options
 In this section you can set plugin-based account options. That means even when you use the same account for different actions, you can still used action specific parts which you can configure here.
