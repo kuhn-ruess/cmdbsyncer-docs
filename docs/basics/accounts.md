@@ -9,7 +9,7 @@ You will find the settings in Accounts
 | Field         | Description                                                           |
 | :------------ | :-------------------------------------------------------------------- |
 | Name          | Reference Name for the Account, used also in CI                       |
-| Typ           | Typ of Account, only checks validation                                |
+| Type          | Type of Account, only checks validation                               |
 | Is Master     | This Account can overwrite other accounts when import data            |
 | Is Object     | Will not be exported as host, but attributes can be used in the rules |
 | Object Type   | For future function to help filter objects in a better way            |
@@ -44,7 +44,7 @@ In some cases, like when you create an Account for CSV Files or JSON Files, you 
 
 | Field                              | Description                                                                                                                                                                                                                                                               |
 | :--------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| delete_host_if_not_found_on_import | Enter a  Mongoengine Filter for a Field in Format fieldname:value to instant delete hosts on import operations from the syncer, if the matching host not longer is part of this import. A Docu for Filters [click here](https://docs.mongoengine.org/guide/querying.html). You cann add multiple Filters by seperating them with two pipes (\|\|). They are connected by AND then. |
+| delete_host_if_not_found_on_import | Enter a  Mongoengine Filter for a Field in Format fieldname:value to instantly delete hosts on import operations from the syncer, if the matching host is no longer part of this import. A Docu for Filters [click here](https://docs.mongoengine.org/guide/querying.html). You can add multiple Filters by separating them with two pipes (\|\|). They are connected by AND then. |
 
 ## Extra Plugin Options
 In this section you can set plugin-based account options. That means even when you use the same account for different actions, you can still used action specific parts which you can configure here.
