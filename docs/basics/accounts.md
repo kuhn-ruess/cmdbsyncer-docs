@@ -6,17 +6,17 @@ You will find the settings in Accounts
 
 ## Basic Fields
 
-| Field | Description |
-|:----|:-----------|
-| Name | Reference Name for the Account, used also in CI |
-| Typ |  Typ of Account, only checks validation |
-| Is Master | This Account can overwrite other accounts when import data |
-| Is Object | Will not be exported as host, but attributes can be used in the rules |
-| Object Type | For future function to help filter objects in a better way |
-| Address | URL or Hostname to the System, depending on the Module |
-| Username | Username for the Account |
-| Password | Password or Secret for the Account |
-| Custom Fields | Extra Fields used by plugins |
+| Field         | Description                                                           |
+| :------------ | :-------------------------------------------------------------------- |
+| Name          | Reference Name for the Account, used also in CI                       |
+| Typ           | Typ of Account, only checks validation                                |
+| Is Master     | This Account can overwrite other accounts when import data            |
+| Is Object     | Will not be exported as host, but attributes can be used in the rules |
+| Object Type   | For future function to help filter objects in a better way            |
+| Address       | URL or Hostname to the System, depending on the Module                |
+| Username      | Username for the Account                                              |
+| Password      | Password or Secret for the Account                                    |
+| Custom Fields | Extra Fields used by plugins                                          |
 
 Hint: Maybe you don't need all the Fields. So, an API for example, could only need a Secret, so you would only need Name, Address and Password.
 
@@ -41,6 +41,10 @@ In some cases, like when you create an Account for CSV Files or JSON Files, you 
  - [Inventorize Options](host_labels_inventory.md/#account-options-for-inventorize-scripts)
 
 ### (Almost) Global Available Options
+
+| Field                              | Description                                                                                                                                                                                                                                                               |
+| :--------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| delete_host_if_not_found_on_import | Enter a  Mongoengine Filter for a Field in Format fieldname:value to instant delete hosts on import operations from the syncer, if the matching host not longer is part of this import. A Docu for Filters [click here](https://docs.mongoengine.org/guide/querying.html). You cann add multiple Filters by seperating them with two pipes (\|\|). They are connected by AND then. |
 
 ## Extra Plugin Options
 In this section you can set plugin-based account options. That means even when you use the same account for different actions, you can still used action specific parts which you can configure here.
