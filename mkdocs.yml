@@ -71,6 +71,9 @@ nav:
     - JDisc Basics: jdisc/index.md
   - Jira:
     - Jira Cloud: jira/index.md
+  - YML:
+    - Basics: yml/index.md
+    - Account: yml/account.md 
   - Netbox:
     - General: netbox/index.md
     - Account: netbox/account.md
