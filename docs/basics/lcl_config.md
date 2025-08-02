@@ -34,7 +34,7 @@ config = {
 | SESSION_COOKIE_NAME        | Name of the login Cookie in syncer. Important if running multiple instances                    |
 | LOG_LEVEL                  | Python Log Level, numeric or logging.DEBUG                                                     |
 | LOG_CHANNEL                | Log Chanel, default: logging.StreamHandler()                                                   |
-| PASSWD_MIN_PASSWD_LENGTH   | Min Password in case of Passwort Change                                                        |
+| PASSWD_MIN_PASSWD_LENGTH   | Min Password in case of Password Change                                                        |
 | PASSWD_SPECIAL_CHARS       | `True or False`, Does Password needs Special Charts                                            |
 | PASSWD_SPECIAL_DIGITS      | `True or False`, Does Password needs Digits                                                    |
 | PASSWD_SEPCIAL_UPPER       | `True or False`, Does Password needs Uppercase Chars                                           |

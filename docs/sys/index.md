@@ -3,7 +3,7 @@ The sys Module contains Internal Functions. It can only be used in the CLI. You 
 
 | Option             | Description                                                                                |
 | ------------------ | ------------------------------------------------------------------------------------------ |
-| create_user        | Create a New User, or reset Passwort/ 2FA Code                                             |
+| create_user        | Create a New User, or reset Password/ 2FA Code                                             |
 | delete_all_hosts   | Delete all Hosts, add a Account name to filter                                             |
 | delete_cache       | Delete Hosts Cache                                                                         |
 | delete_inventory   | Delete Hosts Inventory Information                                                         |
