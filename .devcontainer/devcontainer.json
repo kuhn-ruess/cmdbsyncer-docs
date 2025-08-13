@@ -1,0 +1,10 @@
+{
+	"build": {
+		//"dockerfile": ".devcontainer/Dockerfile",
+		"dockerfile": "Dockerfile",
+		"context": ".."
+	},
+	"forwardPorts": [8000],
+	//"postStartCommand": "cd /workspaces/cmdbsyncer-docs && mkdocs serve &",
+	"shutdownAction": "stopContainer"
+}
