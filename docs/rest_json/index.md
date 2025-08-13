@@ -14,6 +14,8 @@ Everything is configured using an [Account](/basics/account/). The Following Opt
 | `data_key`         | Empty or key where the Data will be found.                      |
 | `hostname_field`   | In which field can the Hostname be found                        |
 | `rewrite_hostname` | Jinja if you want to rewrite the hostname                       |
+| `method` | The request can be changed from GET to POST. |
+| `post_body` | If POST mode, specify the JSON Body here                     |
 
 
 

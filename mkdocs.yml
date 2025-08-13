@@ -88,6 +88,8 @@ nav:
       - Idoit Basics: i-doit/index.md
   - Rest APIs/ Json:
      - Import RestApis or Json: rest_json/index.md
+  - Internal Rest API:
+     - Using the Rest API: internal_rest/index.md
   - "Advanced":
      - Build your own Plugin: advanced/own_plugins.md
      - Plugin API: advanced/plugin_api.md

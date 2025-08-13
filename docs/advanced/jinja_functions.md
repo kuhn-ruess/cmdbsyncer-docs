@@ -3,7 +3,7 @@
 
 
 ## merge_list_of_dicts()
-If you have, for example in your Attributes, a List of Dictionaries like this:
+If you have, for example in your Attributes, a List of Dictionaries like this: 
 
 ```
 location = [{"site":""},{"section":""},{"level":""},{"room":""},{"description":""},{"note":""}]
@@ -26,3 +26,5 @@ Cleans a String so that it can serve as Checkmk Hosttag ID. Invalid Chars are re
 
 ##  get_ip4_network()
 Access to a python Function from the module ipaddress. If you call it, `ipaddress.ip_interface()` is called.
+
+Test
