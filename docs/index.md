@@ -29,7 +29,7 @@ Main goal is the complete organization of the hosts based on CMDB systems and a 
 
 ## Modules
 
-* [Checkmk](/checkmk/)
+* [Checkmk](checkmk/index.md)
     * Mange full Host Lifecycle (creation, labels, folders, deletion, rules)
     * Tested with more than 140,000 Hosts
     * Sync and Update all possible Host Attributes/ Tags/ Labels
@@ -51,7 +51,7 @@ Main goal is the complete organization of the hosts based on CMDB systems and a 
     * Create and Manage Password Store (Encryption) entries
     * Automatic Detection of the Checkmk Version to use the correct API Payloads
 
-* [Ansible](/ansible/)
+* [Ansible](ansible/index.md)
     * Rule Based Inventory Source
     * All Functions for Checkmk Agent Management (Installation, TLS Registration, Bakery Registration)
         *  Linux and Windows
@@ -59,7 +59,7 @@ Main goal is the complete organization of the hosts based on CMDB systems and a 
         * Automatic Download of Checkmk Versions if wanted.
 
 
-* [Netbox](/netbox/)
+* [Netbox](netbox/index.md)
     * Rulebased Export and Import Devices and VMs to/from Netbox
     * Automatic creation of Categories if wanted.
     *  Export of Sites
@@ -70,33 +70,33 @@ Main goal is the complete organization of the hosts based on CMDB systems and a 
 * PRTG
 	* Import Objects from PRTG to sync them to Checkmk
 
-* [I-DOIT](/i-doit/)
+* [I-DOIT](i-doit/index.md)
     * Rulebased Export and Import Devices to/from I-Doit
     * Template Based
 
 * BMC Remedy
     * Limited import from BMC Remedy
 
-* [Cisco DNA](/ciscodna/)
+* [Cisco DNA](ciscodna/index.md)
     * Import devices and their Interface Information
 
-* [CSV](/csv/)
+* [CSV](csv/index.md)
     * Manage Hosts based on CSV File (Import Source)
     * Add Addional Informationen from CSV Files to your Hosts (eg. Overwrite IP Addresses)
 
 * LDAP
     * Import Objects from LDAP Directories
 
-* [RestAPI](/rest_json)
+* [RestAPI](rest_json/index.md)
     * Import of Custom Rest APIs
 
-* [JSON](/rest_json/)
+* [JSON](rest_json/index.md)
     * Import of Json File Structures
 
 * Jira CMDB on Prem and Cloud:
     * Import Objects
     
-*  [JDisc](/jdisc/)
+*  [JDisc](jdisc/index.md)
 	* Import Objects
 
 * Vmware
