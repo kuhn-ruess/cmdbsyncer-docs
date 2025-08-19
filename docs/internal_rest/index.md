@@ -1,6 +1,7 @@
 The cmdbsyncer provides REST API endpoints for various functions. You can explore them using the integrated Swagger GUI when accessing /api/v1.
 
-For authentication, create an account of the type "Internal Rest API". Specify a Username and the password. This combination is sent as a header: `x-login-header: user:password`
+From Version 3.10 the authentication uses the user accounts you can set in the GUI.
+For auth, send `x-login-user:USERNAME:Password`
 
 ## Ansible Endpoints
 These endpoints can be used to access the Ansible Inventory of the cmdbsyncer from different servers. You find an example of how it can be used with `ansible-playbook` in the ansible Subfolder.

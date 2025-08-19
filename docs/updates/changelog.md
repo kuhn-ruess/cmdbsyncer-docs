@@ -10,9 +10,16 @@ After always, please run:
 This will automatically adapt config changes if needed, and add needed default values to the local_config.py if you don't have them. For example, the Cryptography key.
 
 
+## To Version 3.10
+The authentication for the REST API now works only with users, no longer with accounts  You need to adapt all your scripts that are working with the Syncer Rest API.
+This change is required because it's planned to implement a permission management for the API later.
+
+
 ## To Version 3.9
 If you had Checkmk Custom Attribute Rules, which created multiple outputs because you did a comma seperation, the seperation sign changed from comma to double (\|\|) pipes.
 Please adapt your rules after Update
+
+Also, all account passwords are now encrypted. If you run self_configure, everything will be migrated automatically. 
 
 ## To Version 3.8
 

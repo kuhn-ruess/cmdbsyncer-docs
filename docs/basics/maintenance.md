@@ -10,6 +10,8 @@ It can now be configured when you want them to be deleted by the Syncer. Deletin
 The recommended way is to use the [Cron Feature](cron.md) and set a Cronjob to do that.
 For that, create an [Account](accounts.md), set it to Mode "Maintenance" and use that as configuration. There you can set after how many Days you want to delete, and you can filter from which source only you would like to delete.
 
+There you can also set an account filter, or configure a threshold on which the syncer won't delete any objects from the db.
+
 ![](img/maintenance_account.png)
 
 
