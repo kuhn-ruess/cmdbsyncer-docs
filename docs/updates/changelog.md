@@ -9,6 +9,10 @@ After always, please run:
 ```
 This will automatically adapt config changes if needed, and add needed default values to the local_config.py if you don't have them. For example, the Cryptography key.
 
+## To Version 3.11
+IMPORTANT: Minmal required Python Version is now 3.10
+The Syncer uses now a new Plugin Structure. All plugins are migrated, and tested as good as possible.
+
 
 ## To Version 3.10
 The authentication for the REST API now works only with users, no longer with accounts  You need to adapt all your scripts that are working with the Syncer Rest API.
