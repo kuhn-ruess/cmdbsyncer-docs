@@ -129,6 +129,8 @@ markdown_extensions:
           format: !!python/name:pymdownx.superfences.fence_code_format
 copyright: Kuhn & Rueß GmbH <a href="https://kuhn-ruess.de/de/impressum/">Imprint</a>
 extra:
+  version:
+    provider: mike
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/kuhn-ruess/cmdbsyncer
