@@ -1,15 +1,16 @@
 site_name: CMDBsyncer Documentation
 nav:
   - Home: index.md
-  - How it Works: basics/how_it_works.md
-  - Setup:
-    - Get the Program: basics/setup_code.md
-    - Installation with Docker: basics/setup_docker.md
-    - mod_wsgi and Apache (eg. RH9): basics/install_wsgi.md
-    - UWSGI and Apache: basics/uwsgi_apache.md
-    - Update Program: basics/updates.md
+  - Installation:
+    - Download: installation/setup_code.md
+    - Installation with Docker: installation/setup_docker.md
+    - Installation with Apache: installation/install_wsgi.md
+    - Install Updates: installation/updates.md
     - Changelog/ Update Notes: updates/changelog.md
+    - Archiv:
+      - UWSGI and Apache: installation/uwsgi_apache.md
   - Basics:
+    - How it Works: basics/how_it_works.md
     - First Steps: basics/first_steps.md
     - Config: basics/lcl_config.md
     - Change GUI Colors: basics/change_colors.md
@@ -122,6 +123,7 @@ theme:
       primary: teal
       accent: lime
 markdown_extensions:
+  - admonition
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid

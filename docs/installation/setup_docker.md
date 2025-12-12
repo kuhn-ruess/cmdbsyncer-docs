@@ -3,13 +3,13 @@
 The Project is not in the Docker Library yet, but you can run it after Checkout the Code.
 
 The Docker Compose File there contains all the needed dependencies.
-The Dockerfile you found already in the Main Directory of the repo, I guess.
+The Dockerfile you found already in the Main Directory of the repo.
 
 And if you develop with the syncer, you may want to look into the ./helper command,
 which provides you an environment with live refresh after code changes.
 
 ## Docker behind proxy
-If you plan to use Docker behind a proxy, then you have to possibilities to get it running.
+If you plan to use Docker behind a proxy, then you have two possibilities to get it running.
 
 ### Modify docker-compose.local.yml
 Currently, we do not add proxy settings and provide following setup:
@@ -69,6 +69,7 @@ The Syncer Needs Cron Jobs. These need to be triggered using the docker exec com
 
 ### CSV Files
 If you want to import CSV Files into the Syncer, make sure to define a Volume where you can place it.
+Configure this Path then for the Fileadmin in order to access these files in the GUI.
 
 
 ### Resources

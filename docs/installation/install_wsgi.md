@@ -1,10 +1,9 @@
-# Installation with mod_wsgi
+# Installation with Apache and mod_wsgi
 
 The most convenient installation of the Syncer is using Docker. There, all Dependencies can simply be satisfied. The biggest problem right now is manually installing the Python Requirements, if the Server is not connected to the Internet, and there is no local Mirror for pip.
 Second one is installing the MongoDB Server. For that, an extra Repository needs to be added.
 
-This Guide is based on a Documentation I got from a Consumer. And the plan is to adapt it to make it prefect. I would appreciate your help here.
-
+This Documentation fits for RedHat 9. But it works simmular on Ubuntu and other Linuxes.
 
 
 ## Base Requirements for System
@@ -25,20 +24,17 @@ To Install that (see default doc) you need the following:
 - yum install python3.11-devel
 
 ## Checkout the Repo and create the Environment
-Best go to /var/www then [follow this description](setup_code.md)
-
+You need to Download the Sourcecode first. Just [follow this description](setup_code.md) and then comeback here.
 
 ## Configure Apache
-The Default Installation UWSGI is not working on Red Hat. But there is that even better Workaround. It works with the python3-11-mod_wsgi we installed earlier.
-
 Just create the following Config File in /etc/httpd/conf.d/ (May adapt the Vhost Settings if you have Checkmk Installed on the same server)
 
 ```
 <VirtualHost *>
 	ServerName example.com
-	WSGIDaemonProcess cmdbsyncer python-home=/var/www/cmdbsyncer/ENV user=apache group=apache threads=5
+	WSGIDaemonProcess cmdbsyncer python-home=/opt/cmdbsyncer/ENV user=apache group=apache threads=5
 
-	WSGIScriptAlias / /var/www/cmdbsyncer/app.wsgi
+	WSGIScriptAlias / /opt/cmdbsyncer/app.wsgi
 
 	<Directory /var/www/cmdbsyncer>
 		WSGIProcessGroup cmdbsyncer
@@ -73,7 +69,3 @@ _yum install -y mongodb-org_
 
 # Final
 If you get Access Denied messages in the Apache Log, you need to configure or disable SELINUX. If you configure it, I would be happy to get the info how to do that for this documentation.
-
-
-
-

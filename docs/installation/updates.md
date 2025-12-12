@@ -3,7 +3,7 @@
 As of now, if you want to Update the CMDB Syncer, just pull it from git agin
 
 ```
-cd /var/www/cmdbsyncer
+cd /opt/cmdbsyncer
 git pull
 ```
 
@@ -31,7 +31,7 @@ It depends on which files your Distribution will log.
 It's likely, then that a Module has changed. You can update the Modules easily:
 
 ```
-cd /var/www/cmdbsyncer
+cd /opt/cmdbsyncer
 source ENV/bin/activate
 pip install -r requirements.txt
 ```

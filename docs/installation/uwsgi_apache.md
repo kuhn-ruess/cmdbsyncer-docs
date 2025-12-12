@@ -1,8 +1,8 @@
 # How to Setup for Production using UWSGI and Apache
 
-
-Take Care: This Documentation descripes the use with NGINX and UWSGI and I use this Setup normally for my APIs with a lot of traffic. But for the Syncer that could be a bit to much overhead. You can refer to [here](install_wsgi.md) to see a way, where you can use apache with mod-wsgi which is a simpler way, since you don't need to run the extra uwsgi deamon. That means you can scipp the uwsgi part here then. 
-
+!!! warning
+    This Documentation is not working with RedHat 9. Also a bit outdated because you can use [apache mod_wsgi](install_wsgi.md) without the need to setup UWSGI.
+    But if you don't use apache, and want to go with uWSGI here you go.
 
 ## Requirements
 - Python Version >= 3.11 must be installed

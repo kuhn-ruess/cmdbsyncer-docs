@@ -1,9 +1,8 @@
 
-# Welcome to the CMDBsyncer
+# Welcome to the CMDBsyncer 3.11
 
 Rule based and modular system to syncronize hosts between Checkmk, Netbox, I-Doit and all others systems with interfaces and APIs.
 Main goal is the complete organization of the hosts based on CMDB systems and a full automation of Checkmk.
-
 
 ![Rules](img/index_rules.png)
 ![Debug Options](img/index_rules_debug.png)

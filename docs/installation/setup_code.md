@@ -20,7 +20,7 @@ You need to check out the Code directly from GitHub.  [Go to the Repo](https://g
 
 Example:
 ```
-cd /var/www
+cd /opt/
 git clone https://github.com/kuhn-ruess/cmdbsyncer
 cd cmdbsyncer
 ```
