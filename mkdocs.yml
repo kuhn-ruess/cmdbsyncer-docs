@@ -142,4 +142,3 @@ extra:
 plugins:
 - search
 - mike
-  #- mkdocstrings
