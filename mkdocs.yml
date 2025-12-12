@@ -74,7 +74,7 @@ nav:
     - Jira Cloud: jira/index.md
   - YML:
     - Basics: yml/index.md
-    - Account: yml/account.md 
+    - Account: yml/account.md
   - Netbox:
     - General: netbox/index.md
     - Account: netbox/account.md
@@ -110,18 +110,18 @@ theme:
     #- content.code.copy
   language: en
   palette:
-    - scheme: default
-      toggle:
-        icon: material/toggle-switch-off-outline 
-        name: Switch to dark mode
-      primary: teal
-      accent: purple 
-    - scheme: slate 
+    - scheme: slate
       toggle:
         icon: material/toggle-switch
-        name: Switch to light mode    
+        name: Switch to light mode
       primary: teal
       accent: lime
+    - scheme: default
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+      primary: teal
+      accent: purple
 markdown_extensions:
   - admonition
   - pymdownx.superfences:
@@ -136,7 +136,7 @@ extra:
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/kuhn-ruess/cmdbsyncer
-    - icon: fontawesome/solid/house 
+    - icon: fontawesome/solid/house
       link: https://kuhn-ruess.de
 
 plugins:
