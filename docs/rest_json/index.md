@@ -4,7 +4,7 @@ The Syncer allows you to directly import Json Files or Simple Rest APIs, which r
 
 
 ## Rest API
-Everything is configured using an [Account](/basics/account/). The Following Options are available:
+Everything is configured using an [Account](../basics/accounts.md). The Following Options are available:
 
 | Option             | Description                                                     |
 | ------------------ | --------------------------------------------------------------- |

@@ -50,7 +50,7 @@ Just create the following Config File in /etc/httpd/conf.d/ (May adapt the Vhost
 
 Best would be to enable a repo with MongoDB in the Subscription Manger.
 But you can also work with the officiall open-source one, described here: 
- [https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-red-hat/](Mongo on Readhat)
+ [Mongo on Readhat](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-red-hat/)
     
 The File for /etc/ym.repos.d/mongodb.repo:
 

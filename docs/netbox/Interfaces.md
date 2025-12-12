@@ -47,7 +47,7 @@ In the Example, the fields `mainipaddress` and `mainip4transport` to create a St
 
 
 ## Use List Variables
-This Rule can also use [List Mode](../bascis/list_mode.md). Here are some Examples for fields. The Information of course need to Exist on the Syncer Objects.
+This Rule can also use [List Mode](../basics/list_mode.md). Here are some Examples for fields. The Information of course need to Exist on the Syncer Objects.
 
 ### For Name:
 

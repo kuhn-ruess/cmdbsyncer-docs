@@ -49,6 +49,6 @@ With the Command Line Interface of the Syncer, you can debug all Outcomes before
 
 The System is Module-based. It supports [Plugins](../advanced/own_plugins.md) to import and export, which can use a simple API, but also ships well tested internal plugins who cover a lot.
 
-The Application is written in Python, the Local Database is a MongoDB. [Docker](setup_docker.md) is also fully supported to run it.
+The Application is written in Python, the Local Database is a MongoDB. [Docker](../installation/setup_docker.md) is also fully supported to run it.
 
 The Admin Interface uses Flask-Admin. This simplifies a lot, but also limits some things in the frontend.

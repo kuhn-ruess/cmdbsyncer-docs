@@ -7,8 +7,8 @@ The needed GraphQL Queries are already hardcoded into the Syncer so no need to w
 
 
 ## How to Set it Up
-1. Create an [Account](/basics/accounts/) of type JDisc Devices
-3. Import the Data needed using a [Cron Job](/basics/cron/) or from the command line (./cmdbsyncer jdisc import_XXX ACCOUNTNAME)
+1. Create an [Account](../basics/accounts.md) of type JDisc Devices
+3. Import the Data needed using a [Cron Job](../basics/cron.md) or from the command line (./cmdbsyncer jdisc import_XXX ACCOUNTNAME)
 
 ## The Account Settings
 In the Account Settings, you just need to set up the URL and Credentials to JDisc. Depending on which command you run later, the objects are imported automatically into the right category.
@@ -21,4 +21,4 @@ That means they have the following Format:
 
 ![](./attachments/Pasted%20image%2020241011170657.png)
 
-In This Example for the Attribute Name, I change it from roles to role and for the value, I convert the list to use the first value if existing, if not, fall back to undefined. The [helper get_list()](/advanced/jinja_functions) is used.
+In This Example for the Attribute Name, I change it from roles to role and for the value, I convert the list to use the first value if existing, if not, fall back to undefined. The [helper get_list()](../advanced/jinja_functions.md) is used.

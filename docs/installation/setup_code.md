@@ -72,4 +72,4 @@ But then you should Setup UWSGI. There is an Example with [UWSGI and Apache](uws
 
 ## First Steps
 
-Make the [First Steps](first_steps.md)
+Make the [First Steps](../basics/first_steps.md)

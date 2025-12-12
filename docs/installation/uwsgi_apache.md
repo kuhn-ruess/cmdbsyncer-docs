@@ -13,7 +13,7 @@
 ## First Steps:
 [Checkout](setup_code.md) the Code into /var/www/cmdbsyncer.
 We will define a Path in Apache which will be proxy to the uWSGI daemon. For this Example: /cmdbsyncer
-Update/ Create a local_config and adjust the BASE_PREFIX to that path. For example, https://checkmk-server.de/cmdbsyncer would be 'BASE_PREFIX': '/cmdbsyncer/'. You find [here](lcl_config.md) how to do that.
+Update/ Create a local_config and adjust the BASE_PREFIX to that path. For example, https://checkmk-server.de/cmdbsyncer would be 'BASE_PREFIX': '/cmdbsyncer/'. You find [here](../basics/lcl_config.md) how to do that.
 
 ## Setup uWSGI
 In ./deploy_configs you will find the example_apache/ Folder. Use the uwsgi-config.ini and copy it to /etc/uwsgi.d/ or depending on your Linux Distribution, to the Folder for the config files. You should rename the file like cmdbsyncer.ini
