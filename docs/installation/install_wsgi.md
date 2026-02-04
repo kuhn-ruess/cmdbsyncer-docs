@@ -36,15 +36,18 @@ Just create the following Config File in /etc/httpd/conf.d/ (May adapt the Vhost
 
 	WSGIScriptAlias / /opt/cmdbsyncer/app.wsgi
 
-	<Directory /var/www/cmdbsyncer>
+	<Directory /opt/cmdbsyncer>
 		WSGIProcessGroup cmdbsyncer
-        WSGIApplicationGroup %{GLOBAL}
-        Order deny,allow
-        Allow from all
+    	WSGIApplicationGroup %{GLOBAL}
+    	Order deny,allow
+    	Allow from all
 	</Directory>
 </VirtualHost>
 ```
 
+!!! Warning 
+    Since Apache 2.4, the format of Order deny, allow has changed. Use Require all granted
+	See: [Access Control - Apache HTTP Server Version 2.4](https://httpd.apache.org/docs/current/howto/access.html)
 
 ## Mongodb
 

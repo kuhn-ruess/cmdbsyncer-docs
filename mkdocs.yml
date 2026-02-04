@@ -31,6 +31,7 @@ nav:
     - Rewrite Attributes: basics/rewrite_attributes.md
     - Rewrite Hostnames: basics/rewrite_hostnames.md
     - Filter: basics/filter.md
+    - Autocreate Rules: basics/auto_rules.md
     - Debug Rules: basics/debug_rules.md
 
   - Ansible:

@@ -1,4 +1,4 @@
-# Changelog
+# Changelog for Breaking Changes
 
 ## General when Update
 Please always check before you update here, if there are changes you need to consider.
@@ -8,6 +8,15 @@ After always, please run:
 ./cmdbsyncer sys self_configure
 ```
 This will automatically adapt config changes if needed, and add needed default values to the local_config.py if you don't have them. For example, the Cryptography key.
+
+## MongoDB (General)
+The MongoDB, used by Syncer, also need updates from time to time. If you're using the Docker Compose provided by us and don't skip Syncer versions, you are set.
+If you're managing your own installation, or your own docker config, it's on you do to the update from time to time. As of now, the Syncer has no requirement for a specific MongoDB Version, but updates will fix bugs and improve the Performance.
+
+
+## To Version 3.12
+- CSV Import now always need to be setup using an Account. It now also uses the common CLI Parameters and not --account any more. You don't need to worry if you're using the Syncers Cron Feature
+- Inventorize HW/SW Inventory: The Import is rewritten because of Checkmk Problems in bigger Environments. It can take longer but will safely find all HW/SW Inventory Data. It also uses Multiprocessing to fire multiple requests at the same time to Checkmk.  Furthermore, The Wildcard option to specify the Attributes is no longer required or supported., it's now always wildcard to simplify the code.
 
 ## To Version 3.11
 IMPORTANT: Minmal required Python Version is now 3.10
