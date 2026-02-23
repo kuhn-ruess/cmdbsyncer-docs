@@ -11,7 +11,7 @@
 - uWSGI and the python3 Plugin of uWSGI must be installed in version at least 3.9
 
 ## First Steps:
-[Checkout](setup_code.md) the Code into /var/www/cmdbsyncer.
+[Checkout](setup_code.md) the Code into /opt/cmdbsyncer.
 We will define a Path in Apache which will be proxy to the uWSGI daemon. For this Example: /cmdbsyncer
 Update/ Create a local_config and adjust the BASE_PREFIX to that path. For example, https://checkmk-server.de/cmdbsyncer would be 'BASE_PREFIX': '/cmdbsyncer/'. You find [here](../basics/lcl_config.md) how to do that.
 

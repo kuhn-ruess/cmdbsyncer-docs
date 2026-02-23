@@ -57,18 +57,21 @@ If you want to add the proxy for the user, which is used for Docker, then you ca
 
 ## Things to Consider
 
+### Config
+You need to have a local_config.py. This file is created by __./cmdbsyncer sys self_configure__ (which runs with every update). Make sure this file is not inside you container. It contains keys and if you loose it, you loose all stored passwords.
+
 ### MongoDB
-The Project always needs his MongoDB, like the docker-compose.yml also defines. 
+The project always needs his MongoDB, like the docker-compose.yml also defines. 
 
 
 ### Access to the container
-To work with the Project, not all can be done in the Web interface. For example, for Debug and Testing, the Access to the Shell is needed. 
+Most things can be done in the web interface. But for debugging the CLI is helpfull.
 
 ### Cron Jobs
-The Syncer Needs Cron Jobs. These need to be triggered using the docker exec command
+The Syncer Needs Cron Jobs. These need to be triggered using the docker exec command. If you're using the provided Dockerfile, this will happen automaticly.
 
-### CSV Files
-If you want to import CSV Files into the Syncer, make sure to define a Volume where you can place it.
+### External Files
+If you want to import external Files into the Syncer, make sure to define a volume where you can place it.
 Configure this Path then for the Fileadmin in order to access these files in the GUI.
 
 

@@ -5,6 +5,7 @@ nav:
     - Download: installation/setup_code.md
     - Installation with Docker: installation/setup_docker.md
     - Installation with Apache: installation/install_wsgi.md
+    - Auth and SSO: installation/authentication.md
     - Install Updates: installation/updates.md
     - Changelog/ Update Notes: updates/changelog.md
     - Archiv:

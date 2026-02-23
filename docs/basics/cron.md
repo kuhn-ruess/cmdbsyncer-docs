@@ -30,7 +30,7 @@ The Command you need to start is:
 And here is the Example including loading the local environment:
 
 ``` bash
-*/5 * * * * cd /var/www/cmdbsyncer && source ./ENV/bin/activate && ./cmdbsyncer cron run_jobs
+*/5 * * * * cd /opt/cmdbsyncer && source ./ENV/bin/activate && ./cmdbsyncer cron run_jobs
 ```
 
 Or all in Docker:
