@@ -66,3 +66,14 @@ You can run Ansible now with the wanted Play books. I would recommend to always 
 
 `ansible-playbook -i INVENTORY_SOURCE --limit somehost cmk_agent_mngmt.yml`
 
+## Problems with incompatible Python/ Ansible Versions.
+If you are using a current version of Syncer, it will come with the current version of Ansible. But then in some cases, like currently with RedHat 8, certain functions like dnf won't work, and you get an exception.
+
+```
+An exception occurred during task execution. To see the full traceback, use -vvv. The error was: SyntaxError: future feature annotations is not defined
+fatal: [cmkserver]: FAILED! => {"changed": false, "module_stderr": "Shared connection to cmkserver closed.\r\n", "module_stdout": "Traceback (most recent call last):\r\n  File \"<stdin>\", line 12, in <module>\r\n  File \"<frozen importlib._bootstrap>\", line 971, in _find_and_load\r\n  File \"<frozen importlib._bootstrap>\", line 951, in _find_and_load_unlocked\r\n  File \"<frozen importlib._bootstrap>\", line 894, in _find_spec\r\n  File \"<frozen importlib._bootstrap_external>\", line 1157, in find_spec\r\n  File \"<frozen importlib._bootstrap_external>\", line 1131, in _get_spec\r\n  File \"<frozen importlib._bootstrap_external>\", line 1112, in _legacy_get_spec\r\n  File \"<frozen importlib._bootstrap>\", line 441, in spec_from_loader\r\n  File \"<frozen importlib._bootstrap_external>\", line 544, in spec_from_file_location\r\n  File \"/tmp/ansible_ansible.legacy.dnf_payload_tu5sm9su/ansible_ansible.legacy.dnf_payload.zip/ansible/module_utils/basic.py\", line 5\r\nSyntaxError: future feature annotations is not defined\r\n", "msg": "MODULE FAILURE\nSee stdout/stderr for the exact error", "rc": 1}
+```
+
+The simple workaround is to **not use** the Ansible shipped with Syncer. So install Ansible using your package manager, and change the command line to use /usr/bin/ansible-playbook. So if your control server has the same operating system version, all will fit.
+
+

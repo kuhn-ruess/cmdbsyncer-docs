@@ -15,7 +15,7 @@ If you're managing your own installation, or your own docker config, it's on you
 
 
 ## To Version 3.12
-- CSV Import now always need to be setup using an Account. It now also uses the common CLI Parameters and not --account any more. You don't need to worry if you're using the Syncers Cron Feature
+- CSV Import now always need to be setup using an Account. It now also uses the common CLI Parameters and not --account any more. You don't need to worry if you're using the Syncers Cron Feature. Otherwise use --legacy as parameter. 
 - Inventorize HW/SW Inventory: The Import is rewritten because of Checkmk Problems in bigger Environments. It can take longer but will safely find all HW/SW Inventory Data. It also uses Multiprocessing to fire multiple requests at the same time to Checkmk.  Furthermore, The Wildcard option to specify the Attributes is no longer required or supported., it's now always wildcard to simplify the code.
 
 ## To Version 3.11
