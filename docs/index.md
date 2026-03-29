@@ -11,6 +11,7 @@ Main goal is the complete organization of the hosts based on CMDB systems and a 
 ## Main Functions
 * Web Interface with Login, 2FA and User management
 * All configuration besides Installation in Web Interface
+* Built-in CMDB mode for managing objects, hosts and templates directly in CMDBsyncer
 * Simple Plugin API to integrate own Data Sources
 * Various Debug Options with the ./cmdbsyncer command
 * Rules to control the Synchronization:
@@ -27,6 +28,11 @@ Main goal is the complete organization of the hosts based on CMDB systems and a 
 * Ansible Support as Inventory Source
 
 ## Modules
+
+* [CMDB](cmdb/index.md)
+    * Use CMDBsyncer as a lightweight CMDB
+    * Create and maintain objects, hosts and templates in the UI
+    * Auto-assign templates with `cmdb_match`
 
 * [Checkmk](checkmk/index.md)
     * Mange full Host Lifecycle (creation, labels, folders, deletion, rules)

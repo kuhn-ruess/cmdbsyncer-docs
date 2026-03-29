@@ -39,6 +39,8 @@ nav:
     - Ansible Basics: ansible/index.md
     - Manage Checkmk Agents: ansible/cmk_agents.md
     - Manage Checkmk Sites: ansible/cmk_sites.md
+  - CMDB:
+    - Use as CMDB: cmdb/index.md
   - CSV:
     - CSV Basics: csv/index.md
   - Checkmk:

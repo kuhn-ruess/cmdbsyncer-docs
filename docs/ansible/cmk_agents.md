@@ -8,6 +8,7 @@ Information are inventorized for example from Checkmk self, like on which site t
 ## Functions
 
 - Support for Linux and Windows
+- Create Host
 - Install Checkmk Agents
 - Register Checkmk Bakery
 - Register TLS for Checkmk
@@ -39,6 +40,8 @@ The following Variables existing in the Ansible Role. You learn later how to set
 | cmk_main_server | Master Sites Address (without https:// or other paths) |
 | cmk_server | Local Site specifc Address (without https:// or other paths) |
 | cmk_site | Use best from cmk inventory (Rewrite: cmk__label_site to cmk_site) |
+| cmk_create_host | Create Host in Checkmk |
+| cmk_create_folder | Folder for the inital creation of the host by Ansible |
 | cmk_install_agent | True if Agent has to be installed |
 | cmk_register_tls | True if TLS Registration has to be done |
 | cmk_register_bakery | True if Bakery Registration as to be done |
@@ -52,6 +55,7 @@ The following Variables existing in the Ansible Role. You learn later how to set
 | cmk_agent_port | For Firewall: Changed Agent port from 6556 to custom |
 | cmk_server_ip | Use a IP instead of a Hostname when DNS is not available. Also need for Firewall config|
 | configure_firewall | Enable Firewall Configuration for RedHat |
+| validate_certs | Validate Certificates for HTTP Calls | 
 
 
 Some of them are already part of the Inventory after you invenorized Checkmk others a Hardcoded like Credentials. And finally, there are the condition based, like cmk_register_bakery which only should be true, if the registration is missing. 

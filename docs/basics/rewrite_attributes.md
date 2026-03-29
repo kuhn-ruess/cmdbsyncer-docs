@@ -20,7 +20,7 @@ So for example if you import an attribute like the ipaddress from a CSV, there w
 | `Convert List of Strings`       | See Description below                                                                      |
 
 #### Convert List of String
-This function can create multiple new Attributes, out of a list either in a other Attribute or build using Jinja.
+This function can create multiple new attributes out of a list either in another attribute or built using Jinja.
 
 ![](attachments/Pasted%20image%2020241126150648.png)
 
@@ -54,7 +54,7 @@ Now you will get tow Attributes:
 | `With Jinja Template` | User Jinja with all the hosts Attributes to rewrite the value       |
 
 #### Split
-Add a pattern to the field. This Pattern contains a seperator where you want to split the string,
+Add a pattern to the field. This pattern contains a separator where you want to split the string,
 and then the index for the result.
 
 Example:
@@ -63,11 +63,17 @@ Example:
 ```
 
 Split example 127.0.0.1/24:
-The String would split at /, result would ['127.0.0.1', '24']
+The string would split at /, result would ['127.0.0.1', '24']
 From there it would pick the first (0) index, new value would be: 127.0.0.1
 
 ## Create a New Attribute
-If you specify a not existing attribute as "old_attribute_name", it will be created as a new Attribute. Of course, all Overwrite Options can be used for the value, so you could create a new
-attribute which contains the value of multiple other attributes.
+If you specify a nonexistent attribute as "old_attribute_name", it will be created as a new attribute. Of course, all overwrite options can be used for the value, so you could create a new
+attribute that contains the value of multiple other attributes.
 
+## Special Variables
+If you're using conditions with regex, or startswith, etc., you normally don't know which was actually the matching attribute. 
 
+Two special Jinja placeholders can help you.
+
+- FIRST_MATCHING_TAG: Tag Name of the Attribute that made the condition match
+- FIRST_MATCHING_VALUE: The actual Value of the Host's Attribute that made the condition match
