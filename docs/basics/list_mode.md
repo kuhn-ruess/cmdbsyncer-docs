@@ -12,7 +12,7 @@ In the 'Param' Field, you then use `LIST_VAR` to access the loop Variable.
 ## Example
 Best to Understand is using an Example:
 
-Your host has this Varialbe:
+Your host has this variable:
 
 ``` python
   Variablename: [{'name': 'Harry'}, {'name': 'Hirsch'}]
@@ -25,7 +25,7 @@ If you then set
 as Param, 
 
 The rule will now create two more Outcomes with 'Harry' and 'Hirsch' for the used field.
-All other Outcome Params will be duplicated to to 'Harry' and 'Hirsch'.
+All other Outcome Params will be duplicated to 'Harry' and 'Hirsch'.
 
 If you have more List Variables in one rule, you need to make sure that the Order of the given List Variables are always the same. Ideally, it's always the same list, but just another Dict key from it. Otherwise Data can be mixed up.
 

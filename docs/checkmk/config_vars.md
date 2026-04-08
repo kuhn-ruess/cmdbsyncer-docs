@@ -17,3 +17,4 @@ List of config Variables which can be overwritten in [local_config.py](../basics
 | CMK_DETAILED_LOG                      | Log for every Host the Attribute Changes done                                     |
 | CMK_JINJA_USE_REPLACERS               | Default: False, Configured Replacers are used for TAG Cleanup Jinja Functions     |
 | CMK_JINJA_USE_REPLACERS_FOR_HOSTNAMES | Default: False, Configured Replacers are used for Hostname Cleanup Jinja Function |
+| CMK_WRITE_STATUS_BACK                 | Default: False, If set, on all exports the syncer will write the sync status back to the host labels in Checkmk (since 3.12.3) |

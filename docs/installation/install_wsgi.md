@@ -3,7 +3,7 @@
 The most convenient installation of the Syncer is using Docker. There, all Dependencies can simply be satisfied. The biggest problem right now is manually installing the Python Requirements, if the Server is not connected to the Internet, and there is no local Mirror for pip.
 Second one is installing the MongoDB Server. For that, an extra Repository needs to be added.
 
-This Documentation fits for RedHat 9. But it works simmular on Ubuntu and other Linuxes.
+This documentation applies to RedHat 9, but works similarly on Ubuntu and other Linux distributions.
 
 
 ## Base Requirements for System
@@ -16,7 +16,7 @@ For the Syncer to Run, you need these Dependencies:
 Also needed is MongoDB, but this is covered later
 
 ## Build Requirements to create the Python Environment
-The Syncer needs a Python Virutal Environment for his Modules.
+The Syncer needs a Python Virtual Environment for its modules.
 To Install that (see default doc) you need the following:
 
 - yum groupinstall "Development Tools"
@@ -52,10 +52,10 @@ Just create the following Config File in /etc/httpd/conf.d/ (May adapt the Vhost
 ## Mongodb
 
 Best would be to enable a repo with MongoDB in the Subscription Manger.
-But you can also work with the officiall open-source one, described here: 
- [Mongo on Readhat](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-red-hat/)
-    
-The File for /etc/ym.repos.d/mongodb.repo:
+But you can also work with the official open-source one, described here:
+[Mongo on RedHat](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-red-hat/)
+
+The file for `/etc/yum.repos.d/mongodb.repo`:
 
 ```
 [mongodb-org-7.0]

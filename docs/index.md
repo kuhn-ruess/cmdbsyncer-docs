@@ -1,7 +1,7 @@
 
-# Welcome to the CMDBsyncer 3.11
+# Welcome to the CMDBsyncer 3.12
 
-Rule based and modular system to syncronize hosts between Checkmk, Netbox, I-Doit and all others systems with interfaces and APIs.
+Rule-based and modular system to synchronize hosts between Checkmk, Netbox, I-Doit and all other systems with interfaces and APIs.
 Main goal is the complete organization of the hosts based on CMDB systems and a full automation of Checkmk.
 
 ![Rules](img/index_rules.png)
@@ -17,7 +17,7 @@ Main goal is the complete organization of the hosts based on CMDB systems and a 
 * Rules to control the Synchronization:
 	 * Based on Host Attributes
 	 * Attribute Rewrites
-	 * Filters fur Hosts and Attributes
+	 * Filters for Hosts and Attributes
   * Action Rules for Actions in Ansible, Checkmk, Netbox etc.
 * Web Based management for Account Credentials.
 * Encryption of Secrets
@@ -35,7 +35,7 @@ Main goal is the complete organization of the hosts based on CMDB systems and a 
     * Auto-assign templates with `cmdb_match`
 
 * [Checkmk](checkmk/index.md)
-    * Mange full Host Lifecycle (creation, labels, folders, deletion, rules)
+    * Manage full Host Lifecycle (creation, labels, folders, deletion, rules)
     * Tested with more than 140,000 Hosts
     * Sync and Update all possible Host Attributes/ Tags/ Labels
     * Full Support of API Bulk Operations
@@ -45,9 +45,9 @@ Main goal is the complete organization of the hosts based on CMDB systems and a 
     * Create Host Tags and Host Tag Groups
     * Create BI Aggregations
     * Create all types of Setup Rule
-    * Integrated options to prevent to many Updates in Checkmk
-    * Full Multiprocessing support for Calculations
-    * Command to Active Configuration
+    * Integrated options to prevent too many updates in Checkmk
+    * Full multiprocessing support for calculations
+    * Command to activate configuration
     * Command to Bake and Sign Agents
     * Management of Checkmk (Fallback) users (Create/ Delete/ Reset Password/ Disable Login)
     * Inventory for Host Attributes (need e.g. for Ansible, like on which site is server on)
@@ -87,7 +87,7 @@ Main goal is the complete organization of the hosts based on CMDB systems and a 
 
 * [CSV](csv/index.md)
     * Manage Hosts based on CSV File (Import Source)
-    * Add Addional Informationen from CSV Files to your Hosts (eg. Overwrite IP Addresses)
+    * Add additional information from CSV files to your hosts (e.g. overwrite IP addresses)
 
 * LDAP
     * Import Objects from LDAP Directories

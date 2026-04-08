@@ -1,9 +1,9 @@
 # Ansible Integration
 The CMDB Syncer contains Ansible Endpoints and a set of Ansible Playbooks.
-As of now, you can basically controll all of your own playbooks with rule based variables from the syncer, or use the providedd ones for Update and Register of Checkmk Agents (Linux/ Windows) or the Managementt and Installation of Checkmk Sites on your Servers.
+As of now, you can basically control all of your own playbooks with rule-based variables from the syncer, or use the provided ones for update and registration of Checkmk Agents (Linux/Windows) or the management and installation of Checkmk Sites on your servers.
 
 ## Config Tricks
-If you want to refer to Passwords in your Syncer Configuration, you can use an Integrated Marco called ACCOUNT who connects you to every Field which you can set in the Account config.  The Syntax is MACRONAME:ACCOUNTNAME:FIELDNAME.
+If you want to refer to passwords in your Syncer configuration, you can use an integrated macro called ACCOUNT which connects to every field you can set in the account config. The syntax is `MACRONAME:ACCOUNTNAME:FIELDNAME`.
 
 Therefore , to get the Password of account cmk, it would look like:
 ```
@@ -33,7 +33,7 @@ Also you find two playbooks and two roles:
 
 | File | Description |
 |:----|:-----------|
-| cmk_agent_mngmt.yml| The complete Managment of the Agent Installations of Checkmk | 
+| cmk_agent_mngmt.yml| The complete Management of the Agent Installations of Checkmk | 
 | cmk_server_mngmnt.yml| The Update and Installation of Checkmk Sites and Versions. |
 
 From here you can copy and adapt these scripts to your need (when so, prefix with local_) or just use the provided ones.
@@ -41,7 +41,7 @@ From here you can copy and adapt these scripts to your need (when so, prefix wit
 ## Use the Ansible Playbooks directly inside Syncer
 If you not have an Ansible installation or the Ansible Knowledge, you can just run the included stuff from inside the Syncers Folder. Just make sure to install the additional requirements at the first time: pip install -r ./ansible/requirements.txt
 
-After that, the Workfloww is: 
+After that, the workflow is:
 
 - Change into the CMDB Syncer Directory
 - Load his environment (source ENV/bin/activate)
@@ -49,7 +49,7 @@ After that, the Workfloww is:
 -  You are Ready
 
 ## Remote Installation
-If you want to use the Syncers script, but from adifferentt server and to connectt via Rest API,
+If you want to use the Syncer's script, but from a different server and to connect via REST API,
 these are the Steps:
 
 - [Checkout the Repo](../installation/setup_code.md)

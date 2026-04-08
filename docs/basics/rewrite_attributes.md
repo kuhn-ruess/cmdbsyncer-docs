@@ -1,6 +1,6 @@
 # Rewrite Attributes
 
-Different targets have different needs in how the name of an attribute have to be. Specially if you want to control Ansible our set custom Checkmk Attributes.
+Different targets have different requirements for attribute names. Especially if you want to control Ansible or set custom Checkmk attributes.
 
 To cover that, you can rewrite Attributes for every Module. 
 
@@ -30,7 +30,7 @@ If the Content is already a list like:
 ``` python
 ['one_service', 'another_service']
 ```
-you are good to go. If not, use Jinja to archive that outcome.
+you are good to go. If not, use Jinja to achieve that outcome.
 
 An Example for a prefix would look like this:
 ``` python
@@ -41,8 +41,8 @@ Please note, that Jinja is used, to build a String, looking like a list again. T
 Now just set for the Value for example the Operation "To String" and the "New Value"
 to yes.
 
-Now you will get tow Attributes:
-- one_serive: yes
+Now you will get two attributes:
+- one_service: yes
 - another_service: yes
 
 ### For Attribute Values

@@ -21,6 +21,6 @@ You can access them with _./cmdbsyncer checkmk_
 | import_v1              | Import Hosts from Checkmk 1.x                                                                                     |
 | import_v2              | Import Hosts from Checkmk 2.x                                                                                     |
 | show_hosts             | Print all Hosts which would be exported to Checkmk                                                                |
-| show_labels            | List all Labels which later will exist in Checmk                                                                  |
+| show_labels            | List all Labels which later will exist in Checkmk                                                                 |
 | show_missing_hosts     | Show Hosts which are in Checkmk, but not in Syncer                                                                |
 

@@ -3,7 +3,7 @@
 ## General when Update
 Please always check before you update here, if there are changes you need to consider.
 
-After always, please run:
+After every update, please run:
 ```
 ./cmdbsyncer sys self_configure
 ```
@@ -15,8 +15,43 @@ If you're managing your own installation, or your own docker config, it's on you
 
 
 ## To Version 3.12
-- CSV Import now always need to be setup using an Account. It now also uses the common CLI Parameters and not --account any more. You don't need to worry if you're using the Syncers Cron Feature. Otherwise use --legacy as parameter. 
-- Inventorize HW/SW Inventory: The Import is rewritten because of Checkmk Problems in bigger Environments. It can take longer but will safely find all HW/SW Inventory Data. It also uses Multiprocessing to fire multiple requests at the same time to Checkmk.  Furthermore, The Wildcard option to specify the Attributes is no longer required or supported., it's now always wildcard to simplify the code.
+
+### Breaking Changes
+
+- **CSV Import** now always requires an account to be configured. It uses the common CLI parameters instead of `--account`. If you use the Syncer's cron feature, no changes are needed. Otherwise, use `--legacy` as a parameter to keep the old behavior.
+- **Inventorize HW/SW Inventory**: The import is rewritten due to Checkmk problems in larger environments. It may take longer but will safely retrieve all HW/SW inventory data using multiprocessing. The wildcard option to specify attributes is no longer supported — it is now always wildcard.
+- **Ansible Inventory**: No longer bypasses objects without Checkmk agent problems by default. Create filters if you need that behavior.
+
+### New Features (3.12.0 — 3.12.4)
+
+- CMDB mode is enabled by default and further optimized, including automatic template matching via `cmdb_match`
+- SSO support for external authentication configured in webserver (e.g. Keycloak) — see [Authentication](../installation/authentication.md)
+- Rule-based automatic syncer rule creation
+- New HW/SW Inventory for Checkmk works safely in large (>10k host) environments
+- Import of configured Checkmk sites as objects
+- Host view now has a modal to display all log information for a host
+- Fileadmin shows the full path of files for easy copy into configurations
+- Folder Pool functions optimized, including a sync command
+- CSV export of all hosts via `/admin/host/csv`
+- Config setting `CMK_WRITE_STATUS_BACK`: if set, the syncer writes the sync status back to host labels on every export
+- Checkmk account filters can be negated with `!`
+- Jinja placeholder `{{ACCOUNT:name:attribute}}` is now globally available in every Jinja field
+- Custom Attributes rules now support Jinja in the outcome value
+- Ansible Playbooks can now create hosts
+- Ansible Site Updates can set downtimes
+- Ansible CLI: debug options for filters
+
+### Security Hardening (3.12.4)
+
+- Hardcoded secrets (`SECRET_KEY`, `CRYPTOGRAPHY_KEY`) removed from codebase — must be set via environment or local_config.py
+- Database and file path settings moved to environment variables
+- CSRF protection enabled for all web views
+- API authentication requires HTTPS for password-based auth
+- Dynamic Jinja rendering sandboxed against Server-Side Template Injection (SSTI)
+- XSS protection added for all dynamic HTML values in admin views
+- NoSQL injection prevention for MongoDB filter inputs
+- SQL injection prevention for MySQL/ODBC plugins (`custom_query` restricted to SELECT)
+- Unsafe statefile deserialization replaced with JSON
 
 ## To Version 3.11
 IMPORTANT: Minmal required Python Version is now 3.10

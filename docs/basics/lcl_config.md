@@ -2,7 +2,7 @@
 
 The application comes with some default Settings, for example to set the URL prefix or MongoDB Connection. The setting of this is important, if some links in the Backend won't work.
 All what's set, you will find in _application/config.py_, but you should not change something in this file.
-Instead, use the file _local_config.py_ in the root folder. It contains at least a dictionary called config. It it not yet exists, create it with __./cmdbsycer sys self_configure__  With the Keys of this Dictionary, you can overwrite every key from application/config.py, or you can add all the settings the Framework Flask has.
+Instead, use the file _local_config.py_ in the root folder. It contains at least a dictionary called config. If it does not yet exist, create it with __./cmdbsyncer sys self_configure__. With the keys of this dictionary, you can overwrite every key from application/config.py, or add any settings the Flask framework supports.
 
 ```
 """
@@ -21,7 +21,7 @@ config = {
 | -------------------------- | ---------------------------------------------------------------------------------------------- |
 | LOWERCASE_HOSTNAMES        | (bool) Force Hostnames to be Lowercase                                                         |
 | STYLE_NAV_BACKGROUND_COLOR | Background Color for the Navigation Bar                                                        |
-| SYLE_NAV_LINK_COLOR        | Color of the Navigation Links                                                                  |
+| STYLE_NAV_LINK_COLOR       | Color of the Navigation Links                                                                  |
 | HEADER_HINT                | Free String shown in the Navigation                                                            |
 | HTTP_REQUEST_TIMEOUT       | Timeout for HTTP Requests made by Plugins                                                      |
 | SECRET_KEY                 | Key used to encrypt the session cookie                                                         |
@@ -29,7 +29,7 @@ config = {
 | TIME_STAMP_FORMAT          | Python Formatstring for Date in log                                                            |
 | HOST_LOG_LENGTH            | Number of Events logged to Hosts objects                                                       |
 | CHECK_FOR_VALID_HOSTNAME   | Make sure that if object type is host, the hostname is valid (RFC)                             |
-| ADMIN_SESSION_HOURS        | Hours bevore logout from Admin Panel                                                           |
+| ADMIN_SESSION_HOURS        | Hours before logout from Admin Panel                                                           |
 | BASE_PREFIX                | Start part for the Url prefixed in links                                                       |
 | SESSION_COOKIE_NAME        | Name of the login Cookie in syncer. Important if running multiple instances                    |
 | LOG_LEVEL                  | Python Log Level, numeric or logging.DEBUG                                                     |
@@ -43,8 +43,8 @@ config = {
 | REPLACE_ATTRIBUTE_KEYS     | Also replace Keys of Attributes with given Replacers                                           |
 | LOWERCASE_ATTRIBUTE_KEYS   | Store Attributes only with Lowercase Keys                                                      |
 | LABELS_ITERATE_FIRST_LEVEL | IF Attribute contains value is a dict, the first keys of the dict will get seperate attributes |
-| LABELS_IMPORT_EMPTY        | `True of False`, Set False to no loger import Labels which have no Value                       |
-| REPLACERS                  | List of Tuples for Replacments                                                                 |
+| LABELS_IMPORT_EMPTY        | `True or False`, Set False to no longer import labels which have no value                      |
+| REPLACERS                  | List of Tuples for Replacements                                                                |
 | DISABLE_SSL_ERRORS         | Ignore SSL Errors for HTTP Requests                                                            |
 | HTTP_REQUEST_TIMEOUT       | Timeout for HTTP Requests                                                                      |
 | HTTP_REPEAT_TIMEOUT        | Timeout between the Retries                                                                    |

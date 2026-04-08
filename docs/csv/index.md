@@ -1,10 +1,10 @@
 # Functions with CSV Files
 
-CSV Options are CLI only and can be access with _./cmdbsyncer csv_
-They are used, to add Information to your Hosts, which you don't get from your CMDB,
-or even Mange hosts by a CSV File. 
+CSV options are available via the CLI with _./cmdbsyncer csv_.
+They are used to add information to your hosts which you don't get from your CMDB,
+or to manage hosts via a CSV file.
 
-Real live scenario here are that no all hosts have made it into the CMDB, and until then the Syncer gets them from a CSV. 
+A real-world scenario is that not all hosts have made it into the CMDB yet, and until then the Syncer gets them from a CSV.
 
 
 ## CSV Format
@@ -22,8 +22,8 @@ srvlx100;content1;content2
 This means we would have a host: srvlx100 with labels: label_name1:content1, labels_name2:content2
 
 ## Account Settings
-Instead of passing Command Line Options, we recommend creating a Account for each file.
-This not only simplifiess the command line, but also enables the Syncer to use the *is_master* feature. This feature for can let another Plugin overtake the import from the field. 
+Instead of passing command line options, we recommend creating an account for each file.
+This not only simplifies the command line, but also enables the Syncer to use the *is_master* feature, which lets another plugin overtake the import.
 
 You can use the following Settings as Custom Fields:
 
@@ -37,6 +37,16 @@ You can use the following Settings as Custom Fields:
 For Historic reasons, this Module was never meant to be configured via accounts.
 Therefore, as default the CLI accepts all the Options as Parameters. To use with an account, use `--account` to specify them.
 
+## Export all Hosts as CSV
+
+Since Version 3.12.3, the host list view provides a hidden CSV export endpoint. Just append `/csv` to the host admin URL:
+
+```
+/admin/host/csv
+```
+
+This exports all hosts with their current attributes as a CSV file.
+
 ## CSV files and Excel → Encoding
-If you have Coding Problems when importing, it's worth a try going to the Accounts settings and change the Encoding from `utf-8`to `utf-8-sig`
+If you have encoding problems when importing, it's worth trying to go to the account settings and change the encoding from `utf-8` to `utf-8-sig`.
 

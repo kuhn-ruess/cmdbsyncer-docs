@@ -1,11 +1,11 @@
 # Caching
-Specially if you have servals thousands of hosts, it makes a difference if a process per host takes 1 Second or just a few Milli Seconds. So to speed Syncer processes up, a Cache is used.
-The Cache will automatically delete for a Host if the Import updates his Labels.  If you, of course, Change Rules, you need to delete this cache. 
-For that, you will find a "Commit Changes" link in the Navigation top right. 
+Especially if you have several thousands of hosts, it makes a difference if a process per host takes 1 second or just a few milliseconds. So to speed Syncer processes up, a cache is used.
+The cache will automatically be cleared for a host if the import updates its labels. If you change rules, you need to delete this cache.
+For that, you will find a "Commit Changes" link in the navigation top right.
 
-From the Command line, you can call _./cmdbsyncer sys delete_cache_
+From the command line, you can call _./cmdbsyncer sys delete_cache_
 
-For Normal operations now, everything will be fine. They process like Export just gone Take a bit longer at the first time, where the Cache is built with the operation.  But in some cases, that is not enough. As an Example, if the API Endpoints for Ansible take too long, they will run in a Timeout.  In these cases, you find an option to manually build this cache on the Command line
+For normal operations, everything will be fine. Processes like Export will just take a bit longer the first time, while the cache is being built. But in some cases, that is not enough. For example, if the API endpoints for Ansible take too long, they will run into a timeout. In these cases, you find an option to manually build this cache on the command line.
 Example for Ansible: _./cmdbsyncer ansible update_cache_
-In my example for what I build this Feature, the Time went down from 171 Seconds to just 2 Seconds for the hole Process 
+In a real-world example where this feature was built for, the time went down from 171 seconds to just 2 seconds for the whole process.
 
