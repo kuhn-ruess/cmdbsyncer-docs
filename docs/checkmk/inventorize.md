@@ -47,3 +47,4 @@ This logs like:
 To run the inventorize from the commandline, run this command:
 
 _./cmdsyncer checkmk inventorize_hosts ACCOUNT_
+

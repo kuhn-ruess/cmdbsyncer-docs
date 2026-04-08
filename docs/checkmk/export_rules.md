@@ -24,6 +24,25 @@ Here you find their options explained:
 | Update only Prefixed Labels            | Syncer will only change labels, which have the given prefix                                                                                                                                                                                                                                                                         |
 | Dont update prefixed Labels            | Do not touch Labels with given prefix                                                                                                                                                                                                                                                                                               |
 
+## Write Status Back (CMK_WRITE_STATUS_BACK)
+
+When `CMK_WRITE_STATUS_BACK` is enabled in `local_config.py`, the Syncer writes the Checkmk existence status of each host back into the CMDBSyncer host inventory after every export run.
+
+```python
+'CMK_WRITE_STATUS_BACK':  True
+```
+
+For every host processed during a sync, the Syncer sets the inventory key `checkmk_status`:
+
+| Attribute | Type | Description |
+| --- | --- | --- |
+| `is_existing` | boolean | `True` if the host exists in Checkmk, `False` if it does not |
+
+This is useful when you want to use the Checkmk existence status as a condition in other rules — for example to skip further processing for hosts not yet known to Checkmk. The attribute can be accessed in conditions and Jinja templates like any other inventory value:
+
+```jinja
+cmk__is_existing
+```
 
 ## Set Custom Folder Attributes
 The Syncer will Automatically create all needed Folders. If you like, you can overwrite these Folders Checkmk Attributes, including the Visible Name.

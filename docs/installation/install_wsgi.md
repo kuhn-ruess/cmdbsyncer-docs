@@ -227,4 +227,18 @@ Replace the certificate paths with your actual files (e.g. from Let's Encrypt or
 : Check that `WSGIPassAuthorization On` is set in your VirtualHost config. Without it the `Authorization` header never reaches the application.
 
 **mod_wsgi uses wrong Python version**
-: Verify that the installed `mod_wsgi` matches your Python version (`python3.14-mod_wsgi` for Python 3.11). Mismatches cause silent import failures at startup.
+: Verify that the installed `mod_wsgi` matches your Python version (`python3.14-mod_wsgi` for Python 3.14). Mismatches cause silent import failures at startup.
+
+**MongoDB fails with "Illegal instruction" or does not start**
+: MongoDB 7.0+ requires AVX CPU instructions. If you are running in a **virtual machine (e.g. Proxmox)**, the default CPU type (`kvm64`) does not expose AVX to the guest even if the host supports it.
+
+    Check whether AVX is available inside the VM:
+    ```bash
+    grep avx /proc/cpuinfo
+    ```
+
+    If the output is empty, configure the VM CPU type in Proxmox to expose AVX. Edit the VM config (e.g. `/etc/pve/qemu-server/<vmid>.conf`) and set a CPU type that includes AVX:
+    ```
+    cpu: x86-64-v2-AES,flags=+avx;+avx2
+    ```
+    Then restart the VM. Afterwards MongoDB should start normally.

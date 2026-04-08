@@ -10,6 +10,14 @@ graph LR
 A[Download Repo] --> B[Create Python Environment] --> C[Install Requirements] --> D[Configure Defaults] --> E[Setup Apache]
 ```
 
+## Automated Installation with Ansible
+
+If you prefer a fully automated setup, there is a community-maintained Ansible playbook for Debian 12 available:
+[ansible-things/cmdb-syncer](https://github.com/bh2005/ansible-things/tree/main/cmdb-syncer)
+
+It covers system packages, MongoDB, Apache, uWSGI, virtual environment, and corporate proxy support in one run.
+The manual steps below remain relevant for understanding the setup or for other distributions.
+
 ## Download the Repository
 
 Check out the code from GitHub into `/opt` — this path is used in all examples throughout this documentation.
