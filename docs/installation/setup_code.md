@@ -1,85 +1,102 @@
 # Installation from Code
 
-The most common way to use the application without Docker is direct from Code. This is easy if the server has an Internet Connections. Updates are easy as git pull then.
+The most common way to use the application without Docker is directly from the Git repository.
+Updates are then as simple as `git pull`.
 
+## Overview
 
-## Steps
-If you not using docker, that are the steps to make the syncer run:
 ``` mermaid
 graph LR
-
-A[Download Repo] --> B[Create Python Environment] --> C[Install Python Requirements] --> D[Setup Mongodb] --> E[Setup Apache with UWsgi]
+A[Download Repo] --> B[Create Python Environment] --> C[Install Requirements] --> D[Configure Defaults] --> E[Setup Apache]
 ```
 
-## Download Repo
-You need to check out the Code directly from GitHub.  [Go to the Repo](https://github.com/kuhn-ruess/cmdbsyncer), and copy the Clone URL to example /opt. In all examples, this Path is used.
+## Download the Repository
 
-[Repo](https://github.com/kuhn-ruess/cmdbsyncer)
+Check out the code from GitHub into `/opt` — this path is used in all examples throughout this documentation.
 
-![](img/checkout_github.png)
-
-Example:
-```
-cd /opt/
+```bash
+cd /opt
 git clone https://github.com/kuhn-ruess/cmdbsyncer
 cd cmdbsyncer
 ```
 
+## Create the Python Virtual Environment
 
-## Install Pythons Virtual Environment.
-!!! HINT
-    You can skip this section, if you are planning to use Docker.
+!!! note
+    Skip this section if you are using Docker.
 
+The Syncer requires Python **3.14 or newer**. The interpreter on your system may be named `python3.14` or just `python3` — check with `python3 --version`.
 
+```bash
+cd /opt/cmdbsyncer
+python3.14 -m venv ENV
+source ENV/bin/activate
+```
 
-The Syncer needs some Python libraries. But these we don't want to install into your system.
-Instead, we create a virtual environment. Make sure that you have at least python3.11. The Python interpreter on your system may have a different name.
+!!! warning
+    The virtual environment must be activated every time you interact with the Syncer manually or via cron jobs:
+    ```bash
+    source /opt/cmdbsyncer/ENV/bin/activate
+    ```
 
-Always make sure you are in /opt/cmdbsyncer
+## Install Python Requirements
 
-`python3.11 -m venv ENV`
+Install the base requirements:
 
-This environment needs to be loaded from now on, every time something is done with the Syncer, also for every cron job that you will run.
+```bash
+pip install -r requirements.txt
+```
 
-`source ENV/bin/activate`
+If you plan to use **Ansible**:
 
-To this Environment, you install the Python Libraries. This is done with just one command:
+```bash
+pip install -r requirements-ansible.txt
+```
 
-`pip install -r requirements.txt`
+For additional database backends (see `requirements-extras.txt`):
 
-In Case, you plan to use Ansible, also import the Ansible requirements:
+```bash
+pip install -r requirements-extras.txt
+```
 
-`pip install -r requirements-ansible.txt`
+## Install MongoDB
 
+!!! note
+    Skip this section if you are using Docker.
 
-Extra Database stuff you find in requirements-extras.txt
+Install MongoDB with your package manager. See the [MongoDB section in the Apache setup guide](install_wsgi.md#mongodb) for distribution-specific instructions.
 
-## Install MongoDB Server
-!!! HINT
-    You can skip this section, if you are planning to use Docker.
-The Syncer needs the Mongodb. All you need to do is to install it, with your Packet Manager. Then you are ready to go.
+Once installed, start and enable the service:
 
+```bash
+systemctl enable --now mongod
+```
 
 ## Configure Defaults
-!!! HINT
-    Make sure to either be in the docker container, or to have the environment loaded
-When the database is running, run 
 
-```
+!!! note
+    Make sure the virtual environment is activated, or run this inside the Docker container.
+
+Once MongoDB is running, initialize the application defaults:
+
+```bash
 ./cmdbsyncer sys self_configure
 ```
 
-This Should also run after you Update the Syncer
-## The Web Interface
+Run this command again after every update.
 
-To take a brief look, you can start the development server:
+## Start the Development Server
 
-`flask run --host 0.0.0.0 --port 8080`
+To quickly verify the installation, you can start the built-in development server:
 
-But then you should setup WSGI. See: [mod_wsgi and Apache](install_wsgi.md)
+```bash
+flask run --host 0.0.0.0 --port 8080
+```
 
-If you are using docker, you can directly access the containers port. 
+!!! warning
+    The development server is not suitable for production use. Set up Apache with mod_wsgi for production deployments: [Installation with Apache](install_wsgi.md)
 
-## First Steps
+## Next Steps
 
-Make the [First Steps](../basics/first_steps.md)
+- Set up Apache for production: [Installation with Apache](install_wsgi.md)
+- Get started with the application: [First Steps](../basics/first_steps.md)

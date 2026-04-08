@@ -128,6 +128,8 @@ theme:
       accent: purple
 markdown_extensions:
   - admonition
+  - pymdownx.tabbed:
+      alternate_style: true
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid

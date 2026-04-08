@@ -1,74 +1,230 @@
 # Installation with Apache and mod_wsgi
 
-The most convenient installation of the Syncer is using Docker. There, all Dependencies can simply be satisfied. The biggest problem right now is manually installing the Python Requirements, if the Server is not connected to the Internet, and there is no local Mirror for pip.
-Second one is installing the MongoDB Server. For that, an extra Repository needs to be added.
+The most convenient installation of the Syncer is using Docker, where all dependencies are satisfied automatically.
+For bare-metal or VM deployments, this guide covers installation with Apache and mod_wsgi.
 
-This documentation applies to RedHat 9, but works similarly on Ubuntu and other Linux distributions.
+## Base Requirements
 
+=== "RedHat / CentOS"
+    ```bash
+    dnf install python3.14
+    dnf install httpd
+    dnf install python3.14-mod_wsgi
+    ```
 
-## Base Requirements for System
-For the Syncer to Run, you need these Dependencies: 
+=== "Ubuntu / Debian"
+    ```bash
+    apt install python3.14 apache2 libapache2-mod-wsgi-py3
+    a2enmod wsgi
+    ```
 
-- yum install python3.11
-- yum install httpd
-- yum install python3.11-mod_wsgi
+Also needed is MongoDB — covered in the [MongoDB section](#mongodb) below.
 
-Also needed is MongoDB, but this is covered later
+## Build Requirements (Python Virtual Environment)
 
-## Build Requirements to create the Python Environment
-The Syncer needs a Python Virtual Environment for its modules.
-To Install that (see default doc) you need the following:
+The Syncer needs a Python virtual environment. To build it you need the following development packages:
 
-- yum groupinstall "Development Tools"
-- yum install httpd-devel  
-- yum install python3.11-devel
+=== "RedHat / CentOS"
+    ```bash
+    dnf groupinstall "Development Tools"
+    dnf install httpd-devel
+    dnf install python3.14-devel
+    ```
+
+=== "Ubuntu / Debian"
+    ```bash
+    apt install build-essential apache2-dev python3.14-dev
+    ```
 
 ## Checkout the Repo and create the Environment
-You need to Download the Sourcecode first. Just [follow this description](setup_code.md) and then comeback here.
+
+Download the source code first — [follow this description](setup_code.md) and then come back here.
 
 ## Configure Apache
-Just create the following Config File in /etc/httpd/conf.d/ (May adapt the Vhost Settings if you have Checkmk Installed on the same server)
 
-```
-<VirtualHost *>
-	ServerName example.com
-	WSGIDaemonProcess cmdbsyncer python-home=/opt/cmdbsyncer/ENV user=apache group=apache threads=5
+=== "RedHat / CentOS"
+    Create `/etc/httpd/conf.d/cmdbsyncer.conf`:
 
-	WSGIScriptAlias / /opt/cmdbsyncer/app.wsgi
+    ```apacheconf
+    <VirtualHost *:80>
+        ServerName example.com
 
-	<Directory /opt/cmdbsyncer>
-		WSGIProcessGroup cmdbsyncer
-    	WSGIApplicationGroup %{GLOBAL}
-    	Order deny,allow
-    	Allow from all
-	</Directory>
-</VirtualHost>
-```
+        WSGIDaemonProcess cmdbsyncer python-home=/opt/cmdbsyncer/ENV user=apache group=apache threads=5
+        WSGIScriptAlias / /opt/cmdbsyncer/app.wsgi
+        WSGIPassAuthorization On
 
-!!! Warning 
-    Since Apache 2.4, the format of Order deny, allow has changed. Use Require all granted
-	See: [Access Control - Apache HTTP Server Version 2.4](https://httpd.apache.org/docs/current/howto/access.html)
+        <Directory /opt/cmdbsyncer>
+            WSGIProcessGroup cmdbsyncer
+            WSGIApplicationGroup %{GLOBAL}
+            Require all granted
+        </Directory>
+    </VirtualHost>
+    ```
 
-## Mongodb
+=== "Ubuntu / Debian"
+    Create `/etc/apache2/sites-available/cmdbsyncer.conf`:
 
-Best would be to enable a repo with MongoDB in the Subscription Manger.
-But you can also work with the official open-source one, described here:
-[Mongo on RedHat](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-red-hat/)
+    ```apacheconf
+    <VirtualHost *:80>
+        ServerName example.com
 
-The file for `/etc/yum.repos.d/mongodb.repo`:
+        WSGIDaemonProcess cmdbsyncer python-home=/opt/cmdbsyncer/ENV user=www-data group=www-data threads=5
+        WSGIScriptAlias / /opt/cmdbsyncer/app.wsgi
+        WSGIPassAuthorization On
 
-```
-[mongodb-org-7.0]
-name=MongoDB Repository
-baseurl=https://repo.mongodb.org/yum/redhat/9/mongodb-org/7.0/x86_64/
-gpgcheck=1
-enabled=1
-gpgkey=https://pgp.mongodb.com/server-7.0.asc
-```
+        <Directory /opt/cmdbsyncer>
+            WSGIProcessGroup cmdbsyncer
+            WSGIApplicationGroup %{GLOBAL}
+            Require all granted
+        </Directory>
+    </VirtualHost>
+    ```
 
-Then you can install Mongodb
-_yum install -y mongodb-org_
+    Then enable the site:
+    ```bash
+    a2ensite cmdbsyncer && systemctl reload apache2
+    ```
 
+### HTTPS with SSL Certificate
 
-# Final
-If you get Access Denied messages in the Apache Log, you need to configure or disable SELINUX. If you configure it, I would be happy to get the info how to do that for this documentation.
+To run the Syncer over HTTPS, extend the VirtualHost with an SSL block and add a redirect from port 80.
+Replace the certificate paths with your actual files (e.g. from Let's Encrypt or your CA).
+
+=== "RedHat / CentOS"
+    Make sure `mod_ssl` is installed: `dnf install mod_ssl`
+
+    ```apacheconf
+    <VirtualHost *:80>
+        ServerName example.com
+        Redirect permanent / https://example.com/
+    </VirtualHost>
+
+    <VirtualHost *:443>
+        ServerName example.com
+
+        SSLEngine on
+        SSLCertificateFile      /etc/pki/tls/certs/example.com.crt
+        SSLCertificateKeyFile   /etc/pki/tls/private/example.com.key
+        # SSLCertificateChainFile /etc/pki/tls/certs/ca-bundle.crt
+
+        WSGIDaemonProcess cmdbsyncer python-home=/opt/cmdbsyncer/ENV user=apache group=apache threads=5
+        WSGIScriptAlias / /opt/cmdbsyncer/app.wsgi
+        WSGIPassAuthorization On
+
+        <Directory /opt/cmdbsyncer>
+            WSGIProcessGroup cmdbsyncer
+            WSGIApplicationGroup %{GLOBAL}
+            Require all granted
+        </Directory>
+    </VirtualHost>
+    ```
+
+=== "Ubuntu / Debian"
+    Make sure `mod_ssl` is enabled: `a2enmod ssl`
+
+    ```apacheconf
+    <VirtualHost *:80>
+        ServerName example.com
+        Redirect permanent / https://example.com/
+    </VirtualHost>
+
+    <VirtualHost *:443>
+        ServerName example.com
+
+        SSLEngine on
+        SSLCertificateFile      /etc/ssl/certs/example.com.crt
+        SSLCertificateKeyFile   /etc/ssl/private/example.com.key
+        # SSLCertificateChainFile /etc/ssl/certs/ca-bundle.crt
+
+        WSGIDaemonProcess cmdbsyncer python-home=/opt/cmdbsyncer/ENV user=www-data group=www-data threads=5
+        WSGIScriptAlias / /opt/cmdbsyncer/app.wsgi
+        WSGIPassAuthorization On
+
+        <Directory /opt/cmdbsyncer>
+            WSGIProcessGroup cmdbsyncer
+            WSGIApplicationGroup %{GLOBAL}
+            Require all granted
+        </Directory>
+    </VirtualHost>
+    ```
+
+    Then enable the site:
+    ```bash
+    a2ensite cmdbsyncer && systemctl reload apache2
+    ```
+
+!!! tip "Let's Encrypt"
+    On both distros you can use Certbot to obtain a free certificate automatically:
+
+    ```bash
+    # RedHat / CentOS
+    dnf install certbot python3-certbot-apache
+    # Ubuntu / Debian
+    apt install certbot python3-certbot-apache
+
+    certbot --apache -d example.com
+    ```
+
+    Certbot will update the VirtualHost config and set up automatic renewal.
+
+!!! warning "Apache 2.2 (legacy)"
+    `Require all granted` was introduced in Apache 2.4. On Apache 2.2 use the old syntax instead:
+
+    ```apacheconf
+    Order deny,allow
+    Allow from all
+    ```
+
+    Apache 2.2 is end-of-life — upgrading to 2.4 is strongly recommended.
+
+### Key directives explained
+
+| Directive | Why it is needed |
+| --- | --- |
+| `WSGIPassAuthorization On` | Passes the `Authorization` HTTP header to the application. **Required** for REST API authentication — without it, Apache strips the header and all API logins fail. |
+| `WSGIDaemonProcess` | Runs the app in a separate process with its own Python environment. |
+| `WSGIApplicationGroup %{GLOBAL}` | Ensures C extensions (e.g. in the MongoDB driver) work correctly. |
+
+## MongoDB
+
+=== "RedHat / CentOS"
+    Create `/etc/dnf.repos.d/mongodb.repo`:
+
+    ```ini
+    [mongodb-org-7.0]
+    name=MongoDB Repository
+    baseurl=https://repo.mongodb.org/dnf/redhat/9/mongodb-org/7.0/x86_64/
+    gpgcheck=1
+    enabled=1
+    gpgkey=https://pgp.mongodb.com/server-7.0.asc
+    ```
+
+    Then install and start MongoDB:
+
+    ```bash
+    dnf install -y mongodb-org
+    systemctl enable --now mongod
+    ```
+
+=== "Ubuntu / Debian"
+    Follow the [official MongoDB guide for Ubuntu](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-ubuntu/), then run:
+
+    ```bash
+    systemctl enable --now mongod
+    ```
+
+## Troubleshooting
+
+**Access Denied in Apache log**
+: SELinux is blocking access. Either disable it or set the correct context:
+
+    ```bash
+    chcon -R -t httpd_sys_content_t /opt/cmdbsyncer
+    setsebool -P httpd_can_network_connect 1
+    ```
+
+**API authentication always returns 401**
+: Check that `WSGIPassAuthorization On` is set in your VirtualHost config. Without it the `Authorization` header never reaches the application.
+
+**mod_wsgi uses wrong Python version**
+: Verify that the installed `mod_wsgi` matches your Python version (`python3.14-mod_wsgi` for Python 3.11). Mismatches cause silent import failures at startup.
