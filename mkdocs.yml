@@ -62,6 +62,7 @@ nav:
       - More about Attributes and Tags: checkmk/cmk_attributes.md
       - Howtos:
         - Export Hosts to Checkmk: checkmk/recipe_export_hosts.md
+        - Create a Label in Checkmk: checkmk/recipe_create_label.md
         - Create Cluster in Checkmk: checkmk/create_cluster.md
         - Manage Contact Groups: checkmk/recipe_contact_groups.md
         - Create a Checkmk Rule: checkmk/recipe_checkmk_rules.md
