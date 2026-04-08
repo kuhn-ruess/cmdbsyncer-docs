@@ -60,14 +60,16 @@ nav:
       - Inventorize Checkmk: checkmk/inventorize.md
       - Local Config Variables: checkmk/config_vars.md
       - More about Attributes and Tags: checkmk/cmk_attributes.md
-      - Create Cluster in Checkmk: checkmk/create_cluster.md
-      - Manage Contact Groups: checkmk/recipe_contact_groups.md
-      - Create a Checkmk Rule: checkmk/recipe_checkmk_rules.md
-      - Example Multiple HTTP Rules: checkmk/recipe_multiple_http_rules.md
-      - Full Agenten Automations: ansible/cmk_agents.md
-      - Site Update Automations: ansible/cmk_sites.md
-      - Bake and Sign Agents: checkmk/bake_sign.md
-      - Mange big Environments: checkmk/big_environments.md
+      - Howtos:
+        - Export Hosts to Checkmk: checkmk/recipe_export_hosts.md
+        - Create Cluster in Checkmk: checkmk/create_cluster.md
+        - Manage Contact Groups: checkmk/recipe_contact_groups.md
+        - Create a Checkmk Rule: checkmk/recipe_checkmk_rules.md
+        - Example Multiple HTTP Rules: checkmk/recipe_multiple_http_rules.md
+        - Full Agenten Automations: ansible/cmk_agents.md
+        - Site Update Automations: ansible/cmk_sites.md
+        - Bake and Sign Agents: checkmk/bake_sign.md
+        - Mange big Environments: checkmk/big_environments.md
   - LDAP:
     - LDAP Import: ldap/index.md
   - Cisco Dna:
@@ -98,7 +100,7 @@ nav:
      - Plugin API: advanced/plugin_api.md
      - Jinja Functions: advanced/jinja_functions.md
      - Rest API: internal_restapi/index.md
-     - Sys Module: sys/index.md
+     - Maintenance: sys/index.md
 
 theme:
   name: material
