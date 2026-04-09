@@ -1,20 +1,22 @@
 # Config Variables
 
-List of config Variables which can be overwritten in [local_config.py](../basics/lcl_config.md)
+All variables listed here can be set in [local_config.py](../basics/lcl_config.md).
 
-| Variable | Description |
-| --- | --- |
-| CMK_BULK_CREATE_HOSTS | Default True: Bulk Create Hosts |
-| CMK_BULK_CREATE_OPERATIONS | How many objects for each bulk request |
-| CMK_BULK_DELETE_HOSTS | Default: True: Bulk Delete Host |
-| CMK_BULK_DELETE_OPERATIONS | How many objects for each bulk request |
-| CMK_BULK_UPDATE_HOSTS | Default True: Bulk Update Hosts |
-| CMK_BULK_UPDATE_OPERATIONS | How many objects for each bulk request |
-| CMK_DONT_DELETE_HOSTS | Disable Deletion of hosts when syncing |
-| CMK_LOWERCASE_FOLDERNAMES | Default: True, Folder names are lowercase |
-| CMK_COLLECT_BULK_OPERATIONS | Default: False, Do bulk operations at the end |
-| CMK_GET_HOST_BY_FOLDER | Default: False: Query Hosts by Folder, not with one call. |
-| CMK_DETAILED_LOG | Log for every Host the Attribute Changes done |
-| CMK_JINJA_USE_REPLACERS | Default: False, Configured Replacers are used for TAG Cleanup Jinja Functions |
-| CMK_JINJA_USE_REPLACERS_FOR_HOSTNAMES | Default: False, Configured Replacers are used for Hostname Cleanup Jinja Function |
-| CMK_WRITE_STATUS_BACK | Default: False, after each export the Syncer writes the Checkmk existence status back into the CMDBSyncer host inventory (`checkmk_status__is_existing`). See [Write Status Back](export_rules.md#write-status-back-cmk_write_status_back) (since 3.12.3) |
+| Name                                    | Default | Description                                                                                                                                                                                             |
+| :-------------------------------------- | :------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `CMK_WRITE_STATUS_BACK`                 | `False` | After each export, write the Checkmk existence status back into the host inventory (`checkmk_status__is_existing`). See [Write Status Back](export_rules.md#write-status-back-cmk_write_status_back)    |
+| `CMK_DETAILED_LOG`                      | `False` | Log every individual attribute change made to a host in Checkmk                                                                                                                                         |
+| `CMK_DONT_DELETE_HOSTS`                 | `False` | Never delete hosts in Checkmk, even if they are gone from the syncer                                                                                                                                    |
+| `CMK_DONT_DELETE_TAGS`                  | `True`  | Do not delete tag groups in Checkmk that are no longer defined in the syncer                                                                                                                            |
+| `CMK_LOWERCASE_FOLDERNAMES`             | `True`  | Convert Checkmk folder names to lowercase                                                                                                                                                               |
+| `CMK_LOWERCASE_LABEL_VALUES`            | `False` | Convert Checkmk label values to lowercase                                                                                                                                                               |
+| `CMK_BULK_CREATE_HOSTS`                 | `True`  | Create hosts in bulk instead of one by one                                                                                                                                                              |
+| `CMK_BULK_CREATE_OPERATIONS`            | `300`   | Number of hosts per bulk create request                                                                                                                                                                 |
+| `CMK_BULK_UPDATE_HOSTS`                 | `True`  | Update hosts in bulk                                                                                                                                                                                    |
+| `CMK_BULK_UPDATE_OPERATIONS`            | `50`    | Number of hosts per bulk update request                                                                                                                                                                 |
+| `CMK_BULK_DELETE_HOSTS`                 | `True`  | Delete hosts in bulk                                                                                                                                                                                    |
+| `CMK_BULK_DELETE_OPERATIONS`            | `50`    | Number of hosts per bulk delete request                                                                                                                                                                 |
+| `CMK_COLLECT_BULK_OPERATIONS`           | `False` | Calculate all changes first, then send all bulk operations at once (uses more RAM, prevents DB timeouts on slow Checkmk instances)                                                                      |
+| `CMK_GET_HOST_BY_FOLDER`                | `False` | Query hosts folder by folder instead of all at once — required for very large environments (>50k hosts)                                                                                                 |
+| `CMK_JINJA_USE_REPLACERS`               | `False` | Apply the configured `REPLACERS` to Jinja-rendered attribute values in Checkmk exports                                                                                                                  |
+| `CMK_JINJA_USE_REPLACERS_FOR_HOSTNAMES` | `False` | Apply the configured `REPLACERS` to Jinja-rendered hostnames in Checkmk exports                                                                                                                         |

@@ -1,48 +1,102 @@
-# Docker
+# Installation with Docker
 
-The Project is not in the Docker Library yet, but you can run it after Checkout the Code.
+Running CMDBsyncer with Docker is the recommended approach for most deployments. The repository includes a `docker-compose.yml` that starts CMDBsyncer together with its MongoDB dependency.
 
-The Docker Compose File there contains all the needed dependencies.
-The Dockerfile you found already in the Main Directory of the repo.
+## Requirements
 
-And if you develop with the syncer, you may want to look into the ./helper command,
-which provides you an environment with live refresh after code changes.
+- Docker and Docker Compose installed
+- Git to check out the repository
 
-## Docker behind proxy
-If you plan to use Docker behind a proxy, then you have two possibilities to get it running.
+## Setup
 
-### Modify docker-compose.local.yml
-Currently, we do not add proxy settings and provide following setup:
-```dockerfile
+```bash
+git clone https://github.com/kuhn-ruess/cmdbsyncer
+cd cmdbsyncer
+```
+
+Start the stack:
+
+```bash
+docker compose up -d
+```
+
+The application will be available on port **5000** by default.
+
+## Configuration
+
+CMDBsyncer requires a `local_config.py` in the project root. It is created automatically on first start via `./cmdbsyncer sys self_configure` (which runs with every update). This file contains your `SECRET_KEY` and `CRYPTOGRAPHY_KEY`.
+
+!!! warning "Keep local_config.py safe"
+    Do **not** place `local_config.py` inside the container image. Mount it as a volume instead. If you lose this file, all stored passwords become unrecoverable since the `CRYPTOGRAPHY_KEY` is needed to decrypt them.
+
+Run this after every update to apply any new default settings:
+
+```bash
+docker exec -it <container_name> ./cmdbsyncer sys self_configure
+```
+
+## Create the First User
+
+```bash
+docker exec -it <container_name> ./cmdbsyncer sys create_user mail@address.org
+```
+
+The command prints a generated password. Run it again at any time to reset a forgotten password or unlock a 2FA-locked account.
+
+## CLI Access
+
+Most operations can be done in the web interface. For debugging, the CLI is available via `docker exec`:
+
+```bash
+docker exec -it <container_name> ./cmdbsyncer --help
+```
+
+## Cron Jobs
+
+Sync jobs need to be triggered on a schedule. If you use the provided `Dockerfile`, cron is already set up inside the container. Otherwise, schedule `docker exec` calls from the host cron or your orchestrator.
+
+## External Files
+
+If your workflows use CSV files, CA certificates, or other external files, define a Docker volume for them and point `FILEADMIN_PATH` to the mounted path in `local_config.py`:
+
+```python
+config = {
+    'FILEADMIN_PATH': '/data/files',
+}
+```
+
+The [Fileadmin](../basics/fileadmin.md) in the web UI will then show and manage files at that path.
+
+## Reverse Proxy
+
+The container exposes a uWSGI socket directly — there is no Nginx inside the container, since your reverse proxy can speak uWSGI directly to the exposed port. A typical setup uses Nginx or Apache on the host as the SSL-terminating reverse proxy in front of the container.
+
+## Resources
+
+CMDBsyncer is lightweight in terms of memory and CPU at rest. For large environments with many rules, it benefits from additional CPUs since rule calculations use Python multiprocessing across all available cores. Disk space for MongoDB is the main resource to plan for.
+
+## Behind a Corporate Proxy
+
+### Option 1: Build argument in docker-compose.local.yml
+
+```yaml
 api:
-    build:
-      dockerfile: Dockerfile.local
-    environment:
-      config: compose
-      FLASK_DEBUG: 1
-    ports:
-      - 5003:5003
-    volumes:
-      - ./:/srv
+  build:
+    dockerfile: Dockerfile.local
+    args:
+      HTTPS_PROXY: "PROTOCOL://SERVERNAME:PORT"
+  environment:
+    config: compose
+  ports:
+    - 5003:5003
+  volumes:
+    - ./:/srv
 ```
 
-You can add your proxy configuration like this:
-```dockerfile
-  api:
-    build:
-      dockerfile: Dockerfile.local
-    args:
-      HTTPS_PROXY: PROTOCOL://SERVERNAME:PORT
-    environment:
-      config: compose
-      FLASK_DEBUG: 1
-    ports:
-      - 5003:5003
-    volumes:
-      - ./:/srv
-```
-### Add proxy to user environment
-If you want to add the proxy for the user, which is used for Docker, then you can add it directly to his environment. Please use `~/.docker/config.json`:
+### Option 2: Docker daemon proxy config
+
+Add the proxy to `~/.docker/config.json` for the user running Docker:
+
 ```json
 {
   "proxies": {
@@ -55,30 +109,11 @@ If you want to add the proxy for the user, which is used for Docker, then you ca
 }
 ```
 
-## Things to Consider
+## Development Mode
 
-### Config
-You need to have a local_config.py. This file is created by __./cmdbsyncer sys self_configure__ (which runs with every update). Make sure this file is not inside you container. It contains keys and if you loose it, you loose all stored passwords.
+For local development with live code reload, use the `./helper` command provided in the repository. It starts the container with the source directory mounted and Flask in debug mode.
 
-### MongoDB
-The project always needs his MongoDB, like the docker-compose.yml also defines. 
+## Next Steps
 
-
-### Access to the container
-Most things can be done in the web interface. But for debugging the CLI is helpfull.
-
-### Cron Jobs
-The Syncer Needs Cron Jobs. These need to be triggered using the docker exec command. If you're using the provided Dockerfile, this will happen automaticly.
-
-### External Files
-If you want to import external Files into the Syncer, make sure to define a volume where you can place it.
-Configure this Path then for the Fileadmin in order to access these files in the GUI.
-
-
-### Resources
-The Syncer does not need many Resources, mainly Disk Space. And at least two CPUs.
-But if you have many rules, you will benefit from more CPUs since the Syncer uses for Calculations Multiprocessing all available cores. 
-
-### UWSGI/ NGINX
-Inside the Container you will find a Python Application. Normally, they are accessed using UWSGI. And many Containers then also contain an NGINX in Front of this UWSGI.  The CMDB Syncer Container has no Nginx, since it would be redundant. Most likely, the Reverse proxy in Front of the Container will be a Nginx anyway. And so, your Reverse Proxy can speak directly UWSGI with the Container on the exposed port.
-
+- [Configure the application](../basics/lcl_config.md)
+- [First Steps](../basics/first_steps.md)

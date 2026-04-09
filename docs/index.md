@@ -1,115 +1,72 @@
+# CMDBsyncer
 
-# Welcome to the CMDBsyncer 3.12
+CMDBsyncer is a **rule-based, modular synchronization hub** for host and configuration data. It connects your source systems — CMDBs, asset management tools, APIs, CSV files — with your target systems like Checkmk, Netbox, or I-Doit, and keeps them in sync automatically.
 
-Rule-based and modular system to synchronize hosts between Checkmk, Netbox, I-Doit and all other systems with interfaces and APIs.
-Main goal is the complete organization of the hosts based on CMDB systems and a full automation of Checkmk.
+Every connection to an external system is configured through an [Account](basics/accounts.md). Rules control what gets synchronized, how attributes are transformed, and which hosts are included.
 
-![Rules](img/index_rules.png)
-![Debug Options](img/index_rules_debug.png)
+![Rules overview](img/index_rules.png)
 
+---
 
-## Main Functions
-* Web Interface with Login, 2FA and User management
-* All configuration besides Installation in Web Interface
-* Built-in CMDB mode for managing objects, hosts and templates directly in CMDBsyncer
-* Simple Plugin API to integrate own Data Sources
-* Various Debug Options with the ./cmdbsyncer command
-* Rules to control the Synchronization:
-	 * Based on Host Attributes
-	 * Attribute Rewrites
-	 * Filters for Hosts and Attributes
-  * Action Rules for Actions in Ansible, Checkmk, Netbox etc.
-* Web Based management for Account Credentials.
-* Encryption of Secrets
-* Cron Management
-* Monitoring Integration
-* Jinja Support for Configuration and Rules
-* RestAPI
-* Ansible Support as Inventory Source
+## Key Features
 
-## Modules
+- **Web Interface** with login, 2FA, and user management — all configuration after installation is done in the UI
+- **Rule Engine** to control synchronization based on host attributes, with rewrite, filter, and condition support
+- **Jinja support** throughout rules and configuration fields
+- **Built-in CMDB mode** for managing objects, hosts, and templates directly in CMDBsyncer
+- **Plugin API** to integrate custom data sources with minimal code
+- **Cron management** to schedule sync jobs from the UI
+- **REST API** for external automation
+- **Ansible support** as a dynamic inventory source
+- **Encryption** of stored credentials
+- **Debug tooling** via CLI and web-based debug views
+- **Monitoring integration** via Checkmk Exchange check
 
-* [CMDB](cmdb/index.md)
-    * Use CMDBsyncer as a lightweight CMDB
-    * Create and maintain objects, hosts and templates in the UI
-    * Auto-assign templates with `cmdb_match`
+---
 
-* [Checkmk](checkmk/index.md)
-    * Manage full Host Lifecycle (creation, labels, folders, deletion, rules)
-    * Tested with more than 140,000 Hosts
-    * Sync and Update all possible Host Attributes/ Tags/ Labels
-    * Full Support of API Bulk Operations
-    * Full management of Checkmk Folders
-    * Folder Pool Feature to split big amounts of Hosts automatically between folders (and therefore sites).
-    * Creation of Host-, Contact- and Service Groups
-    * Create Host Tags and Host Tag Groups
-    * Create BI Aggregations
-    * Create all types of Setup Rule
-    * Integrated options to prevent too many updates in Checkmk
-    * Full multiprocessing support for calculations
-    * Command to activate configuration
-    * Command to Bake and Sign Agents
-    * Management of Checkmk (Fallback) users (Create/ Delete/ Reset Password/ Disable Login)
-    * Inventory for Host Attributes (need e.g. for Ansible, like on which site is server on)
-    * Inventory of Service Informations, Labels, Tags and HW/SW Inventory possible (can be used e.g. for I-Doit Sync)
-    * Create DCD Rules
-    * Create and Manage Password Store (Encryption) entries
-    * Automatic Detection of the Checkmk Version to use the correct API Payloads
+## How it Works
 
-* [Ansible](ansible/index.md)
-    * Rule Based Inventory Source
-    * All Functions for Checkmk Agent Management (Installation, TLS Registration, Bakery Registration)
-        *  Linux and Windows
-    * All functions for Checkmk(OMD) Site Management (Update Sites, Create Sites etc.)
-        * Automatic Download of Checkmk Versions if wanted.
+CMDBsyncer imports hosts and attributes from one or more sources, processes them through the rules engine, and exports the result to the configured targets. Sources and targets can overlap — a system like Checkmk or Netbox can be both.
 
+→ [How it Works](basics/how_it_works.md)
 
-* [Netbox](netbox/index.md)
-    * Rulebased Export and Import Devices and VMs to/from Netbox
-    * Automatic creation of Categories if wanted.
-    *  Export of Sites
-    *  Export Interfaces
-    *  Export IPAM
-    * Export Contacts
-    * And more
-* PRTG
-	* Import Objects from PRTG to sync them to Checkmk
+---
 
-* [I-DOIT](i-doit/index.md)
-    * Rulebased Export and Import Devices to/from I-Doit
-    * Template Based
+## Supported Integrations
 
-* BMC Remedy
-    * Limited import from BMC Remedy
+### Full-Featured Modules
 
-* [Cisco DNA](ciscodna/index.md)
-    * Import devices and their Interface Information
+| Module | Import | Export | Notes |
+| :----- | :----: | :----: | :---- |
+| [Checkmk](checkmk/index.md) | ✓ | ✓ | Full host lifecycle, rules, tags, labels, groups, BI, DCD, agents, sites — tested with 140,000+ hosts |
+| [Netbox](netbox/index.md) | ✓ | ✓ | Devices, VMs, interfaces, IPAM, contacts, sites |
+| [I-Doit](i-doit/index.md) | ✓ | ✓ | Template-based device sync |
+| [Ansible](ansible/index.md) | — | ✓ | Dynamic inventory source, Checkmk agent and site management |
+| [CMDB Mode](cmdb/index.md) | ✓ | ✓ | Use CMDBsyncer itself as a lightweight CMDB |
 
-* [CSV](csv/index.md)
-    * Manage Hosts based on CSV File (Import Source)
-    * Add additional information from CSV files to your hosts (e.g. overwrite IP addresses)
+### Import Sources
 
-* LDAP
-    * Import Objects from LDAP Directories
+| Module | Description |
+| :----- | :---------- |
+| [REST API / JSON](rest_json/index.md) | Import from any REST API or JSON file structure |
+| [CSV](csv/index.md) | Import hosts or enrich attributes from CSV files |
+| [LDAP](ldap/index.md) | Import objects from LDAP directories |
+| [JDisc](jdisc/index.md) | Import devices from JDisc Discovery |
+| [Jira](jira/index.md) | Import objects from Jira (on-prem and cloud) |
+| [Cisco DNA](ciscodna/index.md) | Import devices and interface information |
+| BMC Remedy | Limited import from BMC Remedy |
+| PRTG | Import objects from PRTG |
+| VMware | Import and export attributes for VMware VMs |
+| MySQL | Import and inventorize MySQL database tables |
+| MSSQL / ODBC | Import from any ODBC-compatible database (FreeTDS, MSSQL, etc.) |
 
-* [RestAPI](rest_json/index.md)
-    * Import of Custom Rest APIs
+---
 
-* [JSON](rest_json/index.md)
-    * Import of Json File Structures
+## Getting Started
 
-* Jira CMDB on Prem and Cloud:
-    * Import Objects
-    
-*  [JDisc](jdisc/index.md)
-	* Import Objects
-
-* Vmware
-	* Import Attributes
-	* Export Attributes to Vmware VMs
-	
-* MySQL
-    * Import and Inventorize Mysql Database Tables
-
-* Mssql/ FreeDTS/ ODBC
-    * Import and Inventorize all kinds of ODBC based Database Connections
+1. Install CMDBsyncer: [Docker](installation/setup_docker.md) or [Apache/WSGI](installation/install_wsgi.md)
+2. [Understand how it works](basics/how_it_works.md)
+3. [Create your first Account](basics/accounts.md)
+4. [Set up an Import](basics/import.md)
+5. [Configure Rules](basics/conditions.md)
+6. [Export to a target system](basics/export.md)

@@ -1,54 +1,88 @@
-# How it all works
+# How it Works
 
+CMDBsyncer acts as a **central hub** between your source systems and your target systems. It imports host and configuration data from one or more sources, normalizes and enriches it using rules, and then synchronizes the result to any number of targets — fully automated and on a schedule.
 
 ``` mermaid
 graph LR
-SD[Source Database]
-SC[Source CSV]
-S[CMDB Syncer DB]
-C[Checkmk]
-I[I-Doit]
-N[Netbox]
-R[Rest API]
-O[Other Source]
-RE[CMDB Syncer Rules]
+    SD[Source Database]
+    SC[Source CSV]
+    R[REST API]
+    O[Other Sources]
 
+    S[(CMDBsyncer DB)]
 
-SD --> S
-SC --> S
-R --> S
-O --> S
+    RE[Rules Engine]
 
+    C[Checkmk]
+    N[Netbox]
+    I[I-Doit]
+    X[Other Targets]
 
-S --> RE
+    SD --> S
+    SC --> S
+    R  --> S
+    O  --> S
 
-C --> S 
-RE --> C
-N --> S
-RE --> N
+    C  --> S
+    N  --> S
+    I  --> S
 
-I --> S
-RE --> I
+    S  --> RE
 
-
-
+    RE --> C
+    RE --> N
+    RE --> I
+    RE --> X
 ```
 
-The CMDB Syncer [imports](import.md) all sort of devices as Hosts into his Database. Along with the Hostnames, [Labels and Inventory](host_labels_inventory.md) will store as attributes. That could be an IP-Address, a Contact or every other type of Data, which fit in a key value pair like Strings or event Lists and Dicts.
+## The Three Stages
 
-With rules, you can then [add additional Attributes](custom_attributes.md) and [Rewrite](rewrite_attributes.md) existing ones. The goal is to use this Attributes as Condition, to control the Process of [export](export.md) to another system.
+### 1. Import
 
-The Functions of the Export depend on the Other System. You will find the Details on the Module Section.
+During import, CMDBsyncer connects to one or more source systems via [Accounts](accounts.md) and pulls in hosts along with their attributes — IP addresses, contacts, tags, hardware details, or any other key-value data. All of this is stored in the local CMDBsyncer database.
 
-When a Host is no longer found on an import source, it will be deleted after a grace time. Hosts no longer in this Database, will also be deleted on the export target.
+Sources can be databases, REST APIs, CSV files, Netbox, Checkmk, and more. Multiple sources can be imported in parallel and merged into a unified host inventory.
 
+→ [Import documentation](import.md)
 
-With the Command Line Interface of the Syncer, you can debug all Outcomes before you start the Sync. Some Modules like Checkmk support Web based Debug Options.
+### 2. Rules Engine
+
+Once data is in the database, the rules engine takes over. Rules allow you to:
+
+- Add [custom attributes](custom_attributes.md) to hosts based on conditions
+- [Rewrite](rewrite_attributes.md) or transform existing attribute values
+- [Rewrite hostnames](rewrite_hostnames.md) to match naming conventions of the target system
+- Use [conditions](conditions.md) to control which hosts are exported at all
+
+The goal is to shape the data so that it fits the target system exactly — without touching the original source data.
+
+### 3. Export
+
+After the rules engine has processed the data, CMDBsyncer exports the result to the configured target systems. What exactly gets written depends on the target module — for example, Checkmk receives hosts with folders, tags, and labels, while Netbox receives device records with custom fields.
+
+If a host disappears from all import sources, it is removed from the CMDBsyncer database after a grace period and subsequently deleted from the export targets as well.
+
+→ [Export documentation](export.md)
+
+## Bidirectional Sync
+
+Some systems, like Checkmk or Netbox, can serve as **both** a source and a target at the same time. CMDBsyncer handles this cleanly: each direction is configured independently via its own account and job.
+
+## Debugging
+
+Before running a live sync, you can inspect all computed outcomes using the **command line interface**. This lets you verify which attributes and rules apply to each host without writing anything to the target system. Some modules, like Checkmk, also offer a web-based debug view directly in the UI.
+
+→ [Debug documentation](debug.md)
 
 ## Architecture
 
-The System is Module-based. It supports [Plugins](../advanced/own_plugins.md) to import and export, which can use a simple API, but also ships well tested internal plugins who cover a lot.
+CMDBsyncer is a **plugin-based** Python application. Every integration — whether for import or export — is implemented as a plugin with a straightforward API. The built-in plugins cover the most common systems out of the box; custom plugins can be added without modifying the core.
 
-The Application is written in Python, the Local Database is a MongoDB. [Docker](../installation/setup_docker.md) is also fully supported to run it.
+| Component       | Technology                                                     |
+| :-------------- | :------------------------------------------------------------- |
+| Application     | Python                                                         |
+| Local database  | MongoDB                                                        |
+| Admin interface | Flask-Admin                                                    |
+| Deployment      | Native or [Docker](../installation/setup_docker.md)            |
 
-The Admin Interface uses Flask-Admin. This simplifies a lot, but also limits some things in the frontend.
+→ [Build your own plugin](../advanced/own_plugins.md)
