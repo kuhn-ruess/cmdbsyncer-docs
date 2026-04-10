@@ -1,33 +1,43 @@
 # LDAP
 
-The Syncer has the options to import all kind of objects from LDAP.
+The Syncer can import and inventorize objects from LDAP — Active Directory, OpenLDAP, or any compatible directory service.
 
-To use that, you need to create an [Account](../basics/accounts.md) of the Type 'LDAP'.
-After saving it, the Account will provide you with some necessary fields you need to set.
+Create an [Account](../basics/accounts.md) of type _LDAP_ and configure the fields below. After saving, the account-specific fields appear automatically.
 
+| Field            | Description                                                                |
+| ---------------- | -------------------------------------------------------------------------- |
+| `address`        | LDAP server URL, must start with `ldap://` or `ldaps://`                   |
+| `username`       | Bind user DN                                                               |
+| `password`       | Bind password                                                              |
+| `base_dn`        | Search base, e.g. `DC=example,DC=com`                                      |
+| `search_filter`  | LDAP filter, e.g. `(&(objectCategory=Person)(objectClass=user))`           |
+| `attributes`     | Comma-separated list of attributes to fetch, e.g. `cn,mail,sAMAccountName` |
+| `hostname_field` | Attribute to use as the host identifier                                    |
+| `encoding`       | `utf-8` or `ascii`, depending on your LDAP server                          |
 
-| Field            | Description                                              |
-| ---------------- | -------------------------------------------------------- |
-| `base_dn`        | Base for Import, Example: DC=Domain, DC=Domain           |
-| `search_filter`  | Example: (&objectCategory=Person)(objectClass=user))     |
-| `attributes`     | Fields to read, like cn                                  |
-| `hostname_field` | Field which the syncer should use to identify the object |
-| `encoding`       | utf-8 or ascii, depending on your server                 |
+!!! tip
+    If you are importing objects that are not hosts (contacts, groups, etc.), enable _Is Object_ on the account and select an appropriate Object Type. This makes it easier to filter them in rules and exports.
 
-Some tipsabout the Account Setting: If you import a certain type of objects, which are not hosts, mark the account as `is_object` and choose an Object Type. This way, you later can better filter the input for operations.
+## Import vs. Inventorize
 
-## Testing the Import
-You can test the Import using the commandline.
+The LDAP plugin provides two commands with different behavior:
 
-Command: _./cmdbsyncer ldap import_objects ACCOUNTNAME_
+- **import_objects** — creates or updates hosts in the syncer database. The account becomes the master for those hosts.
+- **inventorize_objects** — adds LDAP attributes as inventory data to hosts that already exist in the database. The hosts are not created or owned by this account.
 
-## Setting the Process
-For Production Use, setup the Job as a [cron](../basics/cron.md)
+## Running from the CLI
 
+```bash
+./cmdbsyncer ldap import_objects my-ldap-account
+./cmdbsyncer ldap inventorize_objects my-ldap-account
+```
 
+Add `--debug` to see the LDAP query details and full attribute output:
 
+```bash
+./cmdbsyncer ldap import_objects my-ldap-account --debug
+```
 
+## Setting Up Automation
 
-
-
-
+For production use, add the command as a [Cron job](../basics/cron.md).
