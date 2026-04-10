@@ -7,7 +7,8 @@ nav:
     - Installation with Apache: installation/install_wsgi.md
     - Auth and SSO: installation/authentication.md
     - Install Updates: installation/updates.md
-    - Changelog/ Update Notes: updates/changelog.md
+    - Update Notes: updates/update_notes.md
+    - ... | glob=changelog/*
     - Archiv:
       - UWSGI and Apache: installation/uwsgi_apache.md
   - Basics:
@@ -20,7 +21,7 @@ nav:
     - Accounts: basics/accounts.md
     - Cronjobs: basics/cron.md
     - Fileadmin: basics/fileadmin.md
-    - Debug Requests: basics/debug.md
+    - Debugging: basics/debug_rules.md
   - Functions:
     - Import Systems: basics/import.md
     - Export Systems: basics/export.md
@@ -33,7 +34,6 @@ nav:
     - Rewrite Hostnames: basics/rewrite_hostnames.md
     - Filter: basics/filter.md
     - Autocreate Rules: basics/auto_rules.md
-    - Debug Rules: basics/debug_rules.md
 
   - Ansible:
     - Ansible Basics: ansible/index.md
@@ -49,8 +49,8 @@ nav:
       - Account Parameters: checkmk/accounts.md
       - Set Folders and Host Attributes: checkmk/export_rules.md
       - Host-/ Contact-/ Service-Groups: checkmk/groups_management.md
-      - Checkmk Rules: checkmk/rules_management.md
-      - Hosttags: checkmk/create_hosttags.md
+      - Checkmk Setup Rules: checkmk/rules_management.md
+      - Host Tags: checkmk/create_hosttags.md
       - Checkmk Users: checkmk/users.md
       - Downtimes: checkmk/create_downtimes.md
       - DCD Rules: checkmk/dcd_rules.md
@@ -59,18 +59,18 @@ nav:
       - Folder Pools: checkmk/folder_pools.md
       - Inventorize Checkmk: checkmk/inventorize.md
       - Local Config Variables: checkmk/config_vars.md
-      - More about Attributes and Tags: checkmk/cmk_attributes.md
+      - Checkmk Attributes and Host Tags: checkmk/cmk_attributes.md
       - Howtos:
         - Export Hosts to Checkmk: checkmk/recipe_export_hosts.md
-        - Create a Label in Checkmk: checkmk/recipe_create_label.md
-        - Create Cluster in Checkmk: checkmk/create_cluster.md
+        - Create Labels in Checkmk: checkmk/recipe_create_label.md
+        - Create Cluster Hosts: checkmk/create_cluster.md
         - Manage Contact Groups: checkmk/recipe_contact_groups.md
-        - Create a Checkmk Rule: checkmk/recipe_checkmk_rules.md
-        - Example Multiple HTTP Rules: checkmk/recipe_multiple_http_rules.md
-        - Full Agenten Automations: ansible/cmk_agents.md
-        - Site Update Automations: ansible/cmk_sites.md
+        - Create Checkmk Rules Automatically: checkmk/recipe_checkmk_rules.md
+        - Multiple HTTP Checks per Host: checkmk/recipe_multiple_http_rules.md
+        - Agent Deployment Automation: ansible/cmk_agents.md
+        - Site Update Automation: ansible/cmk_sites.md
         - Bake and Sign Agents: checkmk/bake_sign.md
-        - Mange big Environments: checkmk/big_environments.md
+        - Large Environments (100k+ Hosts): checkmk/big_environments.md
   - LDAP:
     - LDAP Import: ldap/index.md
   - Cisco Dna:
@@ -148,6 +148,10 @@ extra:
     - icon: fontawesome/solid/house
       link: https://kuhn-ruess.de
 
+hooks:
+  - hooks/notices.py
+
 plugins:
 - search
 - mike
+- awesome-pages

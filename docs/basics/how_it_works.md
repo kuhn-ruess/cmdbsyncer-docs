@@ -72,7 +72,7 @@ Some systems, like Checkmk or Netbox, can serve as **both** a source and a targe
 
 Before running a live sync, you can inspect all computed outcomes using the **command line interface**. This lets you verify which attributes and rules apply to each host without writing anything to the target system. Some modules, like Checkmk, also offer a web-based debug view directly in the UI.
 
-→ [Debug documentation](debug.md)
+→ [Debug documentation](debug_rules.md)
 
 ## Architecture
 

@@ -1,11 +1,21 @@
-# Checkmk Password Manager
+# Password Store
 
-You can use the Syncer to create and update entries for the Checkmk Password Manger.
-This feature fully works beginning with 3.9.0. The Passwords you enter inside the Syncer, will be encrypted inside the Database. But the Key to decrypt, is stored in your local_config.py. If you change the key there, you need to Update the Passwords.
+The Syncer can create and update entries in the Checkmk Password Manager. This is useful when passwords — such as SNMP communities or service account credentials — are managed in your CMDB and need to be kept in sync with Checkmk.
 
-The Syncer needs to be able to decrypt the password, before its sent to Checkmk. 
+Go to: _Modules → Checkmk → Manage Password Store_
 
+## How Passwords Are Stored
+
+Passwords entered in the Syncer are encrypted in the database. The encryption key is the `CRYPTOGRAPHY_KEY` from your `local_config.py`. If you change this key, you need to re-enter all stored passwords.
+
+The Syncer decrypts the password internally before sending it to Checkmk — Checkmk never receives the encrypted form.
 
 ## Setup
 
-You have to configure 1 to 1 all settings you would have to configure in Checkmk. Jinja is not yet supported.
+Configure one entry per password. The fields correspond directly to what you would configure in the Checkmk Password Manager. Jinja templating is not yet supported in this module.
+
+## Command Line
+
+```bash
+./cmdbsyncer checkmk export_passwords ACCOUNTNAME
+```

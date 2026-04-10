@@ -1,41 +1,45 @@
-#Hosts, Labels and Inventory
+# Hosts, Labels and Inventory
 
-CMDB Syncer works with Hosts, Labels and Inventory. So far so simple, but what is what?
+CMDBsyncer works with three types of data: Hosts, Labels, and Inventory.
 
 ## Hosts
-A Host is any kind of Device. It's identified by his hostname, bound to a source and contains
-Labels and Inventory
 
+A host is any kind of device or object. It is identified by its hostname, bound to a source account, and carries Labels and Inventory data.
+
+Hosts can have different **object types** — for example `host`, `application`, `contact`, `group`, or `cmk_site`. The object type controls which rules and exports apply to it.
 
 ## Labels and Inventory
-Labels and Inventory are mostly the same, but have an important difference.
-They both are Key:Value pairs, can be used in all Rules, Rewritten and Filtered.
 
-The difference is only how they are dealt with their creation.
-While the Labels are imported and fully under control of the Import Plugin,
-can inventory data come from multiple sources. Inventory Keys share their sources identify, as a prefix on their name.
+Labels and Inventory are both key:value pairs. They can be used in all rules, rewritten, and filtered. The difference lies in how they are managed.
+
+**Labels** are imported and fully controlled by the import plugin. When the source changes or removes a label, the Syncer reflects that change.
+
+**Inventory** data can come from multiple sources simultaneously. Each source identifies its keys with a namespace prefix on the attribute name.
 
 Example:
 
-- csv__ipaddress:127.0.0.1
-- csv__alias:Test Server
-- srctest__service_name: Test Service
+```text
+csv__ipaddress: 127.0.0.1
+csv__alias: Test Server
+srctest__service_name: Test Service
+```
 
-In this example, you see Inventory Data of two sources, one is csv, the other is srctest.
-So, the plugin using the key csv, will control all keys with csv/ and the plugin with srctest as key, the others.
+Here, the `csv` plugin controls all keys starting with `csv__`, and the `srctest` plugin controls its own namespace. This prevents conflicts when multiple sources provide data for the same host.
 
+## Account Options for Inventorize
 
-## Account Options for Inventorize Scripts
-To get the Inventory, every Module has an Inventorize Endpoint. This Endpoint is configured using the Account. For Example you can use the same Checkmk Account to Export and to Inventorize, but it needs some more Options then.
+Every module provides an inventorize endpoint that enriches host data with additional attributes. The behavior is configured via the account settings.
 
+| Option                               | Description                                                                                                                                                                   |
+| :----------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `inventorize_key`                    | Namespace prefix used for all attribute names from this source                                                                                                                |
+| `inventorize_match_by_domain`        | If enabled, matches inventory data by domain name (not available in all modules)                                                                                              |
+| `inventorize_match_attribute`        | Restrict inventory to hosts that have a specific attribute value. Example: `application=dns` only adds inventory data to hosts where `application` contains `dns`             |
+| `inventorize_collect_by_key`         | If an attribute on the host contains the name of another host, that other host receives the attribute added to its inventory (numerated), containing the originating hostname |
+| `inventorize_rewrite_collect_by_key` | Rewrite the `collect_by_key` value using a Jinja template before using it as a lookup key                                                                                     |
 
-| Option                      | Description                                                                                                                                                                                               |
-| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| inventorize_key             | Which prefix should be used for the attributes names                                                                                                                                                      |
-| inventorize_match_by_domain | (not everywhere available yet) if true, the Inventory Data <br>will match by domain Name                                                                                                                  |
-| inventorize_match_attribute | Set an attribute name, then the wanted value.<br> e.g. application=dns. The Data is then only added to this hosts <br>inventory, if the hosts has an application attribute containing dns.          |
-| inventorize_collect_by_key  | Enter an Attribute name.<br> If this Attribute Name is found on the Host, and Contains <br>the Name of another Host, this other Host<br> gets the Attribute added (numerated)<br> containing his hostname |
-| inventorize_rewrite_collect_by_key | Rewrite the the collect_by_key value with Jinja |
+## CMDB Mode
 
+CMDBsyncer can also act as a lightweight CMDB itself — without requiring an external source system. In this mode, you create and maintain objects and hosts directly in the UI, assign them to templates, and manage custom fields.
 
-
+See [Use as CMDB](../cmdb/index.md) for full documentation on CMDB mode, templates, and the `cmdb_match` automatic assignment feature.

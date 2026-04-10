@@ -1,23 +1,99 @@
-# Debug Rules
-The options you have can lead to a complex outcome.
-So, best is, to check this outcome on a set of hosts.
+# Debugging
 
-## From Version 3.8
-Since Syncer 3.8, debug_host is deprecated, as all the new export types would lead to too many commands.
+CMDBsyncer provides several debug tools that let you inspect behavior at every stage of the pipeline — before anything is written to a target system.
 
-You can simply add `--debug` and all exceptions will be raised. If you want to debug the outcome of the rules for a single object, use the export command and add `--debug-rules=objectname`. You can combine that with `--debug` to let exceptions raise, but it's not required.
+## --debug Flag
 
-## Legacy before 3.8, deprecated
-For that, every export module contains a debug_host option.
-It's called in the CLI, by the Module as identifier.
+Most CLI commands accept a `--debug` flag. It does two things:
 
-See here the examples for Checkmk and Ansible:
+- Raises exceptions instead of swallowing them, so you see the full stack trace on errors.
+- Sets the Python log level to `DEBUG`, giving you detailed output about HTTP requests, responses, and internal processing directly on the console.
 
-![](img/debug_host_1.png)
+```bash
+./cmdbsyncer checkmk export_hosts --account=myaccount --debug
+```
 
-If you then query a host, you see the tables with information about which Rules are applied and which attributes used;
+This is the first tool to reach for when a sync is failing or producing unexpected results.
 
-![](img/debug_host_2.png)
+## Debugging Rule Outcomes
 
+Rules can produce complex outcomes across many hosts. To inspect exactly which rules matched and which attributes were set for a specific host, use `--debug-rules`:
 
+```bash
+./cmdbsyncer checkmk export_hosts --account=myaccount --debug-rules=myhostname
+```
 
+This prints a detailed table showing:
+
+- Which rules were evaluated for the given host
+- Which conditions matched or did not match
+- The final attribute values that would be sent to the target
+
+You can combine `--debug-rules` with `--debug` to also raise exceptions during the same run:
+
+```bash
+./cmdbsyncer checkmk export_hosts --account=myaccount --debug-rules=myhostname --debug
+```
+
+!!! tip
+    Use `show_hosts` first to confirm the host name as it appears in the syncer database before passing it to `--debug-rules`.
+
+## Inspecting Without Exporting
+
+Some modules provide read-only commands to inspect what would be exported — without making any changes to the target system:
+
+```bash
+# List all hosts that would be exported to a Checkmk account
+./cmdbsyncer checkmk show_hosts --account=myaccount
+
+# List all labels that would exist in Checkmk after the sync
+./cmdbsyncer checkmk show_labels --account=myaccount
+
+# Show hosts present in Checkmk but missing in the syncer
+./cmdbsyncer checkmk show_missing_hosts --account=myaccount
+```
+
+## Dry Run and Saving Requests
+
+To test an export without applying any changes, use `--dry-run`. To save all planned API requests to a file for review or later replay, use `--save-requests`:
+
+```bash
+./cmdbsyncer checkmk export_hosts --account=myaccount --dry-run
+./cmdbsyncer checkmk export_hosts --account=myaccount --save-requests
+```
+
+## API Request Debugging
+
+To see the raw HTTP requests and responses sent to external systems, enable debug mode either via the `--debug` flag (per run) or permanently via `local_config.py`:
+
+```python
+config = {
+    'LOG_LEVEL': 'DEBUG',
+}
+```
+
+See the [App Configuration](lcl_config.md) for all available log settings.
+
+## Web Log
+
+Every sync run creates an entry in the web-based log, accessible from the GUI under **Log**. The log shows:
+
+- Metrics per run (hosts processed, errors, duration)
+- Per-host errors, highlighted in red
+- Which account and command was involved
+
+This is the most practical place to monitor ongoing syncs and spot problems without needing shell access.
+
+→ [Logging documentation](logging.md)
+
+## Advanced Rule Debugging
+
+For development and deep troubleshooting, you can enable verbose condition matching output by setting `ADVANCED_RULE_DEBUG` in `local_config.py`:
+
+```python
+config = {
+    'ADVANCED_RULE_DEBUG': True,
+}
+```
+
+When enabled, every condition evaluation prints whether it matched or not. This produces a lot of output and is intended for development use only.

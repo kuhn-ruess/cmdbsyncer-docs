@@ -47,7 +47,7 @@ Some account types (e.g. CSV or JSON) require additional plugin-specific fields 
 - [Checkmk](../checkmk/accounts.md)
 - [Netbox](../netbox/account.md)
 - [Jira](../jira/index.md)
-- [Inventorize Options](host_labels_inventory.md/#account-options-for-inventorize-scripts)
+- [Inventorize Options](host_labels_inventory.md#account-options-for-inventorize)
 
 ### Global Options
 

@@ -1,19 +1,37 @@
-# Big Environments
-The Syncer is also capable to managing big (>100k hosts) Checkmk Environments. 
-For that, config switches exist, which you can enable in case e.g. Checkmk runs in timeouts when the API is queried.
+# Large Environments (100k+ Hosts)
 
-All of them, you can set in you local_config.py
+The Syncer can manage Checkmk environments with more than 100,000 hosts. Several configuration switches are available to prevent timeouts and reduce memory pressure in these scenarios.
 
+Set all of these in `local_config.py`.
 
+## Timeout Prevention
 
-|Variable     | Funtion  |
-| --- | --- |
-|  CMK_COLLECT_BULK_OPERATIONS   | When Request to Checkmk take too long, <br>the DB Cursor can run in a Timeout.<br> With that switch, DB and CMK Operations<br>will be seperated. Needs more RAM.    |
-| CMK_GET_HOST_BY_FOLDER| Query Hosts from Checkmk Folder by Folder <br> That prevents too big a request for hosts <br> which will end in a timeout in CMK. | 
+| Variable                      | Description                                                                                                                                   |
+| :---------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------- |
+| `CMK_COLLECT_BULK_OPERATIONS` | Separates DB and Checkmk API operations into two phases. Prevents DB cursor timeouts when Checkmk API calls take too long. Requires more RAM. |
+| `CMK_GET_HOST_BY_FOLDER`      | Queries hosts from Checkmk folder by folder instead of in one request. Prevents request timeouts caused by retrieving too many hosts at once. |
 
+## Object Type Limiting
 
+If you have multiple object types in the Syncer database (hosts, applications, contacts, etc.), operations that only need to process hosts do not need to iterate over all other objects. Limiting by object type happens at the database level and is significantly faster than using standard filter rules.
 
-## Limiting objects
-It's likely that you have different types of objects in the Syncer Database. In order that the Syncer does not need to calculate on objects not relevant for an operation, it's possible to limit the objects which will be used. That happens directly at Database level, so way faster than just using the normal Filter.
+To configure it:
 
-To set this up, switch to the Account for the Operation,  add a Plugin Setting, Select the Operation on which you want to use it, and the objects you would like to use it on.
+1. Open the Checkmk account in the Syncer
+2. Add a **Plugin Setting**
+3. Select the **operation** you want to limit (e.g. `export_hosts`)
+4. Select the **object types** to include
+
+This setting applies to all commands using that account.
+
+## Checkmk Version Compatibility
+
+For Checkmk 2.2 environments, set:
+
+```python
+config = {
+    'CMK_SUPPORT': '2.2',
+}
+```
+
+See [Local Config Variables](config_vars.md) for all Checkmk-specific config options.

@@ -1,18 +1,18 @@
 # Rewrite Hostnames
 
-The renaming of Hostnames must happen on import. For most of the integrated plugins, you can do that using the Jinja2 Template language. This works since version 3.4. For that, an Account has to be set for your import. If you save that account, a Custom Attribute 'rewrite_hostname' will appear.
+Hostname rewrites must happen at import time. Most import plugins support this via a Jinja2 template configured on the account (available since version 3.4).
+
+To set it up, open the account used for your import. A field named `rewrite_hostname` is available in the account's custom attributes section.
 
 ## Example
-Would the host have an Attribute dns, a rewrite could look like this:
 
-<pre>
+If a host has an attribute `dns`, a rewrite that appends the DNS suffix would look like this:
+
+```jinja
 {{HOSTNAME}}.{{dns}}
-</pre>
+```
 
-![](img/rewrite_hostname.png)
+`{{HOSTNAME}}` is always the original hostname from the source. Any other host attribute can be used by name.
 
-
-Note that HOSTNAME is the internal variable for the current hostname, and dns can the exact name of the attribute the has.
-
-If you change that setting later, make sure to remove the hosts with the not longer matching hostnames. Because for Syncer, a Host after rewrite will be a completely new object.
-
+!!! warning
+    If you change the rewrite template later, the previously imported hosts — with their old hostnames — will remain in the database. To the Syncer, a rewritten hostname is a completely new object. Remove the old hosts manually after changing the template.

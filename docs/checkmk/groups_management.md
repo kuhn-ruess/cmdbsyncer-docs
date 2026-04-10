@@ -1,49 +1,46 @@
 # Groups Management
 
-The Group Management Feature let you create contact-, Host- and Service-Groups based on Attributes you get from your Hosts.
+The Groups Management feature creates Contact-, Host-, and Service-Groups in Checkmk based on attributes from your hosts.
 
-The Syncer has a local Cache for all groups he created. That can be found in Rules → Checkmk → Object Cache. This is needed in order that the Syncer know which groups he can safely remove from Checkmk. So groups you created yourself are not touched. 
-If you would delete the Cache Entry, the Syncer only takes over the groups with the next sync, if they are provided from your source again.
+Go to: _Modules → Checkmk → Manage Host-/Contact-/Service-Groups_
 
-Also note, Checkmk has the Limitation that you can't have groups with the same name, even if it's another type. So, you can't have Contact Groups with the same name as Hostgroups. Use the Rewrite feature when needed.
+## Object Cache
 
+The Syncer maintains a local cache of all groups it has created (_Rules → Checkmk → Object Cache_). This allows it to safely remove groups from Checkmk when they are no longer needed — without deleting groups that were created manually by a user.
 
+If you delete a cache entry, the Syncer will only re-take ownership of that group when it is provided again by the source data.
 
-
+!!! note
+    Checkmk does not allow two groups of different types to share the same name. You cannot have a Contact Group and a Host Group with identical names. Use the Rewrite feature to add a prefix if needed.
 
 ## Rule Parameters
-The Rule to configure everything you find in:
 
-**Modules → Checkmk → Manage Host-/Contact-/Service - Groups**<br>
+| Option        | Description                                                                           |
+| :------------ | :------------------------------------------------------------------------------------ |
+| Group Name    | Type of group to create: Contact Group, Host Group, or Service Group                  |
+| Foreach Type  | Iterate by attribute name, by attribute values, or by objects                         |
+| Foreach       | Attribute name or value to iterate. Use `*` at the end as a wildcard (e.g. `dhcp*`)   |
+| Rewrite       | Jinja template for the group ID. `{{name}}` refers to the found value                 |
+| Rewrite Title | Jinja template for the group display title                                            |
 
-
-| Option        | Description                                                                                                                                             |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Group Name    | Create Contact Group, Host Groups or Service Groups                                                                                                     |
-| Foreach Type  | Iterate either an Attribute, values of an Attribute, or Objects                                                                                          |
-| Foreach       | The Attribute or Value, depending on Foreach Type. <br> If you use by Value, you can use a * to indicate<br>every Value starting with. Example:  dhcp*  |
-| Rewrite       | Rewrite the id of the Group, by Using Jinja.  {{name}} will refer to the found value                                                                    |
-| Rewrite Title | Same, but for the Group's Title                                                                                                                          |
-
+The Rewrite fields support all custom [Syncer Jinja Functions](../advanced/jinja_functions.md).
 
 ## Example
-Let's say you Hosts have an attribute **application** stating their job.  
-Now set all that the **application** attributes to become a Checkmk Contact Group, and use cg_ as a prefix in their Name.
 
-Set:
+Your hosts have an attribute `application` that indicates their role. You want to create a Checkmk Contact Group for each unique application value, prefixed with `cg_`.
 
-1.  __Group Name__ to *Contact Groups*, 
-2. **Foreach Type** to *Foreach Attribute*, 
-3. For **Foreach** you set *application* (application is the attribute your Hosts have).
+1. Set **Group Name** to _Contact Groups_
+2. Set **Foreach Type** to _Foreach Attribute_
+3. Set **Foreach** to `application`
+4. Set **Rewrite** to `cg_{{name|lower}}`
+5. Set **Rewrite Title** to `{{name}}`
 
-If you just want the attribute value, you're done. But since we want the prefix, we set:
+After committing changes, run:
 
-1. **Rewrite** to *cg_{{name}}*
-2. **Rewrite Title** just to *{{name}}*. 
+```bash
+./cmdbsyncer checkmk export_groups ACCOUNTNAME
+```
 
-That's it, now "Commit Changes" and export the Groups to Checkmk.
+## Wildcard Values
 
-## Export from Commandline
-If you want to export the groups to checkmk manually, not using Cron you can do:
-
-**./cmdbsyncer checkmk export_groups ACCOUNTNAME**
+If your attribute values follow a naming pattern — for example `contact_1`, `contact_2`, `contact_3` — you can use `contact_*` as the Foreach value to match all values starting with that string. The wildcard only works at the end of the string.

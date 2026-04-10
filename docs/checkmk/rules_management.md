@@ -1,28 +1,32 @@
 # Manage Checkmk Setup Rules
 
-Out of the box, it's possible in Checkmk to create Rules with not much effort. This applies to Threshold Rules and also to for Rules which activate Active Checks, for example. But as soon every Check needs a custom Parameter, it gets harder to set up.
+The Syncer can create, update, and delete Checkmk setup rules automatically — for example threshold rules, active check configurations, or contact group assignments. Rules are created for specific hosts based on their attributes, and deleted again when the conditions no longer apply.
 
-The CMDB Syncer can help here in two Ways. He can add custom Attributes to your Hosts, which you then can use in some of the rules. This is described [here](cmk_attributes.md)
-
-As alternative, you can use this Feature of Syncer, to create a bigger bunch of rules. And the best here, the Syncer also deletes the rules again, if not needed.
+Go to: _Modules → Checkmk → Create Checkmk Setup Rules_
 
 ## Configuration Options
-**Modules → Checkmk →Create Checkmk Setup Rules**<br>
 
+| Option                   | Description                                                                           |
+| :----------------------- | :------------------------------------------------------------------------------------ |
+| Ruleset                  | Checkmk ruleset ID                                                                    |
+| Folder                   | Target folder in Checkmk (Jinja supported)                                            |
+| Folder Index             | Position of the rule within the folder                                                |
+| Comment                  | Rule comment                                                                          |
+| Value Template           | Jinja template for the rule value (check Checkmk Swagger API for the expected format) |
+| Condition Label Template | Syntax: `label:value`. Jinja supported. `{{HOSTNAME}}` available.                     |
+| Condition Host           | Comma-separated list of hostnames. Jinja supported including `{{HOSTNAME}}`.          |
 
-| Option                  | Description                                                          |
-| ----------------------- | -------------------------------------------------------------------- |
-| Ruleset                 | Checkmk's Ruleset ID                                                 |
-| Folder                  | Folder in Checkmk (Jinja Support)                                    |
-| Folder Index            | Index of Rule in Folder                                              |
-| Comment                 | Rules Comment                                                        |
-| Value Template          | Jinja for the Rules Value (check in CMK)                             |
-| Conditon Label Template | Syntax: label:value, you can use Jinja. {{HOSTNAME}} also available  |
-| Condition Host          | Comma seperated List of Hosts, Jiunja Support including {{HOSTNAME}} |
+## Finding the Ruleset ID and Value Format
 
+The easiest way to find the correct ruleset ID and the expected JSON value format is to:
 
-# Full Examples
+1. Create an example rule in Checkmk manually
+2. Open the Checkmk Swagger API documentation
+3. Look up the rule via the API and copy the JSON value
 
-- [Manage Contact Groups](recipe_contact_groups.md).  Check this Example to see how the Feature can be setup.
+See [Manage Contact Groups](recipe_contact_groups.md) for a full step-by-step example of this workflow.
 
+## Full Example
 
+- [Manage Contact Groups](recipe_contact_groups.md) — full walkthrough including group creation and assignment rule setup
+- [Create Checkmk Rules Automatically](recipe_checkmk_rules.md) — example with active check rules

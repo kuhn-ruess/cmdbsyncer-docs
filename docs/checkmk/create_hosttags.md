@@ -1,49 +1,43 @@
-# Hosttags
+# Host Tags
 
-You can use the Syncer to manage given Host tags groups. 
-This means, you can use the Attributes of your Hosts, to add and remove the predefined Tags.
+The Syncer can manage predefined host tag groups in Checkmk. Based on your host attributes, it adds and removes the tags that belong to those groups automatically.
 
-Just keep in mind, that the Syncer can't remove Hostags which are still in use by rules.  In such cases, it will just no longer update the group, but not throw an exception. Just a silent error is shown.
+Go to: _Modules → Checkmk → Manage Host Tags_
 
-This feature is also using Syncer Host-Based caching to speed up even the extraction of Data and rewrites from over 100,000 Hosts. The cache is auto-refreshed if the Host changes.
+!!! note
+    The Syncer cannot remove a tag that is still in use by a Checkmk rule. In that case, the tag group is silently skipped — no exception is thrown.
 
-## How to configure
-Go to:
+This feature uses host-based caching for performance. The cache is refreshed automatically when a host changes, making tag exports fast even in environments with more than 100,000 hosts.
 
-_Modules→ Checkmk → Manage Hosttags_
+## Configuration
 
-Create a new entry.
+| Field                  | Description                                                           |
+| :--------------------- | :-------------------------------------------------------------------- |
+| Group Topic Name       | The category the tag group is shown under in Checkmk                  |
+| Group Title            | Human-readable title of the group, e.g. "My Locations"                |
+| Group ID               | Internal ID of the tag group, e.g. `my_locations`                     |
+| Group Help             | Help text shown to users in the Checkmk UI                            |
+| Group Multiply by List | Create multiple tag groups from a list (see below)                    |
+| Group Multiply List    | Syncer attribute containing the list. Use `get_list()`.               |
+| Filter by Account      | Only create tags based on objects managed by this account             |
+| Rewrite ID             | Jinja template for the tag ID, e.g. `{{name\|lower}}`                 |
+| Rewrite Title          | Jinja template for the tag display title, e.g. `{{name\|capitalize}}` |
+| Enabled                | Enable or disable this rule                                           |
 
-| Field                  | Description                                                                                           |
-| :--------------------- | :---------------------------------------------------------------------------------------------------- |
-| Group Topic Name       | The Category used for the Group in Checkmk                                                            |
-| Group Title            | The Human Readable Title of the Group, Example: My Locations                                          |
-| Group ID               | The internal ID of the group. Example my_locations                                                    |
-| Group Help             | Help text for the User                                                                                |
-| Group Multiply by List | Create a set of multiple Groups, based on a list. See docu below                                      |
-| Group Multiply List    | Syncer Attribute containing a list, use get_list(), See docu below                                    |
-| Filter by Account      | Should the Syncer create the Tags based on Attributes only from objects managed by given Account Name |
-| Rewrite ID             | Jinja rewrite for the internal ID of tag. Example: {{name\|lower()}}                                  |
-| Rewrite Title          | Jinja rewrite the Human Readable Name of Tag Example: {{HOSTNAME\|capitalize()}}                      |
-| Enabled                | Enables the Rule                                                                                      |
+All Rewrite fields support custom [Syncer Jinja Functions](../advanced/jinja_functions.md) and the `{{HOSTNAME}}` placeholder.
 
-
-Note 1: that {{ HOSTNAME }} is replaced by the Hostname. You can use every Host attribute here.
-Also, the Rewrite Fields support custom [Syncer Functions](../advanced/jinja_functions.md).
-
-Note 2: To the rewrite_id field, the cmk_cleanup_tag_id() function is applied automaticly. This is important to know, if you wan't to set tags. Make sure to use that Jinja Function.
-
+!!! important
+    The `cmk_cleanup_tag_id()` Jinja function is applied automatically to the Rewrite ID field. If you reference this tag ID elsewhere — for example in export rules — make sure to apply the same function to ensure the IDs match.
 
 ## Group Multiply by List
-If you use this mode, the Syncer will create multiple groups which can't be rewritten and are based fully on the outcome of a list.
-In This case, you must use {{name}} as Placeholder for Topic Name and Title.
-In Group Multiply by List, you need to provide a Python list. This is archived with the get_list helper.
 
-Example:
+In this mode, the Syncer creates multiple tag groups based on a list, without applying Rewrite templates. Use `{{name}}` as the placeholder in the Topic Name and Title fields.
+
+In the _Group Multiply List_ field, provide a Python list using the `get_list()` helper:
+
+```jinja
+{{YOUR_LIST_ATTRIBUTE|safe}}
+{{get_list(['Name1', 'Name2', 'Name3'])|safe}}
 ```
-{{YOUR_LIST_ATTRIBUTE|safe}} # real list from attributes
-{{get_list(['Name1', 'Name2', "Name3'])|safe}} # String given by you
-```
 
-Make sure to use |safe otherwise the System will escape that list
-
+The `|safe` filter is required — without it, the list syntax is escaped and the feature does not work.

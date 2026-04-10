@@ -1,41 +1,53 @@
 # Cronjobs
 
-The Syncer can handle the needed Cronjobs for your Automation.
-You can choose all the Modules the Syncer Offers, and pass an Account which contains the config. Config would for example be a path of an CSV File.
+The Syncer manages all its automation cronjobs internally. You define which modules to run, in what order, and for which accounts — all from the UI.
 
-To use the Feature, create a Cronjob Group:
+## Cronjob Groups
 
-## Cronjob Group
-__Cronjobs → Cronjob Group__
+Go to: _Cronjobs → Cronjob Groups_
 
-Each Group as an Interval and a Time range in which it should run.  With the Group, you set then the Jobs you want to run, and they will run in that order. If a Job Crashes, the hole Group will stop.  That is to, for example, not to delete hosts if the import failed.
+A Cronjob Group defines:
+
+- An **interval** — how often the group should run
+- A **time range** — the window during which the group is allowed to run
+- An ordered list of **jobs** to execute
+
+Jobs inside a group run sequentially. If any job fails, the entire group stops. This is intentional — for example, you do not want hosts to be deleted from Checkmk if the import step failed beforehand.
 
 ## State Table
-__Cronjobs → State Table__
 
-The State table keeps one Entry for all of your Groups. There you see the Time when the job runs next, or the last message and if there are errors.
+Go to: _Cronjobs → State Table_
 
-If you want to reset jobs, just delete or edit these Entries.
+The State Table keeps one entry per group, showing:
 
+- When the group will run next
+- The result of the last run
+- Any error messages
 
-## Run the Jobs
-The Syncer does not have an integrated cron, so you need to call an Endpoint to enable everything. That can be done every 5 or 10 minutes. 
-The Command you need to start is:
+To force a group to run immediately or to reset its state, delete or edit its State Table entry.
 
+## Running the Scheduler
 
-``` bash
+The Syncer does not have a built-in scheduler daemon. Instead, call the run command periodically from your system cron — every 5 to 10 minutes is typical:
+
+```bash
 ./cmdbsyncer cron run_jobs
 ```
 
-And here is the Example including loading the local environment:
+**Full example with environment activation:**
 
-``` bash
+```bash
 */5 * * * * cd /opt/cmdbsyncer && source ./ENV/bin/activate && ./cmdbsyncer cron run_jobs
 ```
 
-Or all in Docker:
+**Docker:**
 
-``` bash
+```bash
 */5 * * * * docker exec CONTAINER_ID /srv/cmdbsyncer cron run_jobs
 ```
 
+**Docker Compose:**
+
+```bash
+*/5 * * * * docker compose -f /opt/cmdbsyncer/docker-compose.yml exec -T cmdbsyncer /srv/cmdbsyncer cron run_jobs
+```

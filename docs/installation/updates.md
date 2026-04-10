@@ -1,40 +1,39 @@
-# Update CMDB Syncer
+# Update CMDBsyncer
 
-As of now, if you want to Update the CMDB Syncer, just pull it from git agin
+## Update Process
 
-```
+Pull the latest code from git:
+
+```bash
 cd /opt/cmdbsyncer
 git pull
 ```
 
-If using docker, now rebuild your image and restart.
+If you are using Docker, rebuild your image and restart the container.
 
-If you have the UWSGI based installation, just reload uwsgi.
+If you have a UWSGI-based installation, reload UWSGI:
 
-```
+```bash
 service uwsgi reload
 ```
 
-__Warning:__
-Always check Changelog before you Update:
-[Changelog](../updates/changelog.md)
+Then run the self-configuration to apply any new config defaults:
 
-The run:
-
-```
+```bash
 ./cmdbsyncer sys self_configure
 ```
-## Problems
-Sometimes the Application will not start up. In these cases, check the UWSGI Logs in /var/log.
-It depends on which files your Distribution will log.
 
-It's likely, then that a Module has changed. You can update the Modules easily:
+!!! warning "Check for breaking changes first"
+    Always review the [Update Notes](../updates/update_notes.md) before updating to check for changes that require manual action.
 
-```
+## Dependency Updates
+
+If the application fails to start after an update, check the UWSGI logs in `/var/log`. A missing or outdated Python module is the most common cause. Update all dependencies with:
+
+```bash
 cd /opt/cmdbsyncer
 source ENV/bin/activate
 pip install -r requirements.txt
 ```
 
-If you use Docker, you should not run n any problems. 
-
+Docker users will not encounter this — all dependencies are installed automatically when rebuilding the image.

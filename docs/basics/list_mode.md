@@ -1,32 +1,26 @@
-# List Variable Mode
+# Outcomes List Mode
 
-Some Rules support the Iteration of List-based Variables.
-These Rules have two extra options in their outcome:
+Some rules support iterating over list-based variables. This multiplies the number of rule outcomes by looping over the items in a list attribute.
 
-![](attachments/Pasted%20image%2020250122174915.png)
+Rules that support this feature show two extra fields in the outcome section:
 
-This function basically multiplies the Outcomes by iteration over the Attribute given in 'List Variable Name' Field. Also, you need to activate it using the Checkbox.
+- **List Variable Name** — the attribute containing the list to iterate over
+- **Enable List Mode** checkbox — must be checked to activate the feature
 
-In the 'Param' Field, you then use `LIST_VAR` to access the loop Variable.
+In the outcome _Param_ field, use `LIST_VAR` to access the current loop variable.
 
 ## Example
-Best to Understand is using an Example:
 
-Your host has this variable:
+Your host has this attribute:
 
-``` python
-  Variablename: [{'name': 'Harry'}, {'name': 'Hirsch'}]
-```
-
-If you then set 
 ```python
-{{LIST_VAR['name']}}
+contacts: [{'name': 'Harry'}, {'name': 'Hirsch'}]
 ```
-as Param, 
 
-The rule will now create two more Outcomes with 'Harry' and 'Hirsch' for the used field.
-All other Outcome Params will be duplicated to 'Harry' and 'Hirsch'.
+Set _List Variable Name_ to `contacts` and use `{{LIST_VAR['name']}}` as the Param value.
 
-If you have more List Variables in one rule, you need to make sure that the Order of the given List Variables are always the same. Ideally, it's always the same list, but just another Dict key from it. Otherwise Data can be mixed up.
+The rule will now produce two separate outcomes — one with `Harry` and one with `Hirsch`. All other outcome fields are duplicated for each iteration.
 
+## Multiple List Variables in One Rule
 
+If a rule has more than one list variable, make sure the lists are always in the same order and have the same length. Ideally, they refer to different keys from the same list of dicts. If the lists are independent and have different orders or lengths, data can be mixed up unexpectedly.

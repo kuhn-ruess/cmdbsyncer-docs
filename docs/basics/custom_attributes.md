@@ -1,31 +1,26 @@
-# No Data source is perfect
+# Custom Attributes
 
-But there is a solution:
-CMDB Syncer Supports the Rule-based assignment of new Attributes.
+No data source is perfect. CMDBsyncer lets you enrich your hosts with additional attributes using rule-based assignments — independent of what the source provides.
 
-It's the first possible Rule and works for all other Modules:
+Custom Attribute rules are the first rule type applied and work globally across all modules.
 
-![](img/custom_attributes_1.png)
+Go to: _Modules → Syncer Rules → Custom Attributes_
 
-It defines a condition and an outcome:
+A rule consists of a [Condition](conditions.md) and an outcome:
 
-![](img/custom_attributes_2.png)
+- **Attribute Name** — the name of the new or existing attribute to set
+- **Attribute Value** — the value to assign
 
-The Design of the Rule is like in every other rule, you define a [Condition](conditions.md).
+## Jinja Support in Outcome Values
 
-![](img/custom_attributes_3.png)
+Since version 3.12.1, the outcome value field supports Jinja templating. You can reference any host attribute and the `{{HOSTNAME}}` placeholder:
 
-Just the Outcome is special for every rule:
+```jinja
+{{HOSTNAME}}-{{location|lower}}
+```
 
-![](img/custom_attributes_4.png)
+This makes it easy to compose derived attributes from existing data.
 
+## Rule-based vs. Rewrite-based Custom Attributes
 
-## Create real Custom Attributes with Rewrites
-
-In the Module-Specific Rewrite Section, it is since Version 3.3 possible to create New labels using Templates. Please refer to the [Rewrite Attributes](rewrite_attributes.md) This is more powerful than this global option.
-
-## Jinja Support in Custom Attributes
-
-Since Version 3.12.1, the Outcome value of Custom Attribute rules supports Jinja templating. You can use all of the host's attributes and the `{{HOSTNAME}}` placeholder in the value field.
-
-
+This global rule creates attributes before any module-specific processing. For more powerful transformations — such as splitting values, converting lists, or using complex Jinja logic — use the [Rewrite Attributes](rewrite_attributes.md) feature instead. Rewrites are configured per module and offer additional operations.

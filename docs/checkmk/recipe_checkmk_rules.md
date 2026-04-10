@@ -1,28 +1,28 @@
-# Automatically Create Rules
+# Create Checkmk Rules Automatically
 
-Like the principle described [here](recipe_contact_groups.md) the Syncer can also create all Kinds of Rules, even Active Checkmk Checks.
+The Syncer can create any type of Checkmk setup rule automatically — including active checks, threshold rules, and more. Rules are created per host based on conditions and deleted again when the conditions no longer apply.
 
-This Recipe will not go in Detail how to obtain the Needed Information, instead just showing the Example Syncer Rule. The Details you find in the mentioned link.
+This guide shows the principle. For the full step-by-step workflow including how to find ruleset IDs and value formats, see [Manage Contact Groups](recipe_contact_groups.md).
 
-Fist in Checkmk create one Example Rule of the Type you want, configure it the way you want.
+## Workflow
 
-Copy the Rule Name and the API Value like described [here](recipe_contact_groups.md) and create a new Syncer Rule in 
+1. Create one example rule in Checkmk of the type you want
+2. Copy the ruleset name and API value (see [recipe_contact_groups.md](recipe_contact_groups.md))
+3. Create a new Syncer rule in _Modules → Checkmk → Create Checkmk Setup Rules_
+4. Set conditions for which hosts should get the rule
+5. Paste the API value into the **Value Template** field
+6. Replace host-specific parts with `{{HOSTNAME}}` or other attribute placeholders
 
-**Modules → Checkmk → Create Checkmk Setup Rules**<br>
+## Value Template
 
-As Rule Condition, you set for which hosts you want to create the Checkmk Rule.
-Then replace in the API Value with {{HOSTNAME}} where you need it (or use with the same Syntax every other Attribute of the host) and put it in the Value Template Field. 
+The value template supports full Jinja. Any host attribute can be used as a placeholder. The **Condition Host** field also supports Jinja and comma-separated lists.
 
-Most likely, in this example, the condition_label_template stays empty and you just place {{HOSTNAME}} as Condition host. Technically, you can add more than one Hostname comma separated, if this makes sense. Since this Field also supports Jinja, you can do all Jinja Magic with your Labels, which result in a Comma separated list. 
+## Example: Active Certificate Check
 
-The Fields for Value Tamplate, and Condition Template of course also support [Jinja](https://jinja.palletsprojects.com)
+This example creates an active certificate check for each host:
 
-This is what Active Checks for Certificates would look like:
+![Certificate check rule in Syncer](img/recipe_rules_1.png)
 
-![](img/recipe_rules_1.png)
+Result in Checkmk after export:
 
-Result in Checkmk for that:
-
-![](img/recipe_rules_2.png)
-
-
+![Certificate check rules in Checkmk](img/recipe_rules_2.png)

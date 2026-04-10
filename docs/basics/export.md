@@ -41,7 +41,7 @@ Most modules offer read-only commands to inspect what would be exported:
 ./cmdbsyncer checkmk export_hosts --account=my-checkmk --debug-rules=myhostname
 ```
 
-→ [Debugging documentation](debug.md)
+→ [Debugging documentation](debug_rules.md)
 
 ## Controlling Which Hosts Get Exported
 

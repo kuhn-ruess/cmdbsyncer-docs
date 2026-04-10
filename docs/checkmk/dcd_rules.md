@@ -1,16 +1,13 @@
 # DCD Rules
-Starting with Checkmk 2.3, you can export DCD Rules to Checkmk. But compared to the Other Checkmk API Endpoints, the DCD Endpoint is still a bit limited. So the export in this Case is not a Sync as in other Modules, but can Create and Delete Rules.
 
+Starting with Checkmk 2.3, you can manage DCD (Dynamic Configuration Daemon) rules via the Syncer. Unlike most other Checkmk modules, the DCD API currently supports creating and deleting rules but not updating them in place — so this module creates and deletes rules rather than syncing them.
 
-Go to: **Modules →Checkmk →Manage DCD Rules**
+Go to: _Modules → Checkmk → Manage DCD Rules_
 
-The Rules work the same way as the other Syncer Rules do. You can create DCD Rules, with the Outcomes, and use Jinja Template Power in almost every Field.
-
-The Options 1 to 1 reflect the options, like you would set up a DCD Rule directly in Checkmk
-
+DCD rules are configured using the same Syncer rule system as all other modules. You can use Jinja templates in almost every field. The available options mirror what you would configure directly in the Checkmk DCD UI.
 
 ## Command Line
-To Export the DCD Rules using the CLI, use the following Command:
 
-**./cmdbsyncer checkmk export_dcd_rules ACCOUT**
-
+```bash
+./cmdbsyncer checkmk export_dcd_rules ACCOUNTNAME
+```

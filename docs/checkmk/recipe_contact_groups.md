@@ -1,85 +1,77 @@
-# Manage Checkmk Contact Groups
-If you want to manage contact groups with the Syncer including the creation of the assignment rules, some things need to be prepared.
+# Manage Contact Groups
 
-1. You need to have Hosts with the Attributes which have the Names of the wanted groups.
-2. You have to create these groups. This is described here: [Groups Management](groups_management.md)
-3. You have to create the Assignment Rules. This can be done with the [Rules Management](rules_management.md) Feature.
+This guide shows how to create Checkmk Contact Groups from host attributes and set up the corresponding assignment rules — all managed by the Syncer.
 
-As a simple Example, we want to create Contact Groups for Location and Operating System of the Host.
+## Overview
 
-## The Attributes
-Using the Import, or the Inventory functions, the Hosts must have the Attributes. In our example, we go with: **os** and **location**.
+Three things are needed:
 
-![](img/recipe_cg_1.png)
+1. Hosts with the attributes that should become group names
+2. Group creation rules (see [Groups Management](groups_management.md))
+3. Assignment rules (see [Manage Checkmk Setup Rules](rules_management.md))
 
+## Step 1: The Attributes
 
-## The Group's Rule
-First we create the Rule for creating the Groups.
-**Modules → Checkmk → Manage Host-/Contact-/Service- Groups**<br>
-Since the information is clean, you don't need to fill the Rewrite or the Rewrite Title.
-But if you want to change something, could do for example:
-Rewrite: cg_{{name|lower}}
-Rewrite Title: {{name|capitalize}}
-Note: The Screenshot show Regex instead of the new Rewrite Fields
+Import the attributes you want to use as group names. In this example, the hosts have `os` and `location` attributes.
 
-![](img/recipe_cg_2.png)
+![Host attributes in the Syncer](img/recipe_cg_1.png)
 
-The sync will send them then to Checkmk:
+## Step 2: Create the Group Rule
 
-![](img/recipe_cg_3.png)
+Go to: _Modules → Checkmk → Manage Host-/Contact-/Service-Groups_
 
-Where you find them:
-![](img/recipe_cg_4.png)
-(Please note that in the current Version, no syncer Prefixes needed any more because of an internal cache). 
+Create a rule for the `location` attribute:
 
-HINT: If you have values like contact_1 to contact_x, you can also use contact_* as a Wildcard for the value to trigger all values starting with the string. Only works at the End of the string.
+- **Group Name:** Contact Groups
+- **Foreach Type:** Foreach Attribute
+- **Foreach:** `location`
 
-## The Assignment Rule
-Now you create a normal Checkmk rule. Even that this example shows the Assignment of Hosts to Contact groups, you can adapt it to every other Rule type.
+Optionally, use Rewrite to control the group ID and title:
 
-### Figure out the Rule properties
-To configure the Syncer, you need to have the Rule properties. You can find them, when you navigate to the rule in Checkmk:
+- **Rewrite:** `cg_{{name|lower}}`
+- **Rewrite Title:** `{{name|capitalize}}`
 
-You need to Ruleset Name:
-![](img/recipe_cg_5.png)
+![Group creation rule](img/recipe_cg_2.png)
 
-And the Value Representation of it:
-![](img/recipe_cg_6.png)
-Then:
-![](img/recipe_cg_7.png)
+After exporting, the groups appear in Checkmk:
 
-You notice the syncer_id prefix in there. 
+![Groups in Checkmk](img/recipe_cg_3.png)
 
-### Setup the Rule
-**Modules → Checkmk → Create checkmk Setup Rules**<br>
+![Where to find the groups](img/recipe_cg_4.png)
 
-This Rule now can have conditions, that is useful if you want to use {{hostname}} as a placeholder.  In our case, it's only about creating a Checkmk rule, which has a simple label condition. 
+!!! tip
+    If your values follow a pattern like `contact_1`, `contact_2`, use `contact_*` as the Foreach value to match all values starting with that string.
 
-This looks just like this:
-![](img/recipe_cg_8.png)
+## Step 3: Find the Ruleset Parameters
 
+To create the assignment rule, you need the Checkmk ruleset ID and value format.
 
+Navigate to the rule in Checkmk to find the ruleset name:
 
-Note the {{ location }} Jinja Placeholder. With this Syntax, you can refer to every Attribute. And you can do every operation which [Jinja](https://jinja.palletsprojects.com/) can do. 
+![Ruleset name](img/recipe_cg_5.png)
 
-For os, you just repeat this step and replace location with os.
+Then use the Checkmk API to get the value format. Open the API documentation and look up an existing rule of that type:
 
-And now we can run the export:
+![API value format step 1](img/recipe_cg_6.png)
 
-![](img/recipe_cg_9.png)
+![API value format step 2](img/recipe_cg_7.png)
 
-Check the Result in Checkmk:
-![](img/recipe_cg_10.png)
+## Step 4: Create the Assignment Rule
 
-Thats it, after Activate the Changes it's done.
+Go to: _Modules → Checkmk → Create Checkmk Setup Rules_
 
+Create a rule that assigns hosts to the contact group. Use `{{ location }}` to reference the host attribute as the condition label value:
 
+![Assignment rule configuration](img/recipe_cg_8.png)
 
+Repeat for the `os` attribute.
 
+## Step 5: Export and Verify
 
+Run the export and check the result in Checkmk:
 
+![Export command](img/recipe_cg_9.png)
 
+![Result in Checkmk](img/recipe_cg_10.png)
 
-
-
-
+Activate the changes in Checkmk — done.

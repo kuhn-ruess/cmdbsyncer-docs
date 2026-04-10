@@ -1,72 +1,64 @@
-# Set all Kinds of Attributes to Checkmk
+# Checkmk Attributes and Host Tags
 
-If you'd like to, you can set a rule to convert Syncer Attributes into Checkmk Attributes, or even just create your Custom ones using Placeholders. Only the Name needs to match the required Checkmk Name. To make that sure for existing Attributes, you can rewrite them using a rule in CMK → Rewrite Attributes. 
+The Syncer can set any Checkmk host attribute — including built-in attributes like IP address, management board, and SNMP community, as well as custom host tags.
 
-The Easy way to find out this Attribute's Name, is to check with the Swagger Documentation provided in Checkmk.
+All of this is configured in: _Modules → Checkmk → Set Folder and Attributes of Host_
 
-It's also possible to set Host Tags this way, because a Host Tag is nothing other then a Attribute in Checkmk.
+## Finding the Attribute Name
 
-Let's do some Examples.
-The Rule for everything is **Checkmk → CMK Export Rules**.
+If you do not know the exact attribute name, set the attribute manually on a host in Checkmk and then query that host via the Checkmk Swagger API.
 
-## Where to find the Attribute Name for Checkmk
-If you don't know the name already, just set a Host manually with this attribute and query it using Swagger Documentation.
-Here is an Example how to do that:
+Open the Swagger documentation:
 
-Open Swagger:
-![](img/open_swagger.png)
+![Open Swagger](img/open_swagger.png)
 
-Find and Test Endpoint:
+Find and test the host endpoint:
 
-![](img/api_host_endpoint.png)
+![Host API endpoint](img/api_host_endpoint.png)
 
+The response JSON shows you the attribute names as used by the API.
 
-## How to Unset an Attribute
+## Setting an IP Address
 
-If the Value of an Attribute is `None` or `False`, the Syncer automatically removes the Attribute in Checkmk. But the syncer will not remove attributes, if it's just disappeared in his Database. The Reason for that is because in Checkmk every user can also set attribute.  Therefore, the Syncer would not know whether this was an Attribute set by him or not. 
+To set the IP address from a Syncer attribute, use the **CMK Attribute by Syncer Attribute** action. If your attribute is already named `ipaddress`, no rewrite is needed. Otherwise, add a rewrite rule first.
 
+![Set IP address attribute](img/outcome_create_attribute.png)
 
+In the Checkmk API, the attribute looks like this:
 
-## Examples
+![IP address in API](img/api_ipaddress.png)
 
-### Setting an IP Address Attribute
-To use an existing Syncer Attribute, which either already have the correct name ipaddress, or is rewritten to this name, use the "Create Checkmk-Attribute" Action like this:
+## Setting the Management Board
 
-![](img/outcome_create_attribute.png)
+Use the **Custom CMK Attributes** action to create attributes with a value derived from the hostname:
 
-In the Checkmk API, it would look like this:
-![](img/api_ipaddress.png)
+![Management board attribute](img/outcome_custom_attribute.png)
 
-### Setting Management Boards as Attributes
-For this, you can create Custom Attributes. If for example all your physical hosts, have a DNS name for the Management Board which contains the actual Hostname, you can do it like this:
+In Checkmk, the management board requires two attributes — make sure to add both as separate outcomes in the same rule.
 
-![](img/outcome_custom_attribute.png)
-Here the Hostname could be srvlx100, the management Board rib-srvlx100.
+![Management board in API](img/api_managementboard.png)
 
-In addition, please note the Second Outcome, since the Management Boards require at least to settings.
+## Setting Nested Attributes (e.g. SNMP Community)
 
-And here how to find this example in the CMK API:
-![](img/api_managementboard.png)
+Some Checkmk attributes are dictionaries. The Syncer detects this format and sends it correctly. Example for SNMP community:
 
-
-### Setting nested attributes like SNMP Community.
-Sometimes you will see that attributes you want to set are in the form of a Dictionary, example the SNMP Community:
-
-``` json
-"snmp_community": {  
-	"type": "v1_v2_community",  
-	"community": "public"  
-}
-```
-
-Good news, the Syncer can detect that format to, converts it and will send it to Checkmk.
-Just set it like this as a custom Checkmk Attribute
-
-```
+```text
 snmp_community:{
 "type": "v1_v2_community",
 "community": "public"
 }
 ```
 
-Please note that for the Key Name, no Ticks are used.
+Note that the key (`snmp_community`) does not use quotes in this syntax.
+
+## Unsetting an Attribute
+
+If the value of an attribute is `None` or `False`, the Syncer automatically removes it from the host in Checkmk. However, the Syncer does not remove an attribute simply because it has disappeared from its own database — since Checkmk users can also set attributes manually, the Syncer cannot tell whether an attribute was set by it or by a user.
+
+Use the **Remove given Attribute if not assigned** action in export rules to explicitly manage attribute cleanup.
+
+## Host Tags
+
+Host tags are attributes in Checkmk too — they use their tag group ID as the attribute key. Set them the same way as any other attribute using the CMK Attribute action.
+
+For managing the tag group definitions themselves (the list of possible values), see [Host Tags](create_hosttags.md).

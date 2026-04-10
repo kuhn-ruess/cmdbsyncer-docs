@@ -1,79 +1,64 @@
 # Rewrite Attributes
 
-Different targets have different requirements for attribute names. Especially if you want to control Ansible or set custom Checkmk attributes.
+Different target systems have different requirements for attribute names and values. Rewrite rules let you rename, transform, or derive new attributes for each module independently.
 
-To cover that, you can rewrite Attributes for every Module. 
+Go to the Rewrite Attributes section of the module you want to configure (for example, _Modules → Checkmk → Rewrite Attributes_).
 
-![](img/rewrite_action.png)
+**Example:** An import from CSV gives you `csv__ipaddress`. With a rewrite rule, you can rename it to `ipaddress` before it is exported to Checkmk.
 
-So for example if you import an attribute like the ipaddress from a CSV, there will be an prefix like csv_ipaddress. With this rule you could rename it to just ip_address.
+## Operations for Attribute Names
 
-## Operations
+| Function                      | Description                                                                           |
+| :---------------------------- | :------------------------------------------------------------------------------------ |
+| Don't Use                     | Keep the original attribute name. Use with a new attribute name to create a copy.     |
+| Overwrite with fixed String   | The value in New Attribute Name replaces the original attribute name                  |
+| Overwrite with Jinja Template | Build the new attribute name with Jinja — access all host attributes and {{HOSTNAME}} |
+| Convert List of Strings       | Create multiple new attributes from a list — one attribute per list item              |
 
-### For Attribute Names
+### Convert List of Strings
 
-| Function                        | Description                                                                                |
-| ------------------------------- | ------------------------------------------------------------------------------------------ |
-| `Don't Use`                     | Just set Old Attribute Name, it will create a new Attribute out of it                      |
-| `Overwrite with fixed String`   | String set in 'New Attribute Name' will overwrite the one given in 'Old Attribute Name'    |
-| `Overwrite with Jinja Template` | Attribute Name is built with Jinja, you can use all of the Hosts Attribute or {{HOSTNAME}} |
-| `Convert List of Strings`       | See Description below                                                                      |
+This function creates multiple new attributes from a list, one attribute per list item. The list can come from an existing attribute or be built with Jinja.
 
-#### Convert List of String
-This function can create multiple new attributes out of a list either in another attribute or built using Jinja.
+Set _Old Attribute Name_ to the source attribute. Use `{{result}}` in _New Attribute Name_ to reference the current list item.
 
-![](attachments/Pasted%20image%2020241126150648.png)
+If the attribute already contains a Python list such as `['one_service', 'another_service']`, it works directly. If not, use Jinja to produce a list:
 
-To set it up, enter in "Old Attribute Name" the Attribute you get the information from.
-The Content of this attribute can be used as {{result}} in the Field "New Attribute Name".
-If the Content is already a list like:
-``` python
-['one_service', 'another_service']
-```
-you are good to go. If not, use Jinja to achieve that outcome.
-
-An Example for a prefix would look like this:
-``` python
-[{% for label in get_list(result)%} 'my_prefix/{{label}}',{%endfor%}]
-```
-Please note, that Jinja is used, to build a String, looking like a list again. Therefore the Brackets around and the ticks with the comma.
-
-Now just set for the Value for example the Operation "To String" and the "New Value"
-to yes.
-
-Now you will get two attributes:
-- one_service: yes
-- another_service: yes
-
-### For Attribute Values
-
-| Function              | Description                                                         |
-| --------------------- | ------------------------------------------------------------------- |
-| `To String`           | Overwrite the new or old Attribute with a fixed String              |
-| `With Split`          | Use performant Python Split to rewrite value, see description below |
-| `With Jinja Template` | User Jinja with all the hosts Attributes to rewrite the value       |
-
-#### Split
-Add a pattern to the field. This pattern contains a separator where you want to split the string,
-and then the index for the result.
-
-Example:
-```
-/:0
+```jinja
+[{% for label in get_list(result) %}'my_prefix/{{label}}',{% endfor %}]
 ```
 
-Split example 127.0.0.1/24:
-The string would split at /, result would ['127.0.0.1', '24']
-From there it would pick the first (0) index, new value would be: 127.0.0.1
+Note the surrounding brackets and the quoted values with commas — this builds a string that looks like a Python list.
 
-## Create a New Attribute
-If you specify a nonexistent attribute as "old_attribute_name", it will be created as a new attribute. Of course, all overwrite options can be used for the value, so you could create a new
-attribute that contains the value of multiple other attributes.
+Set _Value_ to `To String` and the _New Value_ to `yes`, and you get:
 
-## Special Variables
-If you're using conditions with regex, or startswith, etc., you normally don't know which was actually the matching attribute. 
+```text
+one_service: yes
+another_service: yes
+```
 
-Two special Jinja placeholders can help you.
+## Operations for Attribute Values
 
-- FIRST_MATCHING_TAG: Tag Name of the Attribute that made the condition match
-- FIRST_MATCHING_VALUE: The actual Value of the Host's Attribute that made the condition match
+| Function            | Description                                                              |
+| :------------------ | :----------------------------------------------------------------------- |
+| To String           | Set the attribute value to a fixed string                                |
+| With Split          | Split the value using SEPARATOR:INDEX syntax, e.g. `/:0`                 |
+| With Jinja Template | Build the value with Jinja — access all host attributes and {{HOSTNAME}} |
+
+### Split
+
+Provide a pattern as `SEPARATOR:INDEX`. The value is split at the separator, and the item at the given index is used as the new value.
+
+Example: `/:0`
+
+Applied to `127.0.0.1/24`: splits at `/` → `['127.0.0.1', '24']` → index 0 → `127.0.0.1`
+
+## Creating New Attributes
+
+If you specify an attribute name in _Old Attribute Name_ that does not exist on the host, it will be created as a new attribute. All value operations can be used, so you can compose a new attribute from multiple existing ones using Jinja.
+
+## Special Jinja Variables
+
+When using conditions with `regex`, `swith`, `ewith`, and similar types, you may not know in advance which attribute triggered the match. Two special placeholders are available in Jinja value rewrites:
+
+- `{{FIRST_MATCHING_TAG}}` — the name of the attribute that caused the condition to match
+- `{{FIRST_MATCHING_VALUE}}` — the value of that attribute

@@ -1,19 +1,39 @@
-# Auth and Single Sign On
-(Works from Version 3.12 on)
+# Auth and Single Sign-On
 
-In general, to log in, you need to create a user as already described in the docs. The command to do so is _./cmdbsyncer sys create_user mail@test.de_
+## Local Users
 
-If you want to use Single Sign-On, like with Keycloak, you need to set that in Apache first:
+To log in, you first need to create a local user. The command to create one is:
 
+```bash
+./cmdbsyncer sys create_user mail@example.com
 ```
+
+You can manage users in the UI under **Syncer Config → Users**.
+
+## Single Sign-On (SSO)
+
+SSO support is available from version 3.12 onwards.
+
+If you want to use Single Sign-On — for example with Keycloak — configure your Apache virtual host to authenticate the request before it reaches the Syncer:
+
+```apache
 <Location /cmdbsyncer>
-	AuthType openid-connect
+    AuthType openid-connect
     Require valid-user
 </Location>
 ```
 
-Then in your local config, set **REMOTE_USER_LOGIN** to True.
+Then enable remote user login in `local_config.py`:
 
-Now you may update your users in __Syncer Config -> Users__ and set their name like the remote username provided by your authentication provider.
+```python
+config = {
+    'REMOTE_USER_LOGIN': True,
+}
+```
 
-That is it. Now if that user is found, the Syncer will authenticate you. If not, you can still use the classical login.
+Now go to **Syncer Config → Users** and set the username of a user to exactly match the remote username provided by your authentication provider.
+
+When that user logs in via SSO, the Syncer authenticates them automatically. If no matching user is found, the classical login form is still available as a fallback.
+
+!!! note
+    The `REMOTE_USER_LOGIN` setting only controls whether the Syncer trusts the remote user header set by the webserver. Make sure your webserver configuration is correctly restricting access — the Syncer itself does not validate the token.

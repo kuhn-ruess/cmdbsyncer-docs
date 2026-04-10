@@ -1,8 +1,45 @@
 # Folder Pools
 
-A Folder Pool is used if you want to import a high number of Hosts into Checkmk, but automatically spread them over your Sites. This is archived when you define Folder Pools in Checkmk→Folder Pools, and define the Number of total Seats. A Seat is a Place in this Folder. The Folders will be created in Checkmk and you just need to link them to your remote sites. In the CMDB Syncer, you then need to define an CMK Export Rule which match for the Hosts you want. Please note that Folder pools will be added to the normal Folder hierarchies, if multiple Rules match. You can prevent that using the Last Match option for Rules.
+Folder Pools distribute hosts automatically across a set of predefined folders — useful when you want to spread hosts across multiple Checkmk remote sites or when you need balanced folder sizes.
 
-CMK Syncer will also automatically free the seat in the pool if you ignore the hosts, or nor folder_pool Rule matches any more.
+Go to: _Modules → Checkmk → Folder Pools_
 
-You can set them up in:
-**Modules → Checkmk → Folder Pools**
+## How It Works
+
+Each Folder Pool has a **seat count** that defines the maximum number of hosts the folder can hold. The Syncer assigns incoming hosts to folders that still have available seats. When a host is removed or its pool assignment no longer matches, its seat is freed automatically.
+
+The Syncer creates the folders in Checkmk automatically. Link them to your remote sites in Checkmk to distribute monitoring across sites.
+
+## Configuration
+
+Create a Folder Pool entry with:
+
+- **Name** — used to reference the pool in export rules
+- **Folder Name** — the Checkmk folder path
+- **Seat Count** — maximum number of hosts in this folder
+- **Assigned Site ID** — (optional) the Checkmk site ID to associate with this pool
+
+## Using a Pool in Export Rules
+
+In an export rule, use the **Pool Folder** action and reference the pool by name. If you leave the action parameter empty, the Syncer queries from all available pools. To restrict assignment to specific pools, provide a comma-separated list of pool names:
+
+```text
+pool_site_a,pool_site_b
+```
+
+This ensures a host is only placed in one of the listed pools, ignoring any others.
+
+!!! note
+    Folder Pool rules stack with other folder rules. Use the **Last Match** option on the pool rule to prevent unintended stacking with other folder assignments.
+
+## Sync Command
+
+To synchronize pool state without running a full export:
+
+```bash
+./cmdbsyncer checkmk sync_folder_pools ACCOUNTNAME
+```
+
+## Auto-creating Pools with Autocreate Rules
+
+For environments where the set of sites changes frequently, you can use the [Autocreate Rules](../basics/auto_rules.md) feature to generate Folder Pool entries automatically based on imported site objects.

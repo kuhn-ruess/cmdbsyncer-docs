@@ -1,13 +1,16 @@
-# Checkmk Business Intelligence
+# Business Intelligence
 
-Checkmks BI Feature can fully be automated by these Rules. To Set-up the Config, just create One example in Checkmk, then Fetch it with the API. Place the JSON Response into the Syncer, and there you can replace where needed with Jinja.
+Checkmk's BI feature can be fully automated using the Syncer. The recommended workflow is to create one example aggregation or rule in Checkmk, fetch its JSON structure via the API, paste it as a template in the Syncer, and replace the variable parts with Jinja placeholders.
 
-Checkout: __Modules →Checkmk →Manage Business Intelligence__ 
+Go to: _Modules → Checkmk → Manage Business Intelligence_
 
 ## BI Aggregations
 
-In the Interactive API GUI of Checkmk, look for GET /objects/bi_aggregation/{aggregation_id}
-An Example would look like:
+In the Checkmk interactive API (Swagger), look up:
+
+`GET /objects/bi_aggregation/{aggregation_id}`
+
+Example response:
 
 ```json
 {
@@ -16,9 +19,7 @@ An Example would look like:
   "comment": "",
   "customer": null,
   "groups": {
-    "names": [
-      "Hosts"
-    ],
+    "names": ["Hosts"],
     "paths": []
   },
   "node": {
@@ -27,25 +28,15 @@ An Example would look like:
       "conditions": {
         "host_folder": "",
         "host_label_groups": [],
-        "host_tags": {
-          "tcp": "tcp"
-        },
-        "host_choice": {
-          "type": "all_hosts"
-        }
+        "host_tags": {"tcp": "tcp"},
+        "host_choice": {"type": "all_hosts"}
       },
-      "refer_to": {
-        "type": "host"
-      }
+      "refer_to": {"type": "host"}
     },
     "action": {
       "type": "call_a_rule",
       "rule_id": "host",
-      "params": {
-        "arguments": [
-          "$HOSTNAME$"
-        ]
-      }
+      "params": {"arguments": ["$HOSTNAME$"]}
     }
   },
   "aggregation_visualization": {
@@ -61,58 +52,33 @@ An Example would look like:
   }
 }
 ```
-Set this now as Rule Template, and replace needed parts with attributes you have from Hosts or Objects. Full Flexibility of Jinja is Available. 
+
+Paste this JSON as the rule template and replace the relevant parts with Jinja placeholders using host attributes.
 
 ## BI Rules
-In the Interactive GUI, look for GET /objects/bi_rule/{rule_id}
 
-The Example her:
+In the Checkmk interactive API, look up:
+
+`GET /objects/bi_rule/{rule_id}`
+
+Example response:
+
 ```json
 {
   "pack_id": "default",
   "id": "filesystem",
   "nodes": [
     {
-      "search": {
-        "type": "empty"
-      },
+      "search": {"type": "empty"},
       "action": {
         "type": "state_of_service",
         "host_regex": "$HOSTNAME$",
         "service_regex": "fs_$FS$$"
       }
-    },
-    {
-      "search": {
-        "type": "empty"
-      },
-      "action": {
-        "type": "state_of_service",
-        "host_regex": "$HOSTNAME$",
-        "service_regex": "Filesystem$FS$$"
-      }
-    },
-    {
-      "search": {
-        "type": "empty"
-      },
-      "action": {
-        "type": "state_of_service",
-        "host_regex": "$HOSTNAME$",
-        "service_regex": "Mount options of $FS$$"
-      }
     }
   ],
-  "params": {
-    "arguments": [
-      "HOSTNAME",
-      "FS"
-    ]
-  },
-  "node_visualization": {
-    "type": "none",
-    "style_config": {}
-  },
+  "params": {"arguments": ["HOSTNAME", "FS"]},
+  "node_visualization": {"type": "none", "style_config": {}},
   "properties": {
     "title": "$FS$",
     "comment": "",
@@ -125,18 +91,15 @@ The Example her:
     "count": 1,
     "restrict_state": 2
   },
-  "computation_options": {
-    "disabled": false
-  }
+  "computation_options": {"disabled": false}
 }
 ```
 
-As before, add this to the Rule Template and replace with Jinja.
+Add this to the rule template and replace the variable parts with Jinja.
 
-## Export on Command Line
-If you now wan't to export the rules, use
+## Command Line
 
-*./cmdbsyner checkmk export_bi_aggregations ACCOUNT*
-AND:
-*./cmdbsyncer checkmk export_bi_rules ACCOUNT*
-
+```bash
+./cmdbsyncer checkmk export_bi_aggregations ACCOUNTNAME
+./cmdbsyncer checkmk export_bi_rules ACCOUNTNAME
+```

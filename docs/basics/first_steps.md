@@ -111,4 +111,4 @@ The CLI mirrors every function available in the web interface and adds debug cap
 
 Add `--debug` to any command to raise exceptions and enable verbose logging. Use `--debug-rules=<hostname>` to inspect rule outcomes for a specific host without writing anything to the target.
 
-→ [Debugging documentation](debug.md)
+→ [Debugging documentation](debug_rules.md)

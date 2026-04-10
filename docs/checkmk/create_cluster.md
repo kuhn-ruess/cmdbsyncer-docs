@@ -1,20 +1,29 @@
-# Create Clusters in Checkmk
+# Create Cluster Hosts
 
-With the _Create Cluster_ Rule Outcome (See [Export Rules](export_rules.md)) its possible to create Checkmk Cluster Hosts instead of Normal Hosts.
+With the **Cluster** action in [Export Rules](export_rules.md), the Syncer can create Checkmk cluster hosts instead of normal hosts.
 
-Since these Nodes have to exist in Checkmk, clusters will always create add the end of the export. But besides that, they act as normal Hosts and will honour all the configured other Settings in the Syncer.
+## How It Works
 
-The difference is, that a Cluster Host needs to have a List of Nodes assigned.
-This Information needs to come in the Form of Attributes. You get Attributes from your CMDB, or you can add them using the [CSV Features](../csv/index.md).
+Cluster hosts in Checkmk require a list of node hostnames. The Syncer reads these node names from host attributes. You specify which attributes contain the node hostnames directly in the export rule.
 
-You can then directly specify the Name of this Attributes in the rule, and you have the possibility to add a Wildcard add the end of an entry, to match all attributes starting with this name.
+The attribute specification supports:
 
-Multiple Attributes can be comma separated, and you can also mix Wildcard and not Wildcards.
+- **Exact names** — `node_attribute_1, node_attribute_2`
+- **Wildcards** — `node_*` matches all attributes starting with `node_`
+- **Mixed** — `node_primary, node_backup_*`
 
-An Example Rule can look like this:
+Since cluster nodes must already exist in Checkmk before a cluster can reference them, cluster hosts are always created at the end of the export run.
 
-![](img/create_cluster.png)
+Apart from cluster-specific behavior, all other Syncer rules apply normally — folder assignment, attribute setting, opt-outs, and labels all work the same as for regular hosts.
 
-In fact, this is all extra information to know, since everything else works like the Other rules. So, no special export command is used. 
+## Getting Node Attributes
 
+Node information typically comes from your CMDB import. If your source does not provide it directly, you can add it using the [CSV module](../csv/index.md) or [Custom Attributes](../basics/custom_attributes.md).
 
+## Example
+
+The screenshot below shows an export rule with the Cluster action and multiple node attributes using a wildcard:
+
+![Cluster export rule example](img/create_cluster.png)
+
+No special export command is needed — cluster hosts are included in the regular `export_hosts` run.

@@ -1,84 +1,63 @@
-# Create a bunch of multiple HTTP Rules
-In this example I explain, how you can add Multiple HTTP Checks for Website and Certificates, based on Multiple IP Addresses. 
+# Multiple HTTP Checks per Host
 
-## What you need:
-- A Data Source Containing this Information (maybe just CSV?)
-- One Rule in the Syncer for Each IP
-- Perhaps create an Example rule for each type in Checkmk.
-This article will cover every step.
+This example shows how to add multiple HTTP and certificate checks for hosts that have more than one IP address — one rule per IP column.
 
+## What You Need
 
-## The Data Source
-For the Example I use a Simple CSV, which a Column for each of my IP Addresses, and two hosts:
+- A data source with multiple IP columns (CSV works well for this)
+- One Syncer rule per IP address column
+- Example rules in Checkmk to copy the API value from
 
-![](img/recipe_multi_http_1.png)
+## Step 1: The Data Source
 
-This file I import as Main Source into the Syncer:
+Create a CSV with one column per IP address:
 
-![](img/recipe_multi_http_2.png)
+![CSV with multiple IP columns](img/recipe_multi_http_1.png)
 
-Where I find them then:
+Import it as the main source:
 
-![](img/recipe_multi_http_3.png)
+![CSV import configuration](img/recipe_multi_http_2.png)
 
-The Details show me the IP Attributes:
+The hosts appear in the Syncer with attributes `ip_1`, `ip_2`, `ip_3`:
 
-![](img/recipe_multi_http_4.png)
+![Hosts in Syncer](img/recipe_multi_http_3.png)
 
-## Find out the Rule Parameters
+![Host attribute detail view](img/recipe_multi_http_4.png)
 
-As a next step, I create the two example Rules I want to have in Order to copy their API Attributes. This is documented in Detail here: [Recipe Checkmk Rules](recipe_checkmk_rules.md)
+## Step 2: Find the Rule Parameters
 
-To make the replacement of Values easier for me, i already use {{IP}} for all places, I want to have my dynamic IPs later on.
+Create the two rule types you want (HTTP check and certificate check) in Checkmk, using `{{IP}}` as a placeholder wherever the IP address should appear. Then copy their API values as described in [Create Checkmk Rules Automatically](recipe_checkmk_rules.md).
 
-![](img/recipe_multi_http_5.png)
+![Example rule with IP placeholder](img/recipe_multi_http_5.png)
 
-## Create The Syncer Rules.
-In the Syncer change to tue CMK Rules Menue:
+## Step 3: Create the Syncer Rules
 
-![](img/recipe_multi_http_6.png)
+Go to: _Modules → Checkmk → Create Checkmk Setup Rules_
 
-Hit the Create button and I show for the first IP Example how to set up the rule. Repeat the Step for all the other IPs.
+Create one rule per IP column. Each rule needs:
 
-The Rule needs to have one condition. This is to check if the Label exists for the Host.
-Please note here, the Match Type is set to attribute, so the Green Host Match Field is not used. In the Blue Fields, the Attribute Name ip_1 needs to exist, but can have any content (Match ALL)
-![](img/recipe_multi_http_7.png)
+- **Condition:** The attribute (e.g. `ip_1`) must exist on the host. Set _Match Type_ to attribute, _Tag_ to `ip_1`, and use `Match All (*)` as the condition so any value matches.
 
-But Since I want to have two checks for each IP, I also add two Outcomes for the Rule.
-The first is for the normal HTTP Check. Here I replace IP with my first label, ip_1
+    ![Condition for ip_1](img/recipe_multi_http_7.png)
 
-![](img/recipe_multi_http_8.png)
+- **Two outcomes:** One for the HTTP check, one for the certificate check. Replace `{{IP}}` with the actual attribute (`ip_1`).
 
-The Second Outcome is for the Certificate Check. 
-Here I do the same Replacements.
+    ![HTTP check outcome](img/recipe_multi_http_8.png)
 
-![](img/recipe_multi_http_9.png)
+    ![Certificate check outcome](img/recipe_multi_http_9.png)
 
-Make sure to Enable the rule and hit Save.
-Repeat this for ip_2 and ip_3.
+Repeat for `ip_2` and `ip_3`. Enable each rule and save.
 
+## Step 4: Sync
 
-## Sync the Rules
-The Final Step is to sync the rules to Checkmk. Make sure to delete your example rules, of course. And no Checkmk Activation is needed, you can wait to the end.
-If you followed this example, don't forget to use the export_hosts to create your example hosts in Checkmk.
+Delete the example rules you created in Checkmk. Then run the export:
 
-To sync the rules, run export rules. In my environment, the Account name is set to mon. So, it looks like this:
+![Export command](img/recipe_multi_http_10.png)
 
-![](img/recipe_multi_http_10.png)
+No Checkmk activation is required between the rules export and the host export — you can activate all changes at the end.
 
-## In Checkmk
-Only left is to see the Outcome in Checkmk, and Activate the Changes:
+## Result
 
-![](img/recipe_multi_http_11.png)
+After activation, Checkmk shows the HTTP and certificate checks for each IP:
 
-
-
-
-
-
-
-
-
-
-
-
+![Rules in Checkmk](img/recipe_multi_http_11.png)
