@@ -18,13 +18,13 @@ This diff-based approach means repeated exports are efficient and idempotent.
 Every module has its own export command. The general pattern is:
 
 ```bash
-./cmdbsyncer <module> <export_command> --account=<account_name>
+./cmdbsyncer <module> <export_command> <account_name>
 ```
 
 For example, to export hosts to Checkmk:
 
 ```bash
-./cmdbsyncer checkmk export_hosts --account=my-checkmk
+./cmdbsyncer checkmk export_hosts my-checkmk
 ```
 
 Add `--debug` to see the full request/response details, or `--dry-run` (where supported) to simulate the export without writing anything to the target.
@@ -35,10 +35,10 @@ Most modules offer read-only commands to inspect what would be exported:
 
 ```bash
 # List all hosts that would be sent to the target
-./cmdbsyncer checkmk show_hosts --account=my-checkmk
+./cmdbsyncer checkmk show_hosts my-checkmk
 
 # Check rule outcomes for a specific host
-./cmdbsyncer checkmk export_hosts --account=my-checkmk --debug-rules=myhostname
+./cmdbsyncer checkmk export_hosts my-checkmk --debug-rules=myhostname
 ```
 
 → [Debugging documentation](debug_rules.md)

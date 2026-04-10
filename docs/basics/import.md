@@ -22,13 +22,13 @@ Import is triggered either manually via the CLI or automatically via a [Cron job
 Every module has its own import command. The general pattern is:
 
 ```bash
-./cmdbsyncer <module> <import_command> --account=<account_name>
+./cmdbsyncer <module> <import_command> <account_name>
 ```
 
 For example, to import from Netbox:
 
 ```bash
-./cmdbsyncer netbox import_devices --account=my-netbox
+./cmdbsyncer netbox import_devices my-netbox
 ```
 
 Add `--debug` to see the full request/response output, or `--help` to list all available commands for a module.

@@ -62,13 +62,13 @@ After saving, module-specific fields appear automatically if the selected type r
 Once an account is set up, trigger an import from the CLI to verify the connection and check what gets pulled in:
 
 ```bash
-./cmdbsyncer <module> <import_command> --account=<account_name> --debug
+./cmdbsyncer <module> <import_command> <account_name> --debug
 ```
 
 For example, for a Netbox account named `my-netbox`:
 
 ```bash
-./cmdbsyncer netbox import_devices --account=my-netbox --debug
+./cmdbsyncer netbox import_devices my-netbox --debug
 ```
 
 After a successful import, the hosts appear under **Hosts** in the web interface.

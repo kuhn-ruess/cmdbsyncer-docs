@@ -41,12 +41,6 @@ From the CLI, without an account:
 
 This deletes all hosts not seen in the last 7 days. The number is the grace period in days.
 
-With an account (uses the account's configured settings):
-
-```bash
-./cmdbsyncer sys maintenance --account=my-maintenance-account
-```
-
 ## Account Filter
 
 The `account_filter` field restricts deletion to hosts that were last imported by a specific account. This is useful when you have multiple import sources and only want to clean up hosts from one of them — for example, to avoid deleting hosts that are exclusively managed by a different source.

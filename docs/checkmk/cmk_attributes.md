@@ -19,12 +19,11 @@ Find and test the host endpoint:
 The response JSON shows you the attribute names as used by the API.
 
 ## Setting an IP Address
-
-To set the IP address from a Syncer attribute, use the **CMK Attribute by Syncer Attribute** action. If your attribute is already named `ipaddress`, no rewrite is needed. Otherwise, add a rewrite rule first.
+You can create it using the **Custom CMK Attribute** action 
 
 ![Set IP address attribute](img/outcome_create_attribute.png)
 
-In the Checkmk API, the attribute looks like this:
+Because in the Checkmk API, the attribute looks like this:
 
 ![IP address in API](img/api_ipaddress.png)
 

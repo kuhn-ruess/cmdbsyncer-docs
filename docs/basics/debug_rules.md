@@ -10,7 +10,7 @@ Most CLI commands accept a `--debug` flag. It does two things:
 - Sets the Python log level to `DEBUG`, giving you detailed output about HTTP requests, responses, and internal processing directly on the console.
 
 ```bash
-./cmdbsyncer checkmk export_hosts --account=myaccount --debug
+./cmdbsyncer checkmk export_hosts myaccount --debug
 ```
 
 This is the first tool to reach for when a sync is failing or producing unexpected results.
@@ -20,7 +20,7 @@ This is the first tool to reach for when a sync is failing or producing unexpect
 Rules can produce complex outcomes across many hosts. To inspect exactly which rules matched and which attributes were set for a specific host, use `--debug-rules`:
 
 ```bash
-./cmdbsyncer checkmk export_hosts --account=myaccount --debug-rules=myhostname
+./cmdbsyncer checkmk export_hosts myaccount --debug-rules=myhostname
 ```
 
 This prints a detailed table showing:
@@ -32,7 +32,7 @@ This prints a detailed table showing:
 You can combine `--debug-rules` with `--debug` to also raise exceptions during the same run:
 
 ```bash
-./cmdbsyncer checkmk export_hosts --account=myaccount --debug-rules=myhostname --debug
+./cmdbsyncer checkmk export_hosts myaccount --debug-rules=myhostname --debug
 ```
 
 !!! tip
@@ -44,13 +44,13 @@ Some modules provide read-only commands to inspect what would be exported — wi
 
 ```bash
 # List all hosts that would be exported to a Checkmk account
-./cmdbsyncer checkmk show_hosts --account=myaccount
+./cmdbsyncer checkmk show_hosts myaccount
 
 # List all labels that would exist in Checkmk after the sync
-./cmdbsyncer checkmk show_labels --account=myaccount
+./cmdbsyncer checkmk show_labels myaccount
 
 # Show hosts present in Checkmk but missing in the syncer
-./cmdbsyncer checkmk show_missing_hosts --account=myaccount
+./cmdbsyncer checkmk show_missing_hosts myaccount
 ```
 
 ## Dry Run and Saving Requests
@@ -58,8 +58,8 @@ Some modules provide read-only commands to inspect what would be exported — wi
 To test an export without applying any changes, use `--dry-run`. To save all planned API requests to a file for review or later replay, use `--save-requests`:
 
 ```bash
-./cmdbsyncer checkmk export_hosts --account=myaccount --dry-run
-./cmdbsyncer checkmk export_hosts --account=myaccount --save-requests
+./cmdbsyncer checkmk export_hosts myaccount --dry-run
+./cmdbsyncer checkmk export_hosts myaccount --save-requests
 ```
 
 ## API Request Debugging
