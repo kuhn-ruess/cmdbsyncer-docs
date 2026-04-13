@@ -36,6 +36,7 @@ nav:
     - Rewrite Hostnames: basics/rewrite_hostnames.md
     - Filter: basics/filter.md
     - Autocreate Rules: basics/auto_rules.md
+    - Rule Import/Export: basics/rule_import_export.md
 
   - Ansible:
     - Ansible Basics: ansible/index.md
