@@ -53,6 +53,16 @@ Without an argument, the Syncer writes to a timestamped file such as `syncer_rul
 
 The output is line-delimited JSON. Each rule type is introduced by a header line `{"rule_type": "..."}`, followed by one JSON object per rule of that type. All known rule types are written into the same file in one pass.
 
+!!! note "Hosts, objects and accounts are skipped by default"
+    Two rule types are excluded from `export_all_rules` unless explicitly requested, because they are usually noise (or sensitive) in a rule backup:
+
+    - `host_objects` — hosts and objects stored in the shared Host collection. Enable with `--include-hosts`.
+    - `accounts` — account definitions (including encrypted credentials). Enable with `--include-accounts`.
+
+    ```bash
+    ./cmdbsyncer rules export_all_rules --include-hosts --include-accounts
+    ```
+
 ## CLI Import
 
 A single import command handles all export formats — GUI exports, single-type CLI exports, and combined multi-type exports from `export_all_rules`:

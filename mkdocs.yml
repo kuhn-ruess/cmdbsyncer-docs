@@ -20,6 +20,7 @@ nav:
     - Caching: basics/caching.md
     - Accounts: basics/accounts.md
     - Cronjobs: basics/cron.md
+    - Interactive Shell: basics/syncer_shell.md
     - Fileadmin: basics/fileadmin.md
     - Debugging: basics/debug_rules.md
     - Monitor the Syncer: basics/monitoring.md
