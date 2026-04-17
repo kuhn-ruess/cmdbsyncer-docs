@@ -5,7 +5,8 @@ nav:
     - Download: installation/setup_code.md
     - Installation with Docker: installation/setup_docker.md
     - Installation with Apache: installation/install_wsgi.md
-    - Auth and SSO: installation/authentication.md
+    - Local Users: installation/authentication.md
+    - Enterprise Edition: installation/enterprise.md
     - Install Updates: installation/updates.md
     - Update Notes: updates/update_notes.md
     - ... | glob=changelog/*
@@ -19,6 +20,7 @@ nav:
     - Logging: basics/logging.md
     - Caching: basics/caching.md
     - Accounts: basics/accounts.md
+    - Single Sign-On: basics/sso.md
     - Cronjobs: basics/cron.md
     - Interactive Shell: basics/syncer_shell.md
     - Fileadmin: basics/fileadmin.md
