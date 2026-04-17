@@ -3,6 +3,7 @@ nav:
   - Home: index.md
   - Installation:
     - Download: installation/setup_code.md
+    - Installation from PyPI: installation/setup_pip.md
     - Installation with Docker: installation/setup_docker.md
     - Installation with Apache: installation/install_wsgi.md
     - Local Users: installation/authentication.md

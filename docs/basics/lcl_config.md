@@ -39,6 +39,34 @@ config = {
 
 ---
 
+## MongoDB Connection
+
+Override any field by setting the matching environment variable before
+starting the application, or by adding `MONGODB_SETTINGS` to `local_config.py`:
+
+```python
+config = {
+    'MONGODB_SETTINGS': {
+        'db': 'cmdb-api',
+        'host': 'mongo.internal',
+        'port': 27017,
+        'alias': 'default',
+    },
+}
+```
+
+| Key     | Default     | Env Override               | Description                          |
+| :------ | :---------- | :------------------------- | :----------------------------------- |
+| `db`    | `cmdb-api`  | `CMDBSYNCER_MONGODB_DB`    | Database name                        |
+| `host`  | `127.0.0.1` | `CMDBSYNCER_MONGODB_HOST`  | Hostname or IP of the MongoDB server |
+| `port`  | `27017`     | `CMDBSYNCER_MONGODB_PORT`  | TCP port                             |
+| `alias` | `default`   | `CMDBSYNCER_MONGODB_ALIAS` | MongoEngine connection alias         |
+
+The Docker Compose setup uses `mongo` as the default host (service name); a
+plain `pip` install defaults to `127.0.0.1`.
+
+---
+
 ## Hostname and Attribute Handling
 
 | Name                         | Default   | Description                                                                         |
