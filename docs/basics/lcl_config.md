@@ -131,6 +131,7 @@ config = {
 | `SWAGGER_ENABLED`            | `True`                  | Enable or disable the Swagger UI for the REST API                                       |
 | `LABEL_PREVIEW_DISABLED`     | `False`                 | Disable the label preview in the host view                                              |
 | `REMOTE_USER_LOGIN`          | `False`                 | Accept the remote user header for SSO authentication                                    |
+| `LDAP_LOGIN`                 | `False`                 | Enable LDAP authentication (see [LDAP Login](ldap.md))                                  |
 | `FILEADMIN_PATH`             | `/var/cmdbsyncer/files` | Working directory for the Fileadmin (also settable via env `CMDBSYNCER_FILEADMIN_PATH`) |
 
 ---
@@ -139,6 +140,7 @@ config = {
 
 - [Checkmk Config Variables](../checkmk/config_vars.md)
 - [Logging Configuration](logging.md)
+- [LDAP Login](ldap.md)
 
 ---
 

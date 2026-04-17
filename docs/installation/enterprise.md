@@ -9,6 +9,7 @@ If the enterprise package is not installed — or its license is missing or inva
 | Feature         | License claim | Description                                          |
 | :-------------- | :------------ | :--------------------------------------------------- |
 | Remote User SSO | `remote_user` | Trusted-header SSO login (e.g. Keycloak, mod_auth_*) |
+| LDAP Login      | `ldap_login`  | Authenticate users against LDAP/Active Directory     |
 
 ## Installation
 

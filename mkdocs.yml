@@ -22,6 +22,7 @@ nav:
     - Caching: basics/caching.md
     - Accounts: basics/accounts.md
     - Single Sign-On: basics/sso.md
+    - LDAP Login: basics/ldap.md
     - Cronjobs: basics/cron.md
     - Interactive Shell: basics/syncer_shell.md
     - Fileadmin: basics/fileadmin.md
