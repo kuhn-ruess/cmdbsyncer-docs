@@ -109,6 +109,25 @@ config = {
 
 ---
 
+## Authentication Rate Limiting
+
+Login and password-reset requests are rate-limited per client IP to slow
+down brute-force attacks. The default allows a handful of attempts per
+minute and hour; GET requests (rendering the form) are not limited.
+
+| Name                    | Default                       | Description                                                                                                                    |
+| :---------------------- | :---------------------------- | :----------------------------------------------------------------------------------------------------------------------------- |
+| `AUTH_RATE_LIMIT`       | `'3 per minute; 10 per hour'` | Flask-Limiter expression applied per client IP to the login and password-reset POST handlers                                   |
+| `RATELIMIT_STORAGE_URI` | `'memory://'`                 | Storage backend for rate-limit counters. Use `redis://host:6379` or `mongodb://host:27017/dbname` for multi-worker deployments |
+
+When the limit is hit, the user sees a generic "Too many attempts" flash
+message and is redirected back to the same page. The default in-memory
+storage is fine for a single-process deployment; behind multiple uwsgi
+workers or containers, use a shared backend so counters aggregate
+correctly.
+
+---
+
 ## Password Policy
 
 | Name                       | Default | Description                                        |
