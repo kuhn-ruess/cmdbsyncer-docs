@@ -128,6 +128,14 @@ correctly.
 
 ---
 
+## Reverse Proxy / TLS Termination
+
+| Name              | Default | Description                                                                                                                                                        |
+| :---------------- | :------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TRUSTED_PROXIES` | `0`     | Number of trusted reverse-proxy hops. `0` = no proxy (default). See [Reverse Proxy in the Docker setup](../installation/setup_docker.md#reverse-proxy) for details |
+
+---
+
 ## Password Policy
 
 | Name                       | Default | Description                                        |
