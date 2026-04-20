@@ -163,6 +163,39 @@ correctly.
 
 ---
 
+## Email / SMTP
+
+Outgoing mail is only used by the password-reset flow (and by enterprise
+features that opt in). If you do not use password reset by email, the
+defaults below are fine — the application starts either way.
+
+| Name                  | Default                  | Description                                                       |
+| :-------------------- | :----------------------- | :---------------------------------------------------------------- |
+| `MAIL_SERVER`         | `'localhost'`            | SMTP server hostname                                              |
+| `MAIL_PORT`           | `25`                     | SMTP server port (e.g. `587` for STARTTLS, `465` for SSL)         |
+| `MAIL_USE_TLS`        | `False`                  | Enable STARTTLS on the SMTP connection                            |
+| `MAIL_USE_SSL`        | `False`                  | Use SMTPS (implicit SSL) — mutually exclusive with `MAIL_USE_TLS` |
+| `MAIL_USERNAME`       | `None`                   | SMTP login name (leave `None` for unauthenticated relays)         |
+| `MAIL_PASSWORD`       | `None`                   | SMTP password                                                     |
+| `MAIL_SENDER`         | `'cmdbsyncer@localhost'` | `From:` address used for outgoing mails (password-reset etc.)     |
+| `MAIL_SUBJECT_PREFIX` | `'[CMDBsyncer]'`         | Prefix prepended to every subject line                            |
+
+Example for an authenticated STARTTLS relay:
+
+```python
+config = {
+    'MAIL_SERVER': 'smtp.example.com',
+    'MAIL_PORT': 587,
+    'MAIL_USE_TLS': True,
+    'MAIL_USERNAME': 'cmdbsyncer@example.com',
+    'MAIL_PASSWORD': 'your-smtp-password',
+    'MAIL_SENDER': 'CMDBsyncer <cmdbsyncer@example.com>',
+    'MAIL_SUBJECT_PREFIX': '[CMDBsyncer PROD]',
+}
+```
+
+---
+
 ## Module-Specific Settings
 
 - [Checkmk Config Variables](../checkmk/config_vars.md)

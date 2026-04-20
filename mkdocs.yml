@@ -2,15 +2,16 @@ site_name: CMDBsyncer Documentation
 nav:
   - Home: index.md
   - Installation:
-    - Download: installation/setup_code.md
-    - Installation from PyPI: installation/setup_pip.md
+    - Installation: installation/setup_pip.md
+    - Manual Download: installation/setup_code.md
     - Installation with Docker: installation/setup_docker.md
     - Installation with Apache: installation/install_wsgi.md
+    - Offline Installation: installation/setup_offline.md
     - Local Users: installation/authentication.md
-    - Enterprise Edition: installation/enterprise.md
     - Install Updates: installation/updates.md
     - Update Notes: updates/update_notes.md
     - ... | glob=changelog/*
+    - Enterprise Edition: installation/enterprise.md
     - Archiv:
       - UWSGI and Apache: installation/uwsgi_apache.md
   - Basics:
