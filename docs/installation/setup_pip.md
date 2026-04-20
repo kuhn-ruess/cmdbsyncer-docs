@@ -56,7 +56,7 @@ After the install, the following commands are on your `PATH`:
 
 - `cmdbsyncer` — the main application CLI (Flask Click commands, plugin
   subcommands, shell access)
-- `cmdbsyncer-plugin` — plugin packaging and install helper (formerly `./sp`)
+- `cmdbsyncer-plugin` — plugin packaging and install helper
 
 ## Optional Dependency Groups
 

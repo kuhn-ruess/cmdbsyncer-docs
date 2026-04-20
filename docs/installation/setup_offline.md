@@ -41,13 +41,12 @@ Two machines are involved:
 ## Build the Bundle
 
 On the build host, clone the repository and run the helper script. It
-lives in the repository root and wraps `pip download` plus a bit of
-packaging:
+lives in `tools/` and wraps `pip download` plus a bit of packaging:
 
 ```bash
 git clone https://github.com/kuhn-ruess/cmdbsyncer
 cd cmdbsyncer
-./build_offline_bundle.sh --all \
+./tools/build_offline_bundle.sh --all \
     --python-version 3.11 \
     --platform manylinux2014_x86_64
 ```

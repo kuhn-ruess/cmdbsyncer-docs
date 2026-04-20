@@ -106,6 +106,7 @@ nav:
   - Rest APIs/ Json:
      - Import RestApis or Json: rest_json/index.md
   - "Advanced":
+     - Manage Plugins: advanced/manage_plugins.md
      - Build your own Plugin: advanced/own_plugins.md
      - Plugin API: advanced/plugin_api.md
      - Jinja Functions: advanced/jinja_functions.md
