@@ -98,6 +98,52 @@ Rules that stay in force even with `allow_ddl` set:
 
 Leave `allow_ddl` unset to keep the hardened, read-only default.
 
+## Temporary Tables
+
+Temp tables for staging work the same way — they are just another
+`CREATE`. The patterns the validator accepts:
+
+MSSQL — local (`#tmp`) or global (`##tmp`) temp, plain `CREATE`:
+
+```sql
+CREATE TABLE #tmp (host NVARCHAR(255), ip NVARCHAR(45));
+SELECT host, ip FROM #tmp;
+```
+
+MSSQL — `SELECT ... INTO` creates and populates the temp in one
+statement, which is usually what you want because `INSERT` is blocked
+(see below):
+
+```sql
+SELECT name AS host, ip
+INTO #tmp
+FROM dbo.cmdb_hosts
+WHERE active = 1;
+SELECT host, ip FROM #tmp;
+```
+
+MySQL — `CREATE TEMPORARY TABLE ... AS SELECT` has the same shape:
+
+```sql
+CREATE TEMPORARY TABLE tmp AS
+    SELECT name AS host, ip FROM cmdb_hosts WHERE active = 1;
+SELECT host, ip FROM tmp;
+```
+
+The classic three-step `CREATE + INSERT + SELECT` pattern is **not**
+accepted, because `INSERT` is on the destructive-keyword list even
+with `allow_ddl` on:
+
+```sql
+-- Rejected: INSERT is blocked so a typo cannot write into a real table.
+CREATE TABLE #tmp (host NVARCHAR(255), ip NVARCHAR(45));
+INSERT INTO #tmp SELECT name, ip FROM dbo.cmdb_hosts;
+SELECT host, ip FROM #tmp;
+```
+
+Use `SELECT ... INTO` (MSSQL) or `CREATE TEMPORARY TABLE ... AS SELECT`
+(MySQL) to achieve the same result in a single statement.
+
 ## Multi-Statement Execution Notes
 
 - MSSQL / ODBC: the query is dispatched through a single
