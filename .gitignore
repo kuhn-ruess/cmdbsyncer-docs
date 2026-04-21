@@ -115,3 +115,4 @@ venv.bak/
 .mypy_cache/
 .vscode
 *.vim
+sritd-login.py

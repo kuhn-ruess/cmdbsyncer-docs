@@ -12,7 +12,17 @@ Running CMDBsyncer with Docker is the recommended approach for most deployments.
 ```bash
 git clone https://github.com/kuhn-ruess/cmdbsyncer
 cd cmdbsyncer
+git checkout stable
 ```
+
+!!! tip "Choose a version"
+    The Docker image is built from the repo source, so the version you run is determined by the branch or tag that is checked out **before** the image is built.
+
+    - **`stable`** branch — last published release. Recommended for production.
+    - **Tag `vX.Y.Z`** — pin to a specific release: `git checkout v3.12.12`.
+    - **`main`** — rolling development, not recommended for production.
+
+    Full versioning policy: [RELEASE.md on GitHub](https://github.com/kuhn-ruess/cmdbsyncer/blob/main/RELEASE.md).
 
 Start the stack:
 
