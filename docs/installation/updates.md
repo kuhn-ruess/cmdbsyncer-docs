@@ -2,14 +2,25 @@
 
 ## Update Process
 
-Pull the latest code from git:
+!!! tip "Which branch should I pull?"
+    For production, stay on the **`stable`** branch. It is fast-forwarded to each new release when it is cut — so `git pull` on `stable` only moves forward when a reviewed release is available. Avoid pulling `main` directly, which contains unreleased, in-development changes. Full policy: [RELEASE.md on GitHub](https://github.com/kuhn-ruess/cmdbsyncer/blob/main/RELEASE.md).
+
+Pull the latest released code from git:
 
 ```bash
 cd /opt/cmdbsyncer
+git checkout stable       # only needed the first time
 git pull
 ```
 
-If you are using Docker, rebuild your image and restart the container.
+If you want to pin to a specific release instead of tracking `stable`, check out the tag:
+
+```bash
+git fetch --tags
+git checkout v3.12.12     # replace with the desired release tag
+```
+
+If you are using Docker, rebuild your image and restart the container after pulling.
 
 If you have a UWSGI-based installation, reload UWSGI:
 
