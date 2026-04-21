@@ -57,8 +57,8 @@ CMDBsyncer imports hosts and attributes from one or more sources, processes them
 | BMC Remedy | Limited import from BMC Remedy |
 | PRTG | Import objects from PRTG |
 | VMware | Import and export attributes for VMware VMs |
-| MySQL | Import and inventorize MySQL database tables |
-| MSSQL / ODBC | Import from any ODBC-compatible database (FreeTDS, MSSQL, etc.) |
+| [MySQL](sql/index.md) | Import and inventorize MySQL database tables |
+| [MSSQL / ODBC](sql/index.md) | Import from any ODBC-compatible database (FreeTDS, MSSQL, etc.) |
 
 ---
 

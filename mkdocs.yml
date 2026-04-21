@@ -52,6 +52,8 @@ nav:
     - Use as CMDB: cmdb/index.md
   - CSV:
     - CSV Basics: csv/index.md
+  - SQL:
+    - MSSQL / ODBC / MySQL: sql/index.md
   - Checkmk:
       - Checkmk Basics: checkmk/index.md
       - Commandline Parameters: checkmk/commandline.md
