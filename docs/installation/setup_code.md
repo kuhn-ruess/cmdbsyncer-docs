@@ -26,13 +26,13 @@ Check out the code from GitHub into `/opt` — this path is used in all examples
 cd /opt
 git clone https://github.com/kuhn-ruess/cmdbsyncer
 cd cmdbsyncer
-git checkout stable
+git checkout lts/3.12
 ```
 
 !!! tip "Choose a version"
-    - **`stable`** branch — last published release; move forward with `git pull`. Recommended for production.
-    - **Tag `vX.Y.Z`** — pin to a specific release for reproducible deployments: `git checkout v3.12.12`.
-    - **`main`** — rolling development, contains unreleased changes. Use only if you want the bleeding edge.
+    - **`lts/3.12`** branch — long-term-support line; receives only security fixes and general bugfixes (no new features). Move forward with `git pull`. Recommended for production.
+    - **Tag `vX.Y.Z`** — pin to a specific release for reproducible deployments: `git checkout v3.12.13`.
+    - **`main`** — rolling development with new features, contains unreleased changes. Use only if you want the bleeding edge.
 
     Full versioning policy: [RELEASE.md on GitHub](https://github.com/kuhn-ruess/cmdbsyncer/blob/main/RELEASE.md).
 
