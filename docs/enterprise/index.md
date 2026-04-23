@@ -6,10 +6,20 @@ If the enterprise package is not installed — or its license is missing or inva
 
 ## Enterprise Features
 
-| Feature         | License claim | Description                                          |
-| :-------------- | :------------ | :--------------------------------------------------- |
-| Remote User SSO | `remote_user` | Trusted-header SSO login (e.g. Keycloak, mod_auth_*) |
-| LDAP Login      | `ldap_login`  | Authenticate users against LDAP/Active Directory     |
+| Feature                   | Details                                                                  |
+| :------------------------ | :----------------------------------------------------------------------- |
+| Remote User SSO           | [Remote User SSO](remote_user_sso.md)                                    |
+| LDAP Login                | [LDAP Login](ldap_login.md)                                              |
+| OIDC Login                | [OIDC Login](oidc_login.md)                                              |
+| Secrets Manager           | [Secrets Manager](secrets_manager.md)                                    |
+| JSON Logging              | [JSON Logging](json_logging.md)                                          |
+| Audit Log                 | [Audit Log](audit_log.md)                                                |
+| Audit SIEM Streaming      | [Audit Log → SIEM Streaming](audit_log.md#streaming-to-an-external-siem) |
+| Notifications             | [Notification Routing](notifications.md)                                 |
+| Webhook Signatures        | [Webhook Signatures](webhook_signatures.md)                              |
+| Prometheus Metrics        | [Prometheus Metrics](prometheus_metrics.md)                              |
+| Scheduled Backups         | [Scheduled Backups](scheduled_backup.md)                                 |
+| 4-Eyes Approval Workflow  | [4-Eyes Approval Workflow](approval_workflow.md)                         |
 
 ## Installation
 
@@ -30,12 +40,22 @@ To upgrade to a newer release later:
 pip install --upgrade cmdbsyncer-enterprise
 ```
 
+### Offline install
+
+The offline bundler downloads the enterprise wheel alongside the community wheel when called with `--include-enterprise`:
+
+```bash
+./tools/build_offline_bundle.sh --include-syncer --include-enterprise
+```
+
+The bundle installs the enterprise package on top of the core; the license JWT still has to be placed on the target server separately.
+
 ## License File
 
-By default, CMDBsyncer looks for it at:
+CMDBsyncer looks for `license.jwt` in the **same directory as your `local_config.py`**. That is the path that pip installs already use for runtime configuration, so no extra directory is needed:
 
 ```text
-/etc/cmdbsyncer/license.jwt
+<dir of local_config.py>/license.jwt
 ```
 
 To use a different path, set the `CMDBSYNCER_LICENSE` environment variable:
@@ -46,13 +66,12 @@ export CMDBSYNCER_LICENSE=/srv/cmdbsyncer/license.jwt
 
 The file must be readable by the user that runs the application (the uWSGI user in container deployments).
 
-The license contains the following claims:
+The license carries the following metadata:
 
-| Claim        | Meaning                                                |
+| Field        | Meaning                                                |
 | :----------- | :----------------------------------------------------- |
 | `license_id` | Unique license identifier issued by Kuhn & Ruess       |
 | `customer`   | Licensee name                                          |
-| `features`   | List of enabled feature names (e.g. `["remote_user"]`) |
 | `iat`        | Issued-at timestamp                                    |
 | `exp`        | Expiry timestamp (enforced at startup)                 |
 

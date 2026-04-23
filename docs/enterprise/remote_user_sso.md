@@ -1,9 +1,6 @@
-# Single Sign-On (SSO)
+# Remote User SSO
 
-!!! note "Enterprise feature"
-    Trusted-header SSO is part of the [Enterprise Edition](../installation/enterprise.md). Without the `cmdbsyncer-enterprise` package and a valid license, the `REMOTE_USER_LOGIN` setting has no effect and the classical login form is used.
-
-SSO support is available from version 3.12 onwards.
+Trusted-header Single Sign-On. Requires the [Enterprise Edition](index.md).
 
 ## How It Works
 

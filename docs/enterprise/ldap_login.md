@@ -1,9 +1,8 @@
 # LDAP Login
 
-!!! note "Enterprise feature"
-    LDAP login is part of the [Enterprise Edition](../installation/enterprise.md). Without the `cmdbsyncer-enterprise` package and a valid license that includes the `ldap_login` claim, the `LDAP_LOGIN` setting has no effect and the classical login form is used.
+Authenticates users against an LDAP or Active Directory server. Requires the [Enterprise Edition](index.md).
 
-LDAP login authenticates users against an existing LDAP or Active Directory server. On successful bind, CMDBsyncer looks up a local user by email and logs that user in. If no local user exists, one is **auto-created** with the email and `cn` from LDAP.
+On successful bind, CMDBsyncer looks up a local user by email and logs that user in. If no local user exists, one is **auto-created** with the email and `cn` from LDAP.
 
 Roles and the `global_admin` flag can be driven from LDAP group membership via `LDAP_ROLE_MAPPING` — see [Role Mapping](#role-mapping) below. When role mapping is configured, LDAP is the source of truth: permissions are recomputed on every login.
 

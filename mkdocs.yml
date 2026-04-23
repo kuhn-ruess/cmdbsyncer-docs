@@ -11,7 +11,6 @@ nav:
     - Install Updates: installation/updates.md
     - Update Notes: updates/update_notes.md
     - ... | glob=changelog/*
-    - Enterprise Edition: installation/enterprise.md
     - Archiv:
       - UWSGI and Apache: installation/uwsgi_apache.md
   - Basics:
@@ -22,8 +21,6 @@ nav:
     - Logging: basics/logging.md
     - Caching: basics/caching.md
     - Accounts: basics/accounts.md
-    - Single Sign-On: basics/sso.md
-    - LDAP Login: basics/ldap.md
     - Cronjobs: basics/cron.md
     - Interactive Shell: basics/syncer_shell.md
     - Fileadmin: basics/fileadmin.md
@@ -114,6 +111,19 @@ nav:
      - Jinja Functions: advanced/jinja_functions.md
      - Rest API: internal_restapi/index.md
      - Maintenance: sys/index.md
+  - Enterprise:
+     - Overview: enterprise/index.md
+     - Remote User SSO: enterprise/remote_user_sso.md
+     - LDAP Login: enterprise/ldap_login.md
+     - OIDC Login: enterprise/oidc_login.md
+     - Secrets Manager: enterprise/secrets_manager.md
+     - JSON Logging: enterprise/json_logging.md
+     - Audit Log: enterprise/audit_log.md
+     - Notifications: enterprise/notifications.md
+     - Webhook Signatures: enterprise/webhook_signatures.md
+     - Prometheus Metrics: enterprise/prometheus_metrics.md
+     - Scheduled Backups: enterprise/scheduled_backup.md
+     - 4-Eyes Approval Workflow: enterprise/approval_workflow.md
 
 theme:
   name: material

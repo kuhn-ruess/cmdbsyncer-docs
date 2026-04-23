@@ -157,17 +157,15 @@ correctly.
 | `STYLE_NAV_LINK_COLOR`       | `'#fff'`                | Color of navigation links                                                               |
 | `SWAGGER_ENABLED`            | `True`                  | Enable or disable the Swagger UI for the REST API                                       |
 | `LABEL_PREVIEW_DISABLED`     | `False`                 | Disable the label preview in the host view                                              |
-| `REMOTE_USER_LOGIN`          | `False`                 | Accept the remote user header for SSO authentication                                    |
-| `LDAP_LOGIN`                 | `False`                 | Enable LDAP authentication (see [LDAP Login](ldap.md))                                  |
 | `FILEADMIN_PATH`             | `/var/cmdbsyncer/files` | Working directory for the Fileadmin (also settable via env `CMDBSYNCER_FILEADMIN_PATH`) |
 
 ---
 
 ## Email / SMTP
 
-Outgoing mail is only used by the password-reset flow (and by enterprise
-features that opt in). If you do not use password reset by email, the
-defaults below are fine — the application starts either way.
+Outgoing mail is only used by the password-reset flow. If you do not use
+password reset by email, the defaults below are fine — the application
+starts either way.
 
 | Name                  | Default                  | Description                                                       |
 | :-------------------- | :----------------------- | :---------------------------------------------------------------- |
@@ -200,7 +198,6 @@ config = {
 
 - [Checkmk Config Variables](../checkmk/config_vars.md)
 - [Logging Configuration](logging.md)
-- [LDAP Login](ldap.md)
 
 ---
 

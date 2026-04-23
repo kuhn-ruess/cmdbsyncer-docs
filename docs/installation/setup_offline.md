@@ -66,7 +66,6 @@ The script produces:
 | `--ansible`            | Include `requirements-ansible.txt` (Kerberos, WinRM, Ansible)      |
 | `--all`                | Shortcut for `--extras --ansible`                                  |
 | `--include-syncer`     | Also download the `cmdbsyncer` package from PyPI into the bundle   |
-| `--include-enterprise` | Also download the `cmdbsyncer-enterprise` package from PyPI        |
 | `--python-version`     | Target Python version, e.g. `3.11` — must match the target server  |
 | `--platform`           | Target platform tag, e.g. `manylinux2014_x86_64` for typical Linux |
 | `--output-dir DIR`     | Override output directory (default: `offline_bundle`)              |
@@ -86,13 +85,6 @@ The script produces:
     then installs and upgrades `cmdbsyncer` itself from that wheel, so
     the target server receives the Syncer in one go. Without the flag,
     the bundle contains only the third-party dependencies.
-
-!!! tip
-    To ship the [Enterprise Edition](enterprise.md) as well, combine the
-    flag with `--include-enterprise`. This pulls the latest
-    `cmdbsyncer-enterprise` release from PyPI and installs it on top of
-    the open-core package. The license JWT still has to be placed on
-    the target server separately — the bundle only ships the code.
 
 ## Transfer the Bundle
 
