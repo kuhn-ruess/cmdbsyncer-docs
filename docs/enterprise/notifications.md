@@ -4,16 +4,25 @@ Requires the [Enterprise Edition](index.md).
 
 ## What it does
 
-Turns CMDBsyncer's internal events into **active alerts** on the
-channels your team already uses — Slack, MS Teams, email, or any
-HTTPS webhook. Rule-based routing with dedup, cooldown, and rate
-limits; payloads are rendered through Jinja templates so the text
-your on-call receives is exactly what they want to see.
+The channel table and the rule table [live in the community
+edition](../advanced/notifications.md) — OSS ships the UI plus email
+delivery. The **Enterprise notifications feature** adds the missing
+pieces so rules turn CMDBsyncer's internal events into **active
+alerts** on the channels your team already uses:
 
-Complements [JSON Logging](json_logging.md) (passive: logs flow
-into your aggregator) by pushing the **important** events — a
-failed cron group, a rejected webhook attempt, a missing secret —
-directly at a human, in real time.
+- Extra channel types: **Slack**, **MS Teams**, and a **generic HTTPS
+  webhook** (with optional HMAC-SHA256 signing).
+- The dispatcher that actually fires rules: Jinja template rendering,
+  dedup, cooldown and rate limits, plus a bounded background queue so
+  slow Slack/SMTP endpoints never back-pressure logins or cron ticks.
+- Audit-event relay: every entry the audit recorder persists is
+  forwarded into the dispatcher, so rules can match login failures
+  or webhook rejections without a code change.
+
+Complements [JSON Logging](json_logging.md) (passive: logs flow into
+your aggregator) by pushing the **important** events — a failed cron
+group, a rejected webhook attempt, a missing secret — directly at a
+human, in real time.
 
 ## Event sources
 
@@ -28,13 +37,15 @@ directly at a human, in real time.
 | `account.created` / `*.updated` / `*.deleted` | Account / User / Rule / Secret mutations (via audit relay) |
 
 Events via "audit relay" are routed automatically **only when the
-`audit_log` feature is co-licensed** — the audit recorder forwards
-persisted entries into the dispatcher without any plugin change.
+[`audit_log`](audit_log.md) feature is co-licensed** — the audit
+recorder forwards persisted entries into the dispatcher without any
+plugin change.
 
 ## Channels
 
-Configured under **Notifications → Channels**. One row per
-destination, reusable across rules.
+Configured under **Settings → Notifications → Channels** — the same
+screen OSS provides. With the enterprise package installed, the `type`
+dropdown gains the non-email options below.
 
 ### Slack
 
@@ -65,26 +76,24 @@ Messages are Adaptive Cards with severity-coloured titles and a
 
 ### Email
 
-Reuses the SMTP settings from `local_config.py` (`MAIL_SERVER`,
-`MAIL_PORT`, `MAIL_USERNAME`, …). Only set:
-
-| Field                   | Value                                |
-| ----------------------- | ------------------------------------ |
-| email_recipients        | `alice@example.com, ops@example.com` |
-| email_subject_prefix    | `[CMDBsyncer]` *(optional)*          |
+Email delivery works without the enterprise package — see
+[community Notifications](../advanced/notifications.md#email). When
+both packages are active, the enterprise dispatcher uses the same
+channel row so Jinja templates and cooldown apply to email too.
 
 ### Generic HTTPS webhook
 
 Raw JSON POST to your own endpoint. Optional HMAC-SHA256 signing
-(GitHub-/Stripe-style):
+(GitHub-/Stripe-style) with the secret drawn from an Account's
+password (authoritative credential store, not env vars):
 
-| Field                | Value                                                        |
-| -------------------- | ------------------------------------------------------------ |
-| name                 | `pagerduty-primary`                                          |
-| type                 | `webhook`                                                    |
-| webhook_url          | `https://events.pagerduty.com/v2/enqueue`                    |
-| webhook_secret_env   | `NOTIF_WEBHOOK_SECRET` *(env var; used for X-Signature-SHA256)* |
-| extra_headers        | `{"Authorization": "Bearer ..."}` *(dict, optional)*         |
+| Field                      | Value                                                        |
+| -------------------------- | ------------------------------------------------------------ |
+| name                       | `pagerduty-primary`                                          |
+| type                       | `webhook`                                                    |
+| webhook_url                | `https://events.pagerduty.com/v2/enqueue`                    |
+| signing_secret_account     | `pagerduty-hmac` *(Account name; its password is the HMAC secret)* |
+| extra_headers              | `{"Authorization": "Bearer ..."}` *(dict, optional)*         |
 
 Body shape:
 
@@ -102,9 +111,10 @@ Body shape:
 }
 ```
 
-When `webhook_secret_env` is set, an `X-Signature-SHA256: sha256=<hex>`
+When a signing Account is set, an `X-Signature-SHA256: sha256=<hex>`
 header is added — the receiver verifies with HMAC-SHA256 over the
-request body.
+request body. Existing installs that stored an env-var name in
+`webhook_secret_env` still work for backwards compatibility.
 
 ### Testing a channel
 
@@ -116,23 +126,9 @@ a real incident.
 
 ## Rules
 
-Under **Notifications → Rules**. Each rule matches events to channels.
-
-| Field                 | Meaning                                                         |
-| --------------------- | --------------------------------------------------------------- |
-| `name`                | Human identifier                                                |
-| `priority`            | Lower numbers evaluate first                                    |
-| `continue_after_match`| If off (default), the first matched rule stops evaluation       |
-| `event_type_match`    | Regex on `event_type` (empty = any)                             |
-| `severity_min`        | Only events at or above this severity fire the rule             |
-| `source_match`        | Regex on the `source` (`cron`, `audit`, `test`, ...)            |
-| `target_match`        | Regex on the target name (e.g. account name, group name)        |
-| `outcome_match`       | `failure` to restrict to failures                               |
-| `channels`            | List of channels to dispatch through                            |
-| `title_template`      | Jinja; has access to the full event dict                        |
-| `message_template`    | Jinja; same                                                     |
-| `cooldown_minutes`    | Same `dedup_key` is silent for this long after firing           |
-| `max_per_hour`        | Hard cap per rule per hour                                      |
+The full field reference is on the [OSS Notifications
+page](../advanced/notifications.md#rules). The enterprise dispatcher
+is what gives the Jinja templates and rate-limit fields their meaning:
 
 **Example rule — prod cron failures to PagerDuty + Slack:**
 
@@ -176,8 +172,8 @@ high.
 **Channel test succeeds but real events never arrive**  
 Check that a matching rule is `enabled`, that its `priority` isn't
 buried under a stricter rule with `continue_after_match=False`, and
-that the event's `severity` is at least `severity_min`. Audit
-events flow only when `audit_log` is also licensed.
+that the event's `severity` is at least `severity_min`. Audit events
+flow only when `audit_log` is also licensed.
 
 **Events arrive but no mentions**  
 `slack_mention` must be Slack-formatted. `@alice` works only in
@@ -185,6 +181,10 @@ the channel message body; for a group, use `<!subteam^Sxxx>`; for
 channel-wide alerts, `<!here>` or `<!channel>`.
 
 **Webhook receiver says the signature is wrong**  
-Verify `webhook_secret_env` points to the same secret on both
-sides. The signature is computed over the **raw body bytes**
-(`data=body`), not a re-serialised JSON.
+Verify `signing_secret_account` points to an Account whose password
+matches the receiver's secret. The signature is computed over the
+**raw body bytes** (`data=body`), not a re-serialised JSON.
+
+**Slack / Teams / Webhook type doesn't appear in the channel dropdown**  
+The enterprise package is either not installed or its license is
+invalid/expired. The OSS channel UI only exposes `email` on its own.

@@ -111,6 +111,7 @@ nav:
      - Build your own Plugin: advanced/own_plugins.md
      - Plugin API: advanced/plugin_api.md
      - Jinja Functions: advanced/jinja_functions.md
+     - Notifications: advanced/notifications.md
      - Rest API: internal_restapi/index.md
      - Maintenance: sys/index.md
   - Enterprise:
