@@ -32,20 +32,23 @@ Register `https://<your-syncer>/oidc/callback` as the allowed redirect URI in th
 
 ## Configuration
 
-In `local_config.py`:
+The issuer URL and the client credentials live on a Syncer **Account**.
+
+1. Create a Syncer Account:
+
+    | Field    | Value                                                      |
+    | -------- | ---------------------------------------------------------- |
+    | name     | `entra-id`                                                 |
+    | address  | `https://login.microsoftonline.com/<tenant>/v2.0` *(issuer)* |
+    | username | `<app-registration-id>` *(client id)*                      |
+    | password | `<client-secret>`                                          |
+
+2. Point `local_config.py` at that Account:
 
 ```python
 config = {
     'OIDC_LOGIN': True,
-
-    # Discovery URL base (omit /.well-known/openid-configuration)
-    'OIDC_ISSUER': 'https://login.microsoftonline.com/<tenant>/v2.0',
-    'OIDC_CLIENT_ID': '<app-registration-id>',
-
-    # Preferred: secret from an env var (not stored in the config file)
-    'OIDC_CLIENT_SECRET_ENV': 'OIDC_CLIENT_SECRET',
-    # Or inline (less preferred):
-    # 'OIDC_CLIENT_SECRET': '<raw-secret>',
+    'OIDC_ACCOUNT': 'entra-id',
 
     'OIDC_SCOPES': ['openid', 'email', 'profile', 'groups'],
 
@@ -69,7 +72,7 @@ config = {
 
 ### Azure AD / Entra ID
 
-- `OIDC_ISSUER`: `https://login.microsoftonline.com/<tenant>/v2.0`
+- Account `address` (issuer): `https://login.microsoftonline.com/<tenant>/v2.0`
 - Create an **App Registration**, add a **Web** platform redirect
   URI `https://<syncer>/oidc/callback`, generate a client secret.
 - To expose group claims, configure **Token configuration → Add
@@ -78,14 +81,14 @@ config = {
 
 ### Keycloak
 
-- `OIDC_ISSUER`: `https://keycloak.example.com/realms/<realm>`
+- Account `address` (issuer): `https://keycloak.example.com/realms/<realm>`
 - Create a client of type OpenID Connect, `confidential`, with the
   redirect URI set; copy the client secret.
 - Map groups to a `groups` claim in **Client scopes → groups**.
 
 ### Okta
 
-- `OIDC_ISSUER`: `https://<yourorg>.okta.com` or
+- Account `address` (issuer): `https://<yourorg>.okta.com` or
   `https://<yourorg>.okta.com/oauth2/default`
 - Configure a Web application, add the redirect URI, copy the
   client secret.
@@ -93,7 +96,7 @@ config = {
 
 ### Google Workspace
 
-- `OIDC_ISSUER`: `https://accounts.google.com`
+- Account `address` (issuer): `https://accounts.google.com`
 - No group claim by default — `OIDC_ROLE_MAPPING` won't apply.
   Assign roles manually via the UI, or proxy through Okta/Auth0.
 
@@ -135,7 +138,7 @@ failure reasons:
 
 **Loop back to `/login` with no flash message**  
 Check the Flask logs for `OIDC client setup failed`. Most common
-cause: wrong `OIDC_ISSUER` URL (it must be the base of the
+cause: wrong issuer URL on the Account (`address` must be the base of the
 discovery document, not the discovery URL itself).
 
 **`token_exchange_failed`**  

@@ -16,6 +16,21 @@ Designed to drop straight into any modern monitoring stack:
   — configure an OpenMetrics endpoint
 - **Alertmanager** — build alerts on the freshness gauges below
 
+## Authentication
+
+`/metrics` uses the same Basic-Auth layer as the rest of the Syncer
+REST API:
+
+1. Create a Syncer User for the scraper (Settings → Users → New).
+2. Assign the API role **Prometheus metrics scrape** (`metrics`) —
+   or **Full rights** (`all`) if the user should be able to reach
+   every API endpoint.
+3. Set a password and use it in the scraper's Basic-Auth config.
+
+HTTPS is required (the same gate that protects the rest of the API);
+set `ALLOW_INSECURE_API_AUTH = True` in `local_config.py` only for
+non-production debugging.
+
 ## Scrape config
 
 ```yaml
@@ -25,29 +40,10 @@ scrape_configs:
     scheme: https
     static_configs:
       - targets: ['syncer.example.com']
-    authorization:
-      type: Bearer
-      credentials: ${PROM_TOKEN}      # matches the env-var below
+    basic_auth:
+      username: prometheus            # the Syncer user name
+      password_file: /etc/prometheus/cmdbsyncer.pass
 ```
-
-## Authentication
-
-```python
-# local_config.py
-PROMETHEUS_METRICS_TOKEN_ENV = 'PROM_TOKEN'   # env var with the bearer token
-```
-
-When `PROMETHEUS_METRICS_TOKEN_ENV` is set:
-
-- The env var must be present on the syncer host.
-- Callers must present `Authorization: Bearer <value of env var>`.
-- Mismatches → `401`. Missing env var with the key set → `503`
-  (fail-closed so a misconfigured deployment doesn't silently
-  expose metrics).
-
-If `PROMETHEUS_METRICS_TOKEN_ENV` is left unset the endpoint is
-open — intended for scraping from the same pod / node / internal
-VPC where network-level isolation is enough.
 
 ## Metrics
 

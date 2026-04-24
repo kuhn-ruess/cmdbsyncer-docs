@@ -31,28 +31,29 @@ successful upload (old objects beyond `retention_days` are deleted).
     ```
 2. Make sure `mongodump` (and `mongorestore` for restores, and `gpg`
    if you enable encryption) are on PATH of the syncer OS user.
-3. Create credentials:
-    - **AWS / compatible**: export access key + secret key as env
-      vars; `BackupConfig.s3_access_key_env` and `s3_secret_key_env`
-      reference those env var names.
-    - **IAM roles / Workload Identity**: leave the env-var fields
-      blank; boto3 falls back to its default credential chain.
+3. Create a Syncer Account for the S3 destination:
+
+    | Field         | Example                                                      |
+    | ------------- | ------------------------------------------------------------ |
+    | name          | `s3-backups`                                                 |
+    | address       | *(blank for AWS; e.g. `https://s3.eu-central-003.backblazeb2.com` for B2)* |
+    | username      | `<access-key-id>` *(blank to use the default AWS credential chain / IAM role)* |
+    | password      | `<secret-access-key>`                                        |
+    | custom_fields | `region: eu-central-1`                                       |
+
 4. Under **Backups → Configs → Create**, fill in:
 
-    | Field                  | Example                                             |
-    | ---------------------- | --------------------------------------------------- |
-    | name                   | `prod-daily`                                        |
-    | bucket                 | `cmdbsyncer-backups`                                |
-    | prefix                 | `prod/`                                             |
-    | s3_endpoint_url        | *(blank for AWS; e.g. `https://s3.eu-central-003.backblazeb2.com` for B2)* |
-    | s3_region              | `eu-central-1`                                      |
-    | s3_access_key_env      | `AWS_ACCESS_KEY_ID` *(or blank for IAM role)*       |
-    | s3_secret_key_env      | `AWS_SECRET_ACCESS_KEY`                             |
-    | s3_sse                 | `AES256` *(optional server-side encryption header)* |
-    | compression            | `gzip`                                              |
-    | encryption             | `gpg`                                               |
-    | gpg_recipient          | `ops-backups@example.com`                           |
-    | retention_days         | `30`                                                |
+    | Field          | Example                                             |
+    | -------------- | --------------------------------------------------- |
+    | name           | `prod-daily`                                        |
+    | bucket         | `cmdbsyncer-backups`                                |
+    | prefix         | `prod/`                                             |
+    | account        | `s3-backups`                                        |
+    | s3_sse         | `AES256` *(optional server-side encryption header)* |
+    | compression    | `gzip`                                              |
+    | encryption     | `gpg`                                               |
+    | gpg_recipient  | `ops-backups@example.com`                           |
+    | retention_days | `30`                                                |
 
 5. Test it: select the config in the list, **Run backup now** bulk
    action. Watch the *Backups → History* view for the result.

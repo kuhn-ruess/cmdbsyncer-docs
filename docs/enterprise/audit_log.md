@@ -154,14 +154,20 @@ the SIEM is an **additional, write-only** copy that compliance
 teams can treat as tamper-evident — even a Mongo-savvy insider
 can't retroactively remove entries that already reached the SIEM.
 
-Configure sinks under **Audit Log → SIEM Sinks**. Supported types:
+Each sink points at a Syncer **Account** that carries the endpoint
+and any token. Configure sinks under **Audit Log → SIEM Sinks** —
+the `account` field is a dropdown of existing Accounts. What goes
+where on the Account:
 
-| Type             | Config fields                                                    |
-| ---------------- | ---------------------------------------------------------------- |
-| `splunk_hec`     | `url`, `token_env` (env var with the HEC token), `splunk_index` / `splunk_source` / `splunk_sourcetype` *(optional)*, `verify_tls` |
-| `syslog_tcp`     | `host`, `port` *(default 514)*                                   |
-| `syslog_tls`     | `host`, `port` *(default 6514)*, `verify_tls`                    |
-| `https_webhook`  | `url`, `token_env` *(optional Bearer token)*, `verify_tls`       |
+| Type             | Account `address` | Account `password`        | Account `custom_fields` |
+| ---------------- | ----------------- | ------------------------- | ----------------------- |
+| `splunk_hec`     | HEC URL           | HEC token                 | —                       |
+| `syslog_tcp`     | hostname          | *(unused)*                | `port` *(default 514)*  |
+| `syslog_tls`     | hostname          | *(unused)*                | `port` *(default 6514)* |
+| `https_webhook`  | URL               | Bearer token *(optional)* | —                       |
+
+On the sink itself you still set `verify_tls` and the optional
+`splunk_index` / `splunk_source` / `splunk_sourcetype`.
 
 Every entry is shipped as ECS-shaped JSON so most SIEMs extract
 fields out of the box. Syslog output uses RFC5424 with octet-counted
@@ -177,28 +183,43 @@ is best-effort-plus-logged.
 
 1. In Splunk, **Data Inputs → HTTP Event Collector → New Token**,
    assign to an index like `cmdbsyncer-audit`, copy the token.
-2. Export the token on the syncer host: `export SPLUNK_HEC_TOKEN=…`
+2. Create a Syncer Account for Splunk:
+
+    | Field    | Value                                                 |
+    | -------- | ----------------------------------------------------- |
+    | name     | `splunk-hec`                                          |
+    | address  | `https://splunk.example.com:8088/services/collector`  |
+    | password | *(the HEC token)*                                     |
+
 3. Create a sink:
 
-    | Field              | Value                                               |
-    | ------------------ | --------------------------------------------------- |
-    | name               | `splunk-prod`                                       |
-    | type               | `splunk_hec`                                        |
-    | url                | `https://splunk.example.com:8088/services/collector` |
-    | token_env          | `SPLUNK_HEC_TOKEN`                                  |
-    | splunk_index       | `cmdbsyncer-audit`                                  |
-    | splunk_sourcetype  | `cmdbsyncer:audit`                                  |
-    | verify_tls         | `True`                                              |
+    | Field              | Value                 |
+    | ------------------ | --------------------- |
+    | name               | `splunk-prod`         |
+    | type               | `splunk_hec`          |
+    | account            | `splunk-hec`          |
+    | splunk_index       | `cmdbsyncer-audit`    |
+    | splunk_sourcetype  | `cmdbsyncer:audit`    |
+    | verify_tls         | `True`                |
 
 **Example: syslog to rsyslog over TLS**
 
-| Field       | Value                             |
-| ----------- | --------------------------------- |
-| name        | `rsyslog-central`                 |
-| type        | `syslog_tls`                      |
-| host        | `rsyslog.example.com`             |
-| port        | `6514`                            |
-| verify_tls  | `True`                            |
+1. Create a Syncer Account for the syslog server:
+
+    | Field            | Value                       |
+    | ---------------- | --------------------------- |
+    | name             | `syslog-central`            |
+    | address          | `rsyslog.example.com`       |
+    | custom_fields    | `port: 6514`                |
+
+2. Create a sink:
+
+    | Field       | Value                             |
+    | ----------- | --------------------------------- |
+    | name        | `rsyslog-central`                 |
+    | type        | `syslog_tls`                      |
+    | account     | `syslog-central`                  |
+    | verify_tls  | `True`                            |
 
 ## Emitting custom events
 

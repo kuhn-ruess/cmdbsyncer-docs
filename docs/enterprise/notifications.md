@@ -43,33 +43,41 @@ plugin change.
 
 ## Channels
 
-Configured under **Settings → Notifications → Channels** — the same
-screen OSS provides. With the enterprise package installed, the `type`
-dropdown gains the non-email options below.
+Every channel points at a Syncer **Account** — that Account carries
+the webhook URL, any signing secret and per-integration overrides, so
+the channel itself is just a thin routing record. Accounts are picked
+from a dropdown on the channel form.
 
 ### Slack
 
 1. In Slack, **Apps → Incoming Webhooks → Add to Slack**, pick a
    channel, copy the webhook URL.
-2. In CMDBsyncer, create a channel:
+2. Create a Syncer Account (**Accounts → New**, plugin type `Slack`):
 
-    | Field                | Value                                                  |
-    | -------------------- | ------------------------------------------------------ |
-    | name                 | `slack-ops`                                            |
-    | type                 | `slack`                                                |
-    | webhook_url          | *(paste the Slack URL)*                                |
-    | slack_channel        | *(optional override, e.g. `#cmdb-alerts`)*             |
-    | slack_mention        | *(optional, e.g. `<!here>`, `@netops`, `<!subteam^Sxxx>`)* |
+    | Field         | Value                                                     |
+    | ------------- | --------------------------------------------------------- |
+    | name          | `slack-ops`                                               |
+    | address       | *(paste the Slack webhook URL)*                           |
+    | custom_fields | `slack_channel: #cmdb-alerts` *(optional override)*       |
+    |               | `slack_mention: <!here>` *(optional)*                     |
 
-Messages are Block Kit with severity-coloured headers and emoji:
-:information_source: info, :warning: warning, :x: error,
-:rotating_light: critical.
+3. Create the Notification Channel:
+
+    | Field   | Value         |
+    | ------- | ------------- |
+    | name    | `slack-ops`   |
+    | type    | `slack`       |
+    | account | `slack-ops`   |
+
+Messages are Block Kit with severity-coloured headers and emoji.
 
 ### MS Teams
 
 1. In Teams, **Connectors → Incoming Webhook** (or a Workflows-based
    webhook on MS 365 tenants), copy the URL.
-2. In CMDBsyncer, create a channel with `type=msteams` and that URL.
+2. Create a Syncer Account (plugin type `MS Teams`) with the URL
+   in `address`.
+3. Create a channel with `type=msteams` and point `account` at it.
 
 Messages are Adaptive Cards with severity-coloured titles and a
 `FactSet` of the event details.
@@ -77,23 +85,25 @@ Messages are Adaptive Cards with severity-coloured titles and a
 ### Email
 
 Email delivery works without the enterprise package — see
-[community Notifications](../advanced/notifications.md#email). When
-both packages are active, the enterprise dispatcher uses the same
-channel row so Jinja templates and cooldown apply to email too.
+[community Notifications](../advanced/notifications.md#email). Leave
+`account` blank on the channel; delivery runs through the global
+Mail config.
 
-### Generic HTTPS webhook
+### Generic webhook
 
 Raw JSON POST to your own endpoint. Optional HMAC-SHA256 signing
-(GitHub-/Stripe-style) with the secret drawn from an Account's
-password (authoritative credential store, not env vars):
+(GitHub-/Stripe-style) with the secret stored on the Account itself:
 
-| Field                      | Value                                                        |
-| -------------------------- | ------------------------------------------------------------ |
-| name                       | `pagerduty-primary`                                          |
-| type                       | `webhook`                                                    |
-| webhook_url                | `https://events.pagerduty.com/v2/enqueue`                    |
-| signing_secret_account     | `pagerduty-hmac` *(Account name; its password is the HMAC secret)* |
-| extra_headers              | `{"Authorization": "Bearer ..."}` *(dict, optional)*         |
+1. Create a Syncer Account (plugin type `Webhook`):
+
+    | Field         | Value                                                  |
+    | ------------- | ------------------------------------------------------ |
+    | name          | `pagerduty-primary`                                    |
+    | address       | `https://events.pagerduty.com/v2/enqueue`              |
+    | password      | *(HMAC signing secret — blank for no signing)*         |
+    | custom_fields | `extra_headers: Authorization: Bearer …` *(optional)*  |
+
+2. Create the channel (`type=webhook`, `account=pagerduty-primary`).
 
 Body shape:
 
@@ -111,10 +121,9 @@ Body shape:
 }
 ```
 
-When a signing Account is set, an `X-Signature-SHA256: sha256=<hex>`
+When the Account has a password, an `X-Signature-SHA256: sha256=<hex>`
 header is added — the receiver verifies with HMAC-SHA256 over the
-request body. Existing installs that stored an env-var name in
-`webhook_secret_env` still work for backwards compatibility.
+request body.
 
 ### Testing a channel
 
@@ -181,9 +190,9 @@ the channel message body; for a group, use `<!subteam^Sxxx>`; for
 channel-wide alerts, `<!here>` or `<!channel>`.
 
 **Webhook receiver says the signature is wrong**  
-Verify `signing_secret_account` points to an Account whose password
-matches the receiver's secret. The signature is computed over the
-**raw body bytes** (`data=body`), not a re-serialised JSON.
+Verify the channel's Account has a password that matches the
+receiver's secret. The signature is computed over the **raw body
+bytes** (`data=body`), not a re-serialised JSON.
 
 **Slack / Teams / Webhook type doesn't appear in the channel dropdown**  
 The enterprise package is either not installed or its license is
