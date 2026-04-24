@@ -70,6 +70,13 @@ Ansible integration:
 pip install kerberos pykerberos pywinrm ntlm-auth ansible
 ```
 
+!!! note "Default playbooks are not part of the PyPI package"
+    The wheel ships only the Python application. Pull the reference playbooks onto your node with one command after install:
+    ```bash
+    cmdbsyncer sys install_playbooks ./ansible
+    ```
+    Details and options: [Playbooks via PyPI Install](../ansible/playbooks_pypi.md). For a remote Ansible control node, see the [cmdbsyncer-inventory](../ansible/cmdbsyncer_inventory.md) plugin instead.
+
 Database and extra integrations:
 
 ```bash

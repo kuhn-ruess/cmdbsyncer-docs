@@ -29,6 +29,9 @@ As of now, these are:
 | cmk_server_docker_inventory | Like above |
 
 
+!!! tip "Remote control node? Use the pip-installable inventory plugin"
+    If your Ansible control node is a different host than the Syncer, use the [cmdbsyncer-inventory](cmdbsyncer_inventory.md) plugin instead of the shell wrappers above. It installs from PyPI with `pip install cmdbsyncer-inventory` and talks to the Syncer over HTTPS.
+
 Also you find two playbooks and two roles:
 
 | File | Description |

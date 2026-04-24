@@ -43,6 +43,8 @@ nav:
 
   - Ansible:
     - Ansible Basics: ansible/index.md
+    - cmdbsyncer-inventory Plugin: ansible/cmdbsyncer_inventory.md
+    - Playbooks via PyPI Install: ansible/playbooks_pypi.md
     - Manage Checkmk Agents: ansible/cmk_agents.md
     - Manage Checkmk Sites: ansible/cmk_sites.md
   - CMDB:
