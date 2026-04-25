@@ -96,7 +96,3 @@ The full provider listing exposes both static and dynamic (project-backed) names
 cmdbsyncer ansible list-inventory-providers
 curl https://syncer/api/v1/inventory/ansible
 ```
-
-## What about Playbook Fire Rules?
-
-Fire rules carry a project field for organization, but the bundled `cmdbsyncer ansible fire_playbook_rules` command currently dispatches **all** enabled rules across **all** projects. Per-project firing would be a small follow-up (a `--project NAME` CLI flag); shout if you need it.
