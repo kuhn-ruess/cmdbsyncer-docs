@@ -2,6 +2,20 @@
 The CMDB Syncer contains Ansible Endpoints and a set of Ansible Playbooks.
 As of now, you can basically control all of your own playbooks with rule-based variables from the syncer, or use the provided ones for update and registration of Checkmk Agents (Linux/Windows) or the management and installation of Checkmk Sites on your servers.
 
+## In this section
+
+| Page | Topic |
+| :--- | :---- |
+| [Run Playbooks from the UI](run_from_ui.md) | Trigger a playbook with one click, dry-run with `--check --diff`, audit every run. |
+| [Playbook Manifest](playbook_manifest.md) | How to register your own playbooks (`playbooks.yml` + `.local`) so they appear in the UI. |
+| [Playbook Fire Rules](fire_rules.md) | Rule-driven onboarding — match a host, fire a playbook, dedup automatically. |
+| [Example Gallery](example_gallery.md) | Copy-paste-ready playbooks for Windows patching, cron deployment, password rotation, Fileadmin sync. |
+| [AWX / Semaphore / AAP](awx_integration.md) | Use the Syncer as a dynamic inventory source from external Ansible orchestrators. |
+| [cmdbsyncer-inventory Plugin](cmdbsyncer_inventory.md) | PyPI-installable inventory plugin for remote control nodes. |
+| [Playbooks via PyPI Install](playbooks_pypi.md) | Pull the bundled playbook set onto a pip-installed Syncer. |
+| [Manage Checkmk Agents](cmk_agents.md) | Reference for the bundled `cmk_agent_mngmt.yml` playbook. |
+| [Manage Checkmk Sites](cmk_sites.md) | Reference for the bundled `cmk_server_mngmt.yml` playbook. |
+
 ## Config Tricks
 If you want to refer to passwords in your Syncer configuration, you can use an integrated macro called ACCOUNT which connects to every field you can set in the account config. The syntax is `MACRONAME:ACCOUNTNAME:FIELDNAME`.
 

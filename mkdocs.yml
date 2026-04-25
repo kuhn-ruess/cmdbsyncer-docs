@@ -43,6 +43,11 @@ nav:
 
   - Ansible:
     - Ansible Basics: ansible/index.md
+    - Run Playbooks from the UI: ansible/run_from_ui.md
+    - Playbook Manifest: ansible/playbook_manifest.md
+    - Playbook Fire Rules: ansible/fire_rules.md
+    - Example Gallery: ansible/example_gallery.md
+    - AWX / Semaphore / AAP: ansible/awx_integration.md
     - cmdbsyncer-inventory Plugin: ansible/cmdbsyncer_inventory.md
     - Playbooks via PyPI Install: ansible/playbooks_pypi.md
     - Manage Checkmk Agents: ansible/cmk_agents.md
