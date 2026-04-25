@@ -6,7 +6,9 @@ A project is a named group of rules. Each enabled project automatically becomes 
 
 ## What changes for existing installs
 
-**Nothing breaks.** Rules without a project assignment keep working through the existing `ansible` provider — that's the legacy / global behaviour. There is no migration step. Projects are an opt-in layer on top: create a project, point some rules at it, point a playbook at the project, done.
+**Nothing breaks.** On first start the Syncer auto-creates a project called `Default` and migrates every existing project-less rule into it. The bare `ansible` provider — what bundled playbooks reference today via `inventory: ansible` — now serves the Default project's rules. The migration is idempotent; running again is a no-op.
+
+Newly created rules also default to the Default project so the project-grouped UI never has orphans.
 
 ## When to use a project
 
@@ -15,6 +17,17 @@ A project is a named group of rules. Each enabled project automatically becomes 
 | One Ansible target system, all hosts feed the same rules | Stay project-less. Use the default `ansible` provider. |
 | Two distinct rule worlds (prod vs. dev, Linux vs. Windows, customer-A vs. customer-B) that must not bleed into each other | Create one project per world; assign rules accordingly; pick the matching provider per playbook. |
 | One shared rule set with a few project-specific overrides | Today: duplicate the shared rule into both projects. (Cascade is on the wishlist; no project = global is the only built-in cascade.) |
+
+## The project workspace
+
+**Modules → Ansible → Projects** is the entry point. Click a project's name to open its detail page — that's the project-scoped workspace where all four rule types for the project show up in one place:
+
+- Filter Rules
+- Rewrite Attributes
+- Ansible Attributes (custom variables)
+- Playbook Fire Rules
+
+Each section has a **+ New** button that opens the matching rule editor with the project pre-selected, and lands you back on the project page after save. The flat list views under the same Ansible menu remain available for cross-project work — they're sorted by project and inject a banner row at every transition so you can scan many projects at once.
 
 ## Creating a project
 
