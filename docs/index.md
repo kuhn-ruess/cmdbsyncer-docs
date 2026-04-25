@@ -44,9 +44,8 @@ Version 4.0 is a major release. Highlights — see the [changelog](https://githu
 - **[Prometheus metrics](enterprise/prometheus_metrics.md)** — `/metrics` endpoint with license info, per-cron-group state and host totals
 - **[Signed webhook triggers](enterprise/webhook_signatures.md)** — HMAC-signed cron-trigger requests with replay window and per-group IP allowlists
 - **[Notification routing](enterprise/notifications.md)** — Slack, MS Teams, signed webhooks; rules with templates, cooldowns and hourly caps
-- **[Secrets manager](enterprise/secrets_manager.md)** — account passwords resolve from KeePass (more vault types planned), transparent to every plugin
+- **[Secrets manager](enterprise/secrets_manager.md)** — account passwords resolve from KeePass, LastPass, HashiCorp Vault, AWS Secrets Manager or an environment variable, transparent to every plugin
 - **[JSON log stream](enterprise/json_logging.md)** — Elastic Common Schema on stdout for Loki / Elastic / CloudWatch / Datadog / Splunk
-- **License soft policy** — expired licenses keep every feature active and surface a banner instead of locking you out; an optional `max_hosts` cap warns over the limit but never disables anything
 
 ---
 
