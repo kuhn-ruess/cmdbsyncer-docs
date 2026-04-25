@@ -34,7 +34,6 @@ Version 4.0 is a major release. Highlights — see the [changelog](https://githu
 - **Admin UI refresh** across every page — consistent card layout for edit forms, sticky table headers, modernised login and start page, plugin-picker for new accounts
 - **Notifications** — Settings → Notifications with Channels and Rules, email out of the box
 - **Cron groups**: external webhook trigger with per-group token; resilient mode that continues remaining tasks on failure; auto-released locks; per-group "last successful run" tracking
-- **Outbound credentials live on the Account record** (URL, user, password, custom fields) instead of environment variables — works transparently with the Enterprise Secrets Manager
 
 ### Enterprise (license-gated)
 
