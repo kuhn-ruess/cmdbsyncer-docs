@@ -31,22 +31,28 @@ Therefore , to get the Password of account cmk, it would look like:
 
 ## General
 
-Inside the Ansible subfolder, you will find a set of inventory plugins for Ansible.
-These are for use with the ansible-playbook command, behind the -i parameter.
+Inside the Ansible subfolder you will find inventory entry-points for `ansible-playbook -i …`.
 
-As of now, these are:
+The **recommended** entry-point is the YAML plugin spec, which routes through the [`cmdbsyncer-inventory`](cmdbsyncer_inventory.md) plugin (mode `local` shells the CLI, mode `http` hits the REST API):
 
 | File | Description |
 |:----|:-----------|
-| inventory | General Inventory source for local installation |
-| docker_inventory | Inventory source when running in docker | 
-| rest_inventory | Example for Inventory Source using the Rest API of Syncer |
-| cmk_server_inventory | Special source for use with the cmk_server_mngm.yml playbook |
-| cmk_server_docker_inventory | Like above |
+| `syncer.inventory.yml` | Single plugin spec used for every dispatched playbook. Provider is selected at run time via `CMDBSYNCER_INVENTORY_PROVIDER` (the bundled UI runner sets this per-playbook based on the manifest). |
+
+The legacy shell wrappers are still shipped as thin proxies — `ansible-playbook -i ansible/inventory` keeps working unchanged — but they all delegate to the new `cmdbsyncer ansible inventory <provider>` CLI:
+
+| File | Provider | Notes |
+|:----|:--------|:------|
+| `inventory` | `ansible` | Default host catalogue, run from the Syncer host. |
+| `inventory_single` | `ansible` | Per-host fast-path; kept for legacy integrations that pass `--host`. |
+| `docker_inventory` | `ansible` | Same, but `docker exec` into the Syncer container. |
+| `cmk_server_inventory` | `cmk_sites` | Checkmk Sites catalogue for `cmk_server_mngmt.yml`. |
+| `cmk_server_docker_inventory` | `cmk_sites` | Dockerised variant of the above. |
+| `rest_inventory` | configurable | curl-based REST example; updated to the new `/api/v1/inventory/ansible/<provider>` endpoint. |
 
 
 !!! tip "Remote control node? Use the pip-installable inventory plugin"
-    If your Ansible control node is a different host than the Syncer, use the [cmdbsyncer-inventory](cmdbsyncer_inventory.md) plugin instead of the shell wrappers above. It installs from PyPI with `pip install cmdbsyncer-inventory` and talks to the Syncer over HTTPS.
+    If your Ansible control node is a different host than the Syncer, use the [cmdbsyncer-inventory](cmdbsyncer_inventory.md) plugin in `mode: http`. It installs from PyPI with `pip install cmdbsyncer-inventory` and talks to the Syncer over HTTPS.
 
 Also you find two playbooks and two roles:
 

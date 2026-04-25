@@ -17,6 +17,7 @@ Each playbook from the [manifest](playbook_manifest.md) shows up as a card with 
 
 | Field | Effect |
 | :---- | :----- |
+| **Inventory Provider** | The rule source feeding this run. Defaults to the playbook's manifest `inventory:` field; override to point at a different [project](projects.md) without editing the manifest. |
 | **Limit** | Maps to `--limit` — restrict the run to a host or group, e.g. `webserver01` or `windows`. Empty means "all hosts in the inventory". |
 | **Extra Vars** | Maps to `-e`. Free-form, e.g. `cmk_install_agent=true cmk_main_site=main`. |
 | **Preview** | Runs `ansible-playbook --check --diff`. No changes are applied; the rendered diff lands in the run log so you can review it before clicking Run. |

@@ -42,7 +42,7 @@ Each section has a **+ New** button that opens the matching rule editor with the
 The new project is reachable as a provider immediately — no app restart:
 
 ```bash
-cmdbsyncer inventory list-providers
+cmdbsyncer ansible list-inventory-providers
 ansible
 cmk_sites
 prod-linux              # ← the new project
@@ -83,7 +83,7 @@ Both transports are project-aware automatically — the resolver lives below the
 
 ```bash
 # Local CLI
-cmdbsyncer inventory ansible prod-linux --list
+cmdbsyncer ansible inventory prod-linux --list
 
 # REST API
 curl -H "x-login-user: USER:SECRET" \
@@ -93,7 +93,7 @@ curl -H "x-login-user: USER:SECRET" \
 The full provider listing exposes both static and dynamic (project-backed) names:
 
 ```bash
-cmdbsyncer inventory list-providers
+cmdbsyncer ansible list-inventory-providers
 curl https://syncer/api/v1/inventory/ansible
 ```
 

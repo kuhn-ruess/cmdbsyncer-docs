@@ -7,12 +7,12 @@ The editor lives under **Modules → Ansible → Playbook Fire Rules**.
 ## How it works
 
 1. You define a rule with the standard condition engine (match on hostname, attribute, anyway, …).
-2. Each rule has one or more outcomes selected from the [playbook manifest](playbook_manifest.md). Outcomes are picked from a dropdown that pulls the same list as the [Run Playbook page](run_from_ui.md), so you cannot typo a filename into a no-op.
+2. Each rule has one or more outcomes selected from the [playbook manifest](playbook_manifest.md). Outcomes are picked from a dropdown that pulls the same list as the [Run Playbook page](run_from_ui.md), so you cannot typo a filename into a no-op. Each outcome also has an **Inventory** dropdown that overrides the playbook's manifest-default provider — useful when one rule needs to fire a playbook against a different rule source than the playbook normally uses.
 3. The `ansible fire_playbook_rules` CLI / cron command iterates all available hosts, evaluates the enabled rules, and dispatches one playbook run per matching `(rule, host, playbook)` triple — **once**.
 
 Dedup is enforced by looking at [Run History](run_from_ui.md#run-history): if there is already a row with `source = rule`, matching `playbook` + `target_host` + `rule_id`, the rule will not fire again. To re-fire, delete the run record.
 
-> **Important**: fire-rule evaluation is intentionally kept out of the inventory hot path. Read-only `ansible-inventory --list` calls and `cmdbsyncer ansible source --list` will **not** start playbook runs. Firing happens only from the dedicated CLI/cron command, which keeps inventory queries cheap and side-effect-free.
+> **Important**: fire-rule evaluation is intentionally kept out of the inventory hot path. Read-only `ansible-inventory --list` calls and `cmdbsyncer ansible inventory <provider> --list` will **not** start playbook runs. Firing happens only from the dedicated CLI/cron command, which keeps inventory queries cheap and side-effect-free.
 
 ## CLI
 

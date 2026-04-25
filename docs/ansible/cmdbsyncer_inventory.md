@@ -4,7 +4,7 @@
 
 | Mode | Backend | When to use |
 | :--- | :------ | :---------- |
-| `local` (default) | Shells out to the local `cmdbsyncer` CLI (`cmdbsyncer inventory ansible <provider> --list`) | Ansible runs on the **same host** as the Syncer (the bundled UI runner uses this). Fastest and credential-free. |
+| `local` (default) | Shells out to the local `cmdbsyncer` CLI (`cmdbsyncer ansible inventory <provider> --list`) | Ansible runs on the **same host** as the Syncer (the bundled UI runner uses this). Fastest and credential-free. |
 | `http` | GETs `/api/v1/inventory/ansible/<provider>` | Ansible control node is a **different host** than the Syncer. |
 
 Both transports return identical data because they are backed by the same Syncer-side render function — see [Inventory Providers](inventory_providers.md) for the full picture.
@@ -91,7 +91,7 @@ Two ways to set it:
 
 **`cmdbsyncer binary not found`** (local mode) — the `cmdbsyncer` CLI is not on PATH for the Ansible execution context. Either put it on PATH, set `cmdbsyncer_bin:` to the absolute path, or switch to `mode: http`.
 
-**`cmdbsyncer CLI exited 1: Unknown provider: …`** — the provider is not registered in this Syncer build. List registered providers with `cmdbsyncer inventory list-providers`.
+**`cmdbsyncer CLI exited 1: Unknown provider: …`** — the provider is not registered in this Syncer build. List registered providers with `cmdbsyncer ansible list-inventory-providers`.
 
 **`REST API returned 401`** (http mode) — Syncer rejected the credentials. Double-check `CMDBSYNCER_APIUSER` / `CMDBSYNCER_APIPASSWORD` and that the user has the **`ansible`** API role.
 

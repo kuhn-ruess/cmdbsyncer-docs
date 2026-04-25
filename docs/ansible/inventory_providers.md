@@ -51,7 +51,7 @@ The shape returned matches the Ansible script contract:
 }
 ```
 
-A **format adapter** consumes the registry. Today the only adapter renders Ansible JSON — both for the CLI (`cmdbsyncer inventory ansible <provider>`) and for the HTTP endpoint (`/api/v1/inventory/ansible/<provider>`). Both call the same `render_ansible_inventory(provider, host=…)` function, so changing one cannot drift from the other.
+A **format adapter** consumes the registry. Today the only adapter renders Ansible JSON — both for the CLI (`cmdbsyncer ansible inventory <provider>`) and for the HTTP endpoint (`/api/v1/inventory/ansible/<provider>`). Both call the same `render_ansible_inventory(provider, host=…)` function, so changing one cannot drift from the other.
 
 ## Bundled providers
 
@@ -64,7 +64,7 @@ A **format adapter** consumes the registry. Today the only adapter renders Ansib
 List what your installation has registered:
 
 ```bash
-cmdbsyncer inventory list-providers
+cmdbsyncer ansible list-inventory-providers
 ```
 
 Or via HTTP:
@@ -80,8 +80,8 @@ curl -H "x-login-user: USER:SECRET" https://syncer/api/v1/inventory/ansible
 Honors the standard Ansible inventory-script contract:
 
 ```bash
-cmdbsyncer inventory ansible <provider> --list
-cmdbsyncer inventory ansible <provider> --host=<hostname>
+cmdbsyncer ansible inventory <provider> --list
+cmdbsyncer ansible inventory <provider> --host=<hostname>
 ```
 
 This is what the [`cmdbsyncer-inventory`](cmdbsyncer_inventory.md) plugin runs in local mode.
@@ -125,7 +125,7 @@ register_inventory_provider('yourmodule', _build_provider)
 That's it — the new provider is now reachable via:
 
 ```bash
-cmdbsyncer inventory ansible yourmodule --list
+cmdbsyncer ansible inventory yourmodule --list
 curl https://syncer/api/v1/inventory/ansible/yourmodule
 ```
 
@@ -133,7 +133,7 @@ curl https://syncer/api/v1/inventory/ansible/yourmodule
 
 ## Why a registry instead of one endpoint per module?
 
-The previous design shipped a per-module shell wrapper (`ansible/inventory`, `ansible/cmk_server_inventory`, `ansible/rest_inventory`, …) that each shelled `cmdbsyncer ansible source` or its sibling commands. That worked, but:
+Earlier the per-module shell wrappers (`ansible/inventory`, `ansible/cmk_server_inventory`, `ansible/rest_inventory`, …) each shelled `cmdbsyncer ansible source` or its sibling commands. The wrappers are still on disk as thin proxies for backward-compat — they now exec the new `cmdbsyncer ansible inventory <provider>` command — but the recommended path forward is the YAML plugin spec at `ansible/syncer.inventory.yml` driven by [`cmdbsyncer-inventory`](cmdbsyncer_inventory.md). The previous shape worked, but:
 
 - It coupled "what data to serve" with "what filename to point Ansible at", so adding a new module meant adding a new shell file in the repo.
 - The wrappers required the Syncer checkout to be the working directory.
