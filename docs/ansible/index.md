@@ -9,6 +9,7 @@ As of now, you can basically control all of your own playbooks with rule-based v
 | [Run Playbooks from the UI](run_from_ui.md) | Trigger a playbook with one click, dry-run with `--check --diff`, audit every run. |
 | [Playbook Manifest](playbook_manifest.md) | How to register your own playbooks (`playbooks.yml` + `.local`) so they appear in the UI. |
 | [Inventory Providers](inventory_providers.md) | Cross-module registry that backs both the local CLI inventory and the REST endpoint. |
+| [Projects](projects.md) | Group rules into isolated sources; each project becomes its own provider. |
 | [Playbook Fire Rules](fire_rules.md) | Rule-driven onboarding — match a host, fire a playbook, dedup automatically. |
 | [Example Gallery](example_gallery.md) | Copy-paste-ready playbooks for Windows patching, cron deployment, password rotation, Fileadmin sync. |
 | [AWX / Semaphore / AAP](awx_integration.md) | Use the Syncer as a dynamic inventory source from external Ansible orchestrators. |

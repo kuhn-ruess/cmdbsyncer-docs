@@ -57,8 +57,9 @@ A **format adapter** consumes the registry. Today the only adapter renders Ansib
 
 | Name | Source | Used by |
 | :--- | :----- | :------ |
-| `ansible` | `application/plugins/ansible/inventory.py:AnsibleInventory` — the host catalogue rendered by the [Ansible filter / rewrite / custom-attribute rules](index.md). | The default for every playbook in the [manifest](playbook_manifest.md) unless overridden. |
+| `ansible` | `application/plugins/ansible/inventory.py:AnsibleInventory` — the host catalogue rendered by the [Ansible filter / rewrite / custom-attribute rules](index.md) **without a project assignment**. | The default for every playbook in the [manifest](playbook_manifest.md) unless overridden. |
 | `cmk_sites` | `application/plugins/ansible/site_syncer.py:SyncSites` — the Checkmk site catalogue. | `cmk_server_mngmt.yml` and `cmk_omd_cleanup.yml` (declared in the bundled manifest). |
+| `<project-name>` | Each enabled [Ansible Project](projects.md) becomes its own provider, rendered through the rules assigned to that project (strict isolation). | Set the manifest's `inventory:` field to the project name. |
 
 List what your installation has registered:
 
