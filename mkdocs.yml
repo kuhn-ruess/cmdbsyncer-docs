@@ -45,6 +45,7 @@ nav:
     - Ansible Basics: ansible/index.md
     - Run Playbooks from the UI: ansible/run_from_ui.md
     - Playbook Manifest: ansible/playbook_manifest.md
+    - Inventory Providers: ansible/inventory_providers.md
     - Playbook Fire Rules: ansible/fire_rules.md
     - Example Gallery: ansible/example_gallery.md
     - AWX / Semaphore / AAP: ansible/awx_integration.md
