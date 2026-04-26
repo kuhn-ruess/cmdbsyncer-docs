@@ -7,13 +7,15 @@ boots in CLI mode (no Flask web stack) so cold start stays under ~250 ms.
 
 ## Installation
 
-The MCP SDK is an optional dependency:
+The MCP SDK ships in the `extras` pip extra, so the simplest install is:
 
 ```bash
-pip install -r requirements-extras.txt
+pip install 'cmdbsyncer[extras]'
 ```
 
-After install, the entry point `cmdbsyncer-mcp` is on your `PATH`.
+In a Git checkout, `pip install -r requirements-extras.txt` does the
+same job. After install, the entry point `cmdbsyncer-mcp` is on your
+`PATH`.
 
 ## Authentication
 
@@ -205,8 +207,9 @@ file" workflow can pull live syncer state without a tool call:
 
 ## Troubleshooting
 
-**`MCP SDK not installed`** — run `pip install -r requirements-extras.txt`
-or `pip install 'mcp>=1.10'`.
+**`MCP SDK not installed`** — run `pip install 'cmdbsyncer[extras]'`
+(or `pip install -r requirements-extras.txt` from a Git checkout, or
+`pip install 'mcp>=1.10'` directly).
 
 **`Authentication failed`** — verify the credentials work against the REST
 API first: `curl -u user:pw https://your-syncer/api/v1/syncer/logs`. If

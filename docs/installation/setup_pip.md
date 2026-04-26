@@ -57,18 +57,31 @@ After the install, the following commands are on your `PATH`:
 - `cmdbsyncer` — the main application CLI (Flask Click commands, plugin
   subcommands, shell access)
 - `cmdbsyncer-plugin` — plugin packaging and install helper
+- `cmdbsyncer-mcp` — Model Context Protocol server (only when the
+  `extras` group is installed; see below)
 
 ## Optional Dependency Groups
 
 The platform-heavy groups are not pulled in by the default install because
 they would need system libraries such as libldap, ODBC, Kerberos and the
-vmware SDK. Install them explicitly if you need them.
-
-Ansible integration:
+vmware SDK. Use the matching pip **extra** to pull them in:
 
 ```bash
-pip install kerberos pykerberos pywinrm ntlm-auth ansible
+# LDAP, MS-SQL / MySQL, vmware SDK, markdown editor, MCP server
+pip install 'cmdbsyncer[extras]'
+
+# Ansible + Kerberos / pywinrm
+pip install 'cmdbsyncer[ansible]'
+
+# Both at once
+pip install 'cmdbsyncer[extras,ansible]'
 ```
+
+The exact version pins are tracked in `requirements-extras.txt` and
+`requirements-ansible.txt` in the
+[Git repository](https://github.com/kuhn-ruess/cmdbsyncer); the pip
+extras read directly from those files so they always match the released
+wheel.
 
 !!! note "Default playbooks are not part of the PyPI package"
     The wheel ships only the Python application. Pull the reference playbooks onto your node with one command after install:
@@ -76,17 +89,6 @@ pip install kerberos pykerberos pywinrm ntlm-auth ansible
     cmdbsyncer sys install_playbooks ./ansible
     ```
     Details and options: [Playbooks via PyPI Install](../ansible/playbooks_pypi.md). For a remote Ansible control node, see the [cmdbsyncer-inventory](../ansible/cmdbsyncer_inventory.md) plugin instead.
-
-Database and extra integrations:
-
-```bash
-pip install python-ldap markdown-it-py pypyodbc sqlserverport \
-    mysql-connector-python pyvim pyvmomi
-```
-
-The exact version pins are tracked in `requirements-ansible.txt` and
-`requirements-extras.txt` in the
-[Git repository](https://github.com/kuhn-ruess/cmdbsyncer).
 
 ## Install MongoDB
 
