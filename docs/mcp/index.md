@@ -17,25 +17,45 @@ After install, the entry point `cmdbsyncer-mcp` is on your `PATH`.
 
 ## Authentication
 
-Same model as the REST API: a syncer **User** with the right `api_roles`
-authenticates with HTTP Basic credentials. Pass credentials via either:
+Same model as the REST API: a syncer **User** with the `mcp` (or `all`)
+`api_role` authenticates via HTTP Basic. The role is a single umbrella
+grant — having it opts a user into MCP entirely; granular per-tool
+restrictions are not layered on top, so only grant `mcp` to users you
+trust to operate the syncer.
+
+Grant the role from **Profile → Users** in the admin UI by adding `mcp`
+to the user's API roles list.
+
+### stdio transport
+
+The parent process owns the pipe — there is nobody else to authenticate
+— so credentials are bound **once at startup**:
 
 | Source | Variable / Flag |
 |---|---|
 | Environment | `CMDBSYNCER_API_USER` / `CMDBSYNCER_API_PASSWORD` |
 | CLI flag    | `--user <name>` / `--password <pw>` |
 
-CLI flags override env vars. Auth is checked once at startup; tool calls
-then re-check the user's `api_roles` against a synthetic path, mirroring
-the REST `/api/v1/<role>/...` gate.
+CLI flags override env vars. The resolved User is verified to hold the
+`mcp` (or `all`) role before the server starts; missing role aborts.
 
-| Tool group | Required role |
-|---|---|
-| `list_hosts`, `get_host`, `upsert_host`, `delete_host`, `update_host_inventory`, `list_accounts`, `get_account` | `objects` |
-| `list_rule_types`, `export_rules`, `export_all_rules`, `create_rule`, `import_rules_bulk`, `run_autorules` | `rules` |
-| `get_recent_logs`, `get_cron_status`, `trigger_cron_group`, `host_stats` | `syncer` |
+### sse / HTTP transport
 
-A user with `api_roles = ['all']` can call every tool.
+Credentials are checked **per request** by a Starlette middleware:
+
+* every connection (`GET /sse`, `POST /messages/...`) must carry
+  `Authorization: Basic <base64>`;
+* the resolved User is checked for `mcp` / `all` and bound to a
+  per-request contextvar — no global state, no "leftover login";
+* HTTPS is **required** (mirrors `application.api.require_token`).
+  Plain HTTP is rejected with 401 unless the client is on
+  `127.0.0.1`/`::1` or `ALLOW_INSECURE_API_AUTH = True` is set in
+  `local_config.py`. Behind a trusted reverse-proxy, set
+  `TRUSTED_PROXIES > 0` so the `X-Forwarded-Proto` header is honored.
+
+A misconfigured deployment fails closed: invalid credentials, missing
+`mcp` role, or plain HTTP all return 401 with a `WWW-Authenticate:
+Basic realm="cmdbsyncer"` challenge.
 
 ## Transports
 
@@ -49,15 +69,18 @@ Cline). No port exposed.
 
 ### sse — HTTP / Server-Sent Events
 
-For remote clients or shared deployments, run the server as an HTTP service:
+For remote clients or shared deployments, run the server as an HTTP service.
+**Do not pass `--user`/`--password`** in this mode — the server authenticates
+each request individually:
 
 ```bash
 cmdbsyncer-mcp --transport sse --host 0.0.0.0 --port 8765
 ```
 
-The SSE endpoint lives at `http://<host>:<port>/sse`. Auth is still bound at
-startup from the same credentials; every session that connects inherits the
-bound user. Reverse-proxy this through nginx/Apache for HTTPS.
+The SSE endpoint lives at `http://<host>:<port>/sse`. Each connecting client
+sends Basic credentials and is gated by the `mcp` (or `all`) role. Put the
+service behind nginx/Apache for HTTPS termination — direct plain HTTP from
+non-localhost is refused with 401.
 
 | Flag | Env var | Default |
 |---|---|---|
@@ -68,6 +91,46 @@ bound user. Reverse-proxy this through nginx/Apache for HTTPS.
 The MCP server shares its tool implementations with the REST API (`/api/v1/*`):
 both call the same `iter_rules_of_type`, `import_one_rule`, `import_json_bundle`,
 etc., so a fix in one path applies to all three (CLI, REST, MCP).
+
+## Running inside Docker
+
+The shipped Docker image already bundles the MCP server (it lives in
+`requirements-extras.txt` which is installed at build time). To start
+it automatically alongside gunicorn, set two environment variables in
+your `docker-compose.yml`:
+
+```yaml
+services:
+  api:
+    environment:
+      MCPSERVER_ENABLED: "1"
+      MCPSERVER_PORT: "8765"   # optional, default 8765
+    ports:
+      - "8765:8765"            # expose the MCP port to the host
+```
+
+The container's `entrypoint.sh` reads `MCPSERVER_ENABLED` after
+self-configure and starts `cmdbsyncer-mcp --transport sse` in the
+background as the unprivileged `app` user. There is no separate `--user`
+/ `--password` — the server still authenticates **per request**, so each
+connecting MCP client must present its own Basic credentials.
+
+If you reverse-proxy through nginx/Apache for TLS:
+
+```yaml
+services:
+  api:
+    environment:
+      MCPSERVER_ENABLED: "1"
+      # Tell the app it sits behind a trusted proxy so X-Forwarded-Proto
+      # = "https" is honored by the HTTPS gate. Same flag the REST API
+      # already uses.
+      # Set this in local_config.py: TRUSTED_PROXIES = 1
+```
+
+For development / internal networks where you really do not want HTTPS,
+set `ALLOW_INSECURE_API_AUTH = True` in `local_config.py`. The MCP
+server uses the same gate as the REST API.
 
 ## Client configuration
 
