@@ -113,6 +113,7 @@ nav:
      - Jinja Functions: advanced/jinja_functions.md
      - Notifications: advanced/notifications.md
      - Rest API: internal_restapi/index.md
+     - MCP Server: mcp/index.md
      - Maintenance: sys/index.md
   - Enterprise:
      - Overview: enterprise/index.md
