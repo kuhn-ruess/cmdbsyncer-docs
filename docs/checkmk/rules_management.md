@@ -16,6 +16,26 @@ Go to: _Modules → Checkmk → Create Checkmk Setup Rules_
 | Condition Label Template | Syntax: `label:value`. Jinja supported. `{{HOSTNAME}}` available.                     |
 | Condition Host           | Comma-separated list of hostnames. Jinja supported including `{{HOSTNAME}}`.          |
 
+## Rule Order
+
+The Syncer applies your configured `Folder Index` (and the rule's
+`Sort Field`) to the order rules appear in Checkmk. After every
+`checkmk export_rules` run the syncer-owned rules in each ruleset are
+re-anchored: the first syncer rule keeps its current position
+relative to user-created rules around it, and every subsequent rule
+is moved to sit directly after the previous one — strictly within
+the syncer's own rules.
+
+Important: rules **not** managed by the syncer (i.e. without the
+`cmdbsyncer_<account_id>` description marker) are never moved. Their
+position relative to other user rules is preserved; only their
+position relative to the syncer block can shift, because the syncer
+rules cluster together once sorted.
+
+If you need a specific top-to-bottom order in a ruleset, just set
+the `Folder Index` on each `RuleMngmtOutcome` (lower index = higher
+in the list) and re-run `checkmk export_rules`.
+
 ## Finding the Ruleset ID and Value Format
 
 The easiest way to find the correct ruleset ID and the expected JSON value format is to:
