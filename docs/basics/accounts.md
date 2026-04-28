@@ -64,18 +64,20 @@ By default, CMDBsyncer verifies the SSL certificate of every account connection.
 
 ### Fields
 
-| Field         | Description                                                                                    |
-| :------------ | :--------------------------------------------------------------------------------------------- |
-| Verify Cert   | Enable or disable SSL certificate verification. Should always be enabled in production.        |
-| CA Cert Chain | Absolute path to the intermediate CA certificate file (PEM format) on the CMDBsyncer server.   |
-| CA Root Cert  | Absolute path to the root CA certificate file (PEM format) on the CMDBsyncer server.           |
+These fields are configured as custom fields on the account record. The names below are the exact keys the syncer reads.
+
+| Field            | Description                                                                                    |
+| :--------------- | :--------------------------------------------------------------------------------------------- |
+| `verify_cert`    | Enable or disable SSL certificate verification. Should always be enabled in production.        |
+| `ca_cert_chain`  | Absolute path to the intermediate CA certificate file (PEM format) on the CMDBsyncer server.   |
+| `ca_root_cert`   | Absolute path to the root CA certificate file (PEM format) on the CMDBsyncer server.           |
 
 ### How to configure
 
 1. Upload your CA certificate file(s) via the [Fileadmin](fileadmin.md) — this is the easiest way to get the files onto the server without needing shell access.
 2. Copy the full path shown in the Fileadmin for the uploaded file.
-3. In the account settings, paste the path into **CA Cert Chain** and/or **CA Root Cert**.
-4. Make sure **Verify Cert** is enabled.
+3. In the account settings, paste the path into **`ca_cert_chain`** and/or **`ca_root_cert`**.
+4. Make sure **`verify_cert`** is enabled.
 
 !!! tip "Upload via Fileadmin"
     The [Fileadmin](fileadmin.md) displays the full absolute path for every uploaded file — copy it directly into the certificate field.
