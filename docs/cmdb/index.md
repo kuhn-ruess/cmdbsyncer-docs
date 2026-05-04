@@ -85,6 +85,24 @@ If you changed template matching rules and want to re-apply matching to existing
 ./cmdbsyncer sys update_cmdb
 ```
 
+### Jinja in template values
+
+Field values on a template can use Jinja and reference the host's labels,
+inventory and `HOSTNAME`. Rendering happens when the template is merged
+into the host's attributes (i.e. at sync / debug time), so the template
+itself stores the raw expression.
+
+Example field on a template:
+
+```
+description = Server {{ HOSTNAME }} for {{ environment }}
+```
+
+Applied to a host with label `environment: prod`, the resulting attribute
+is `description = Server web01 for prod`. Values without `{{ ... }}` are
+passed through unchanged. Missing variables render as empty strings (the
+syncer's default `ignore` mode).
+
 ## Define default CMDB fields in local_config.py
 
 You can predefine CMDB fields globally and per object type via `CMDB_MODELS`.
