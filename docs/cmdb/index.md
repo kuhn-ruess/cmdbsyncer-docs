@@ -139,6 +139,17 @@ config = {
 
 When you save a host/object, missing configured fields are added automatically to `cmdb_fields`.
 
+## Saved Searches (filter presets)
+
+The Hosts list shows a **Saved Searches** bar above the table. Apply
+your filters / search / sort, click **Save current filter** and pick a
+name — the URL fragment is captured as a named preset that re-opens
+the same view with one click. Presets are private to the operator that
+created them; ticking **Share with other operators** broadcasts them
+without giving away ownership (only the owner can delete a preset).
+
+Manage all your presets from **Settings → Saved Searches**.
+
 ## Data Quality dashboard
 
 The **Data Quality** menu item opens a single read-only page that
