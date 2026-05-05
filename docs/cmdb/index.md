@@ -139,6 +139,23 @@ config = {
 
 When you save a host/object, missing configured fields are added automatically to `cmdb_fields`.
 
+## Soft delete and Archive
+
+Hosts that disappear from a source system are no longer hard-deleted.
+Instead they are **archived**: lifecycle state moves to *Archived* and a
+`deleted_at` timestamp is recorded. The same applies to the
+`sys maintenance` cleanup of stale hosts.
+
+The **Objects → Archive** menu lists every archived host with the deletion
+timestamp and reason. From there you can:
+
+- **Restore** selected hosts — they come back with lifecycle state *Active*.
+- **Hard Delete** selected hosts — irreversible removal; admin role required.
+
+Archived hosts are excluded from the regular Hosts list, exports and
+sync runs, but they still show up in the API for tooling that wants to
+audit removals.
+
 ## Lifecycle states
 
 Every host carries a Lifecycle state independent of `available`:
