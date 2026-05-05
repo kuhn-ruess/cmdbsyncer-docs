@@ -139,6 +139,20 @@ config = {
 
 When you save a host/object, missing configured fields are added automatically to `cmdb_fields`.
 
+## Lifecycle states
+
+Every host carries a Lifecycle state independent of `available`:
+
+- **Planned** — the host is on the roadmap but not yet built.
+- **Staged** — built but not yet in production.
+- **Active** — in productive use (default for new and legacy hosts).
+- **Decommissioned** — taken out of service, kept for reporting.
+- **Archived** — read-only record, scheduled for eventual cleanup.
+
+The state shows as a badge in the host list, can be filtered, and can be
+changed for many hosts at once via the **Lifecycle: …** bulk actions.
+Lifecycle changes are stamped with a timestamp and written into the host log.
+
 ## Notes
 
 - Keep `CMDB_MODE` enabled if you want to maintain CMDB data in the UI.
