@@ -139,6 +139,22 @@ config = {
 
 When you save a host/object, missing configured fields are added automatically to `cmdb_fields`.
 
+## Data Quality dashboard
+
+The **Data Quality** menu item opens a single read-only page that
+summarises the state of your fleet without scrolling through Hosts:
+
+- **Per-source breakdown** — live count, stale count, archived count and
+  the most recent `last_import_seen` per source account.
+- **Lifecycle distribution** across the live fleet.
+- **Possible duplicate hostnames** — hostnames normalised to lowercase
+  alphanumerics so `web01`, `WEB01.dc1` and `web-01` all collide.
+- **Configured CMDB fields with empty values** — every host whose
+  `CMDB_MODELS[<type>]` declares a field that is still blank.
+
+The page exposes counts only — fixes happen on the regular Hosts list,
+the Archive view or via the `sys mark_stale` cron.
+
 ## First-class CI types
 
 Beyond Hosts, the syncer ships with three opinionated CI types you can
