@@ -1,0 +1,98 @@
+# Ansible Projects
+
+Ansible rules — Filter, Rewrite, Custom Variables and Playbook Fire — used to live in one global pool. Every inventory render walked every enabled rule, and there was no way to say "for this playbook, only use these rules". **Projects** add that dimension.
+
+A project is a named group of rules. Each enabled project automatically becomes its own [inventory provider](inventory_providers.md), so the same selection mechanism that picks between `ansible` and `cmk_sites` now also picks between `prod-linux`, `dev-windows`, or whatever rule sources you define.
+
+## What changes for existing installs
+
+**Nothing breaks.** On first start the Syncer auto-creates a project called `Default` and migrates every existing project-less rule into it. The bare `ansible` provider — what bundled playbooks reference today via `inventory: ansible` — now serves the Default project's rules. The migration is idempotent; running again is a no-op.
+
+Newly created rules also default to the Default project so the project-grouped UI never has orphans.
+
+## When to use a project
+
+| Situation | Recommendation |
+| :-------- | :------------- |
+| One Ansible target system, all hosts feed the same rules | Stay project-less. Use the default `ansible` provider. |
+| Two distinct rule worlds (prod vs. dev, Linux vs. Windows, customer-A vs. customer-B) that must not bleed into each other | Create one project per world; assign rules accordingly; pick the matching provider per playbook. |
+| One shared rule set with a few project-specific overrides | Today: duplicate the shared rule into both projects. (Cascade is on the wishlist; no project = global is the only built-in cascade.) |
+
+## The project workspace
+
+**Modules → Ansible → Projects** is the entry point. Click a project's name to open its detail page — that's the project-scoped workspace where all four rule types for the project show up in one place:
+
+- Filter Rules
+- Rewrite Attributes
+- Ansible Attributes (custom variables)
+- Playbook Fire Rules
+
+Each section has a **+ New** button that opens the matching rule editor with the project pre-selected, and lands you back on the project page after save. The flat list views under the same Ansible menu remain available for cross-project work — they're sorted by project and inject a banner row at every transition so you can scan many projects at once.
+
+## Creating a project
+
+**Modules → Ansible → Projects → Create**:
+
+| Field | Notes |
+| :---- | :---- |
+| Name | Unique, alphanumeric (plus `_`, `-`, `.`). Cannot collide with built-in providers (`ansible`, `cmk_sites`). The provider name **is** the project name. |
+| Description | Free text shown in the list view. |
+| Enabled | Disabled projects are excluded from the resolver — their playbooks/rules go offline without losing the records. |
+
+The new project is reachable as a provider immediately — no app restart:
+
+```bash
+cmdbsyncer ansible list-inventory-providers
+ansible
+cmk_sites
+prod-linux              # ← the new project
+```
+
+## Assigning rules to a project
+
+Every rule editor in the Ansible section has a **Project** dropdown in the Main Options card. Leave it blank to keep the rule global (served by `ansible`); pick a project to make it part of that project's isolated rule source.
+
+The four rule types covered:
+
+- **Filter** — only applies inside the chosen project's renderer.
+- **Rewrite Attributes** — only applies inside the chosen project's renderer.
+- **Ansible Attributes** (Custom Variables) — only applies inside the chosen project's renderer.
+- **Playbook Fire Rules** — project is metadata for organization; firing happens project-wide via the cron command.
+
+## Pointing a playbook at a project
+
+Use the manifest's `inventory:` field to bind a playbook to the project's provider:
+
+```yaml
+# ansible/playbooks.local.yml
+playbooks:
+  - file: prod_linux_onboarding.yml
+    name: "Prod Linux: Onboarding"
+    inventory: prod-linux         # ← provider name = project name
+```
+
+The Run Playbook UI now dispatches that playbook against the inventory rendered by the `prod-linux` project's rules only. `dev-windows` rules are invisible to that run.
+
+## Strict isolation
+
+By design, a project's provider sees **only** rules with `project = <that project>`. Rules with `project = None` (global) are **not** mixed in. If you want a "common defaults plus project-specific overrides" model, duplicate the common rule into each project. We may add a cascade option later if there is demand.
+
+## CLI / HTTP
+
+Both transports are project-aware automatically — the resolver lives below them:
+
+```bash
+# Local CLI
+cmdbsyncer ansible inventory prod-linux --list
+
+# REST API
+curl -H "x-login-user: USER:SECRET" \
+  https://syncer/api/v1/inventory/ansible/prod-linux
+```
+
+The full provider listing exposes both static and dynamic (project-backed) names:
+
+```bash
+cmdbsyncer ansible list-inventory-providers
+curl https://syncer/api/v1/inventory/ansible
+```

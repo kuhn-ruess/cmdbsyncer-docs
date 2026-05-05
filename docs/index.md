@@ -18,7 +18,7 @@ Every connection to an external system is configured through an [Account](basics
 - **Cron management** to schedule sync jobs from the UI, including externally-triggered runs via per-group webhook tokens
 - **Notifications** with email out of the box and rule-based routing — Slack, MS Teams and signed webhooks add on with the Enterprise license
 - **REST API** for external automation
-- **Ansible support** as a dynamic inventory source
+- **Ansible support** — dynamic inventory source plus a built-in [UI runner](ansible/run_from_ui.md), [run history](ansible/run_from_ui.md#run-history), and [event-driven onboarding rules](ansible/fire_rules.md)
 - **Encryption** of stored credentials, with optional external secret stores (KeePass / Vault) under the Enterprise license
 - **Debug tooling** via CLI and web-based debug views
 - **Monitoring integration** via Checkmk Exchange check
@@ -90,7 +90,7 @@ CMDBsyncer imports hosts and attributes from one or more sources, processes them
 | [Checkmk](checkmk/index.md) | ✓ | ✓ | Full host lifecycle, rules, tags, labels, groups, BI, DCD, agents, sites — tested with 140,000+ hosts |
 | [Netbox](netbox/index.md) | ✓ | ✓ | Devices, VMs, interfaces, IPAM, contacts, sites |
 | [I-Doit](i-doit/index.md) | ✓ | ✓ | Template-based device sync |
-| [Ansible](ansible/index.md) | — | ✓ | Dynamic inventory source, Checkmk agent and site management |
+| [Ansible](ansible/index.md) | — | ✓ | Dynamic inventory source, Checkmk agent and site management, UI playbook runner with run history and rule-driven firing |
 | [CMDB Mode](cmdb/index.md) | ✓ | ✓ | Use CMDBsyncer itself as a lightweight CMDB |
 
 ### Import Sources
