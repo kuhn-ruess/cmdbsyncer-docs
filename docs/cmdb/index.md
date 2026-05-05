@@ -139,6 +139,28 @@ config = {
 
 When you save a host/object, missing configured fields are added automatically to `cmdb_fields`.
 
+## Approval workflow for critical labels
+
+Operators can opt into four-eyes review for selected labels. List the
+label keys you want gated in `local_config.py`:
+
+```python
+config = {
+  "APPROVAL_REQUIRED_LABELS": ["criticality", "environment"],
+}
+```
+
+Whenever a user without the **Skip the approval queue when editing
+critical fields** role saves a host with a change to one of those
+labels, the new value is queued in **Approvals** rather than written.
+Users with the **Approve or reject pending field changes** role decide
+on each entry; an approve applies the change to the host, a reject
+keeps the old value. The navbar shows a "N waiting" badge while the
+queue is non-empty.
+
+Empty list (default) disables the workflow — every change goes straight
+to the host as before.
+
 ## Saved Searches (filter presets)
 
 The Hosts list shows a **Saved Searches** bar above the table. Apply
