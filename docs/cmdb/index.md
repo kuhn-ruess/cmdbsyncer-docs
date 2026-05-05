@@ -139,6 +139,24 @@ config = {
 
 When you save a host/object, missing configured fields are added automatically to `cmdb_fields`.
 
+## Stale data detection per account
+
+Each account exposes two custom fields driven by the maintenance plugin:
+
+- **`stale_after_days`** — number of days without an import after which a
+  host counts as Stale. `0` (default) disables the check.
+- **`auto_archive_when_stale`** — when `True`, stale hosts are
+  soft-deleted automatically; when `False` (default) they only get a
+  Stale badge and a `stale_since` timestamp.
+
+The check runs from cron (`Syncer: Mark Stale Hosts`) or manually with:
+
+```bash
+./cmdbsyncer sys mark_stale <account>
+```
+
+A fresh import on a previously stale host clears the badge automatically.
+
 ## Soft delete and Archive
 
 Hosts that disappear from a source system are no longer hard-deleted.
