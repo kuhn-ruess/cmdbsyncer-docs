@@ -139,6 +139,29 @@ config = {
 
 When you save a host/object, missing configured fields are added automatically to `cmdb_fields`.
 
+## Host relations (Impact Chain)
+
+Hosts can carry typed links to other hosts. Open a host's Detail page to
+see the **Relations** block with all outgoing edges plus an **Inbound
+(Impact Chain)** section that lists every host pointing back at this one.
+
+Available relation types:
+
+| Type          | Inverse label    | Use it for                              |
+|---------------|------------------|-----------------------------------------|
+| `depends_on`  | Required by      | Service / app dependencies              |
+| `runs_on`     | Hosts            | VM/container → physical host            |
+| `member_of`   | Contains         | Host group / cluster / pool membership  |
+| `parent_of`   | Child of         | Logical parent / child hierarchy        |
+| `connects_to` | Reachable from   | Network / replication links             |
+
+Edges are stored on the **outgoing** side only — the inbound view is
+computed at render time, so renaming a relation type stays consistent
+without a second write.
+
+Each entry tracks a `source` field (`manual` by default, plugins can set
+their own value) so manual links can be told apart from imported ones.
+
 ## Stale data detection per account
 
 Each account exposes two custom fields driven by the maintenance plugin:
