@@ -139,6 +139,26 @@ config = {
 
 When you save a host/object, missing configured fields are added automatically to `cmdb_fields`.
 
+## First-class CI types
+
+Beyond Hosts, the syncer ships with three opinionated CI types you can
+create from **Objects → All Objects**:
+
+| Object Type | Default fields (override in `local_config.py`)            |
+|-------------|-----------------------------------------------------------|
+| Service     | `owner`, `criticality`, `sla`, `description`              |
+| Application | `owner`, `criticality`, `repo_url`, `description`         |
+| Location    | `address`, `city`, `country`, `room`                      |
+
+Selecting one of these object types when creating an object pre-populates
+`cmdb_fields` from `CMDB_MODELS[<type>]`, plus anything you put under
+`CMDB_MODELS['all']`. Empty defaults are added on save so the form stays
+predictable across upgrades.
+
+The relation system above pairs naturally with these CI types — for
+example a Service `runs_on` an Application, an Application `runs_on` a
+Host, and the Host is `member_of` a Location.
+
 ## Host relations (Impact Chain)
 
 Hosts can carry typed links to other hosts. Open a host's Detail page to
