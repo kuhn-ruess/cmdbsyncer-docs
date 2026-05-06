@@ -10,6 +10,7 @@ Access all Checkmk commands with `./cmdbsyncer checkmk <command> <account>`.
 | export_tags            | Export host tag group configuration to Checkmk                                 |
 | export_users           | Create, update, or disable users in Checkmk                                    |
 | export_downtimes       | Export scheduled downtimes to Checkmk                                          |
+| export_notifications   | Export notification rules to Checkmk (2.4 / 2.5 only)                          |
 | export_dcd_rules       | Export DCD (Dynamic Configuration) rules to Checkmk                            |
 | export_bi_aggregations | Export BI aggregation rules to Checkmk                                         |
 | export_bi_rules        | Export BI rules to Checkmk                                                     |

@@ -70,6 +70,7 @@ nav:
       - Host Tags: checkmk/create_hosttags.md
       - Checkmk Users: checkmk/users.md
       - Downtimes: checkmk/create_downtimes.md
+      - Notification Rules: checkmk/notification_rules.md
       - DCD Rules: checkmk/dcd_rules.md
       - Password Store: checkmk/password_store.md
       - Business Intelligence: checkmk/bi.md
