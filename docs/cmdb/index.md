@@ -177,16 +177,31 @@ Manage all your presets from **Settings → Saved Searches**.
 The **Data Quality** menu item opens a single read-only page that
 summarises the state of your fleet without scrolling through Hosts:
 
-- **Per-source breakdown** — live count, stale count, archived count and
-  the most recent `last_import_seen` per source account.
+- **KPI scorecard** at the top — live, stale (with %), hosts missing
+  CMDB fields (with %), duplicate clusters and silent sources, each
+  colour-coded so problems stand out at a glance.
+- **Per-source breakdown** — live count, stale count, archived count
+  and the most recent `last_import_seen` per source account. Sources
+  whose last delivery is older than 24 hours get an orange badge,
+  older than 7 days a red one.
+- **Per-object-type breakdown** — same totals split by `object_type`,
+  including the share of hosts with empty CMDB fields per type.
+- **Most-missed CMDB fields** — every configured field, sorted by how
+  many hosts are missing it. Lets you fix the biggest gap first
+  instead of working through a host-by-host list.
 - **Lifecycle distribution** across the live fleet.
+- **Configured accounts with no live hosts** — enabled, non-CMDB-store
+  accounts that haven't delivered anything. Catches forgotten imports
+  and silently broken auth.
 - **Possible duplicate hostnames** — hostnames normalised to lowercase
   alphanumerics so `web01`, `WEB01.dc1` and `web-01` all collide.
-- **Configured CMDB fields with empty values** — every host whose
+- **Hosts with empty CMDB fields** — sample of hosts whose
   `CMDB_MODELS[<type>]` declares a field that is still blank.
 
-The page exposes counts only — fixes happen on the regular Hosts list,
-the Archive view or via the `sys mark_stale` cron.
+Every table has a small `⬇ CSV` link that streams that section as a
+CSV file, so findings can be handed off to ticketing without
+copy-pasting. The page exposes counts only — fixes happen on the
+regular Hosts list, the Archive view or via the `sys mark_stale` cron.
 
 ## First-class CI types
 
