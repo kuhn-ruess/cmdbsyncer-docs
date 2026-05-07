@@ -349,7 +349,15 @@ on the same host (replace `0.0.0.0:9090` with `127.0.0.1:9090`).
     what the app sees as a plain-HTTP request even though the browser
     speaks TLS.
 
-### Option B: Docker Compose
+### Option B: Apache with mod_wsgi
+
+If you already run Apache, mod_wsgi serves the application directly —
+no separate Gunicorn process, no reverse proxy hop. The full vhost,
+TLS and SELinux details (including a ready-to-use `app.wsgi` for the
+PyPI install) live in
+[Installation with Apache and mod_wsgi](install_wsgi.md).
+
+### Option C: Docker Compose
 
 For an all-in-one stack (MongoDB, Gunicorn, reverse proxy) use the
 [Docker Compose setup](setup_docker.md). That path skips the PyPI
