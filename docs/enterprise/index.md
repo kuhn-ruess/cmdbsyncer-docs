@@ -66,6 +66,8 @@ export CMDBSYNCER_LICENSE=/srv/cmdbsyncer/license.jwt
 
 The file must be readable by the user that runs the application (the uWSGI user in container deployments).
 
+You can also upload the license through the web UI: open **Profile → License** as a global admin and use the *Upload License* form at the bottom of the page. The signature is verified against the installed enterprise public key before the file is written, so a malformed or wrongly-signed upload never overwrites a working license. Restart the application after a successful upload to load the new license.
+
 The license carries the following metadata:
 
 | Field        | Meaning                                                |
