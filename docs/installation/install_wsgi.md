@@ -3,38 +3,40 @@
 The most convenient installation of the Syncer is using Docker, where all dependencies are satisfied automatically.
 For bare-metal or VM deployments, this guide covers installation with Apache and mod_wsgi.
 
+!!! warning "mod_wsgi must match the venv's Python version"
+    The distro packages (`python3-mod_wsgi`, `libapache2-mod-wsgi-py3`)
+    are compiled against the **system** Python — typically older than the
+    Python you run the syncer with (e.g. RHEL 9 ships `python3.9`,
+    Debian 12 ships `python3.11`, while the syncer needs 3.14). A
+    mismatch surfaces as `ModuleNotFoundError: No module named
+    'application'` because mod_wsgi looks in
+    `ENV/lib/python<wrong>/site-packages` instead of the venv's actual
+    site-packages.
+
+    The reliable fix is to **build mod_wsgi from the venv itself** so
+    Apache loads a `mod_wsgi.so` linked against the same Python that
+    runs the syncer. The instructions below do exactly that.
+
 ## Base Requirements
 
 === "RedHat / CentOS"
     ```bash
-    dnf install python3.14
-    dnf install httpd
-    dnf install python3.14-mod_wsgi
+    dnf install httpd httpd-devel
+    dnf groupinstall "Development Tools"
+    dnf install python3.14 python3.14-devel
     ```
 
 === "Ubuntu / Debian"
     ```bash
-    apt install python3.14 apache2 libapache2-mod-wsgi-py3
-    a2enmod wsgi
+    apt install apache2 apache2-dev build-essential
+    apt install python3.14 python3.14-dev
     ```
+
+The `*-devel` / `*-dev` and build-tool packages are needed once to
+compile `mod_wsgi` against the venv's Python. They can be removed
+afterwards.
 
 Also needed is MongoDB — covered in the [MongoDB section](#mongodb) below.
-
-## Build Requirements (Python Virtual Environment)
-
-The Syncer needs a Python virtual environment. To build it you need the following development packages:
-
-=== "RedHat / CentOS"
-    ```bash
-    dnf groupinstall "Development Tools"
-    dnf install httpd-devel
-    dnf install python3.14-devel
-    ```
-
-=== "Ubuntu / Debian"
-    ```bash
-    apt install build-essential apache2-dev python3.14-dev
-    ```
 
 ## Install the Syncer
 
@@ -54,6 +56,46 @@ you have:
     If you prefer to run from a Git clone (for development or to track
     `lts/3.12`), follow [Installation from Code](setup_code.md)
     instead — the rest of this guide applies unchanged.
+
+## Build mod_wsgi from the venv
+
+Build `mod_wsgi` inside the same virtual environment so Apache loads
+a module linked against the syncer's Python:
+
+```bash
+source /opt/cmdbsyncer/ENV/bin/activate
+pip install mod_wsgi
+mod_wsgi-express module-config
+```
+
+The last command prints two lines, e.g.:
+
+```
+LoadModule wsgi_module "/opt/cmdbsyncer/ENV/lib/python3.14/site-packages/mod_wsgi/server/mod_wsgi-py314.cpython-314-x86_64-linux-gnu.so"
+WSGIPythonHome "/opt/cmdbsyncer/ENV"
+```
+
+Drop both lines into your Apache config so they load before the
+vhost. The exact filename is fine — copy it verbatim from your output.
+
+=== "RedHat / CentOS"
+    ```bash
+    mod_wsgi-express module-config | sudo tee /etc/httpd/conf.modules.d/10-wsgi.conf
+    ```
+
+=== "Ubuntu / Debian"
+    ```bash
+    mod_wsgi-express module-config | sudo tee /etc/apache2/mods-available/wsgi.load
+    sudo a2enmod wsgi
+    # Make sure no distro mod_wsgi is also loaded:
+    sudo apt remove -y libapache2-mod-wsgi-py3
+    ```
+
+!!! danger "Do not also load the distro mod_wsgi"
+    Loading both the distro `libapache2-mod-wsgi-py3` / `python3-mod_wsgi`
+    **and** the venv-built one ends in `Cannot load mod_wsgi.so` or a
+    silent version mismatch. Pick exactly one — the venv build above is
+    the one this guide expects.
 
 ## Configure Apache
 

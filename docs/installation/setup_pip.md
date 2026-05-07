@@ -357,6 +357,15 @@ TLS and SELinux details (including a ready-to-use `app.wsgi` for the
 PyPI install) live in
 [Installation with Apache and mod_wsgi](install_wsgi.md).
 
+!!! warning "Build mod_wsgi from the venv"
+    Do **not** use the distro packages (`python3-mod_wsgi` on RHEL,
+    `libapache2-mod-wsgi-py3` on Debian/Ubuntu) — they are compiled
+    against the system Python (e.g. 3.9 / 3.11), not your 3.14 venv,
+    and Apache will fail to import the `application` package. Run
+    `pip install mod_wsgi && mod_wsgi-express module-config` from
+    inside `/opt/cmdbsyncer/ENV` and use the resulting `LoadModule`
+    line. Full instructions: see the linked guide above.
+
 ### Option C: Docker Compose
 
 For an all-in-one stack (MongoDB, Gunicorn, reverse proxy) use the
