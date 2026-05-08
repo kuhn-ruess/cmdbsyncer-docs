@@ -46,30 +46,33 @@ lives in `tools/` and wraps `pip download` plus a bit of packaging:
 ```bash
 git clone https://github.com/kuhn-ruess/cmdbsyncer
 cd cmdbsyncer
-./tools/build_offline_bundle.sh --all \
+./tools/build_offline_bundle.sh --include-syncer --include-enterprise \
     --python-version 3.11 \
     --platform manylinux2014_x86_64
 ```
 
-The script produces:
+The bundle always ships the **base, extras and ansible** Python
+dependencies plus the **default Ansible playbook collection** — there
+are no toggles for these any more. The script produces:
 
 - `offline_bundle/` — directory with `packages/`, the three
-  `requirements*.txt` files, an `install.sh` and a `README.txt`
+  `requirements*.txt` files, the bundled `ansible/` playbook tree, an
+  `install.sh` and a `README.txt`
 - `offline_bundle.tar.gz` — the same folder as a single archive ready to
   ship
 
 ### Script Options
 
-| Flag                   | Purpose                                                            |
-| ---------------------- | ------------------------------------------------------------------ |
-| `--extras`             | Include `requirements-extras.txt` (LDAP, ODBC, vmware, ...)        |
-| `--ansible`            | Include `requirements-ansible.txt` (Kerberos, WinRM, Ansible)      |
-| `--all`                | Shortcut for `--extras --ansible`                                  |
-| `--include-syncer`     | Also download the `cmdbsyncer` package from PyPI into the bundle   |
-| `--python-version`     | Target Python version, e.g. `3.11` — must match the target server  |
-| `--platform`           | Target platform tag, e.g. `manylinux2014_x86_64` for typical Linux |
-| `--output-dir DIR`     | Override output directory (default: `offline_bundle`)              |
-| `--no-archive`         | Skip the tar.gz step; only produce the directory                   |
+| Flag                       | Purpose                                                                                  |
+| -------------------------- | ---------------------------------------------------------------------------------------- |
+| `--include-syncer`         | Also download the `cmdbsyncer` package from PyPI into the bundle                         |
+| `--include-enterprise`     | Also download the `cmdbsyncer-enterprise` package from PyPI                              |
+| `--syncer-version VER`     | Pin `cmdbsyncer` to exactly this version (e.g. `4.1.0.dev3`). Required for pre-releases. |
+| `--enterprise-version VER` | Same idea for `cmdbsyncer-enterprise`                                                    |
+| `--python-version VER`     | Target Python version, e.g. `3.11` — must match the target server                        |
+| `--platform TAG`           | Target platform tag, e.g. `manylinux2014_x86_64` for typical Linux                       |
+| `--output-dir DIR`         | Override output directory (default: `offline_bundle`)                                    |
+| `--no-archive`             | Skip the tar.gz step; only produce the directory                                         |
 
 !!! note
     When `--platform` is set, the script enforces `--only-binary=:all:`
@@ -78,13 +81,23 @@ The script produces:
     wheel on PyPI. If a wheel is missing, pip will abort with a clear
     error.
 
-!!! tip
-    Passing `--include-syncer` additionally downloads the latest
-    `cmdbsyncer` release from PyPI and drops it into `packages/`
-    alongside the third-party dependencies. The generated `install.sh`
-    then installs and upgrades `cmdbsyncer` itself from that wheel, so
-    the target server receives the Syncer in one go. Without the flag,
-    the bundle contains only the third-party dependencies.
+!!! tip "Bundling pre-releases"
+    Pre-release builds (`.devN`, `aN`, `bN`, `rcN`) are not picked up
+    by an unpinned `cmdbsyncer` request — pip ignores them by default.
+    Always pass `--syncer-version` (and `--enterprise-version` if you
+    bundle Enterprise too) for a pre-release build:
+
+    ```bash
+    ./tools/build_offline_bundle.sh \
+        --include-syncer    --syncer-version 4.1.0.dev3 \
+        --include-enterprise --enterprise-version 0.3.9.dev1 \
+        --python-version 3.11 --platform manylinux2014_x86_64
+    ```
+
+    Without the version flags the bundle ships the latest stable
+    release. Either way the generated `install.sh` pins to the same
+    exact wheel, so the customer's pip never has to make a resolution
+    decision in the field.
 
 ## Transfer the Bundle
 
@@ -109,13 +122,24 @@ source ENV/bin/activate
 /opt/offline_bundle/install.sh
 ```
 
-The bundled `install.sh` runs, in effect:
+The bundled `install.sh` installs every requirement file from the
+`packages/` directory and copies the bundled Ansible playbook collection
+to `/opt/cmdbsyncer/ansible`.
 
-```bash
-python3 -m pip install --no-index \
-    --find-links /opt/offline_bundle/packages \
-    -r /opt/offline_bundle/requirements.txt
-```
+### Customising the install
+
+The installer respects a few environment variables — set them before
+running `install.sh`:
+
+| Variable                      | Effect                                                                          |
+| ----------------------------- | ------------------------------------------------------------------------------- |
+| `ANSIBLE_TARGET=/path`        | Where the playbook collection lands (default: `/opt/cmdbsyncer/ansible`)        |
+| `FORCE=1`                     | Overwrite an existing `ANSIBLE_TARGET` instead of refusing                      |
+| `SKIP_ANSIBLE=1`              | Skip the playbook copy entirely (you already manage the playbooks elsewhere)    |
+
+After install, point cmdbsyncer at the playbook directory by exporting
+`CMDBSYNCER_ANSIBLE_DIR=<path>` in the service environment, or by adding
+`ANSIBLE_DIR=<path>` to `local_config.py`.
 
 ### Next Steps
 
