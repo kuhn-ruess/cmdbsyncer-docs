@@ -133,9 +133,11 @@ running `install.sh`:
 
 | Variable                      | Effect                                                                          |
 | ----------------------------- | ------------------------------------------------------------------------------- |
-| `ANSIBLE_TARGET=/path`        | Where the playbook collection lands (default: `/opt/cmdbsyncer/ansible`)        |
-| `FORCE=1`                     | Overwrite an existing `ANSIBLE_TARGET` instead of refusing                      |
+| `ANSIBLE_TARGET=/path`        | Where the playbook collection lands (default: `/opt/cmdbsyncer/ansible`). An existing directory is replaced. |
 | `SKIP_ANSIBLE=1`              | Skip the playbook copy entirely (you already manage the playbooks elsewhere)    |
+
+The pip and Ansible steps run independently — a failure in one is
+reported but never silently swallows the other.
 
 After install, point cmdbsyncer at the playbook directory by exporting
 `CMDBSYNCER_ANSIBLE_DIR=<path>` in the service environment, or by adding
