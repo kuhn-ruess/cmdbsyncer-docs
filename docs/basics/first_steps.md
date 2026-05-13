@@ -84,7 +84,7 @@ Then schedule the cron trigger on your system:
 **Native installation:**
 
 ```bash
-*/5 * * * * cd /opt/cmdbsyncer && source ./ENV/bin/activate && ./cmdbsyncer cron run_jobs
+*/5 * * * * cd /opt/cmdbsyncer && source ./venv/bin/activate && ./cmdbsyncer cron run_jobs
 ```
 
 **Docker:**

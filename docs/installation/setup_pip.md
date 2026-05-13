@@ -47,8 +47,8 @@ install from PyPI:
 
 ```bash
 cd /opt/cmdbsyncer
-python3.14 -m venv ENV
-source ENV/bin/activate
+python3.14 -m venv venv
+source venv/bin/activate
 pip install cmdbsyncer
 ```
 
@@ -125,7 +125,7 @@ directory:
 
 ```bash
 cd /opt/cmdbsyncer
-source ENV/bin/activate
+source venv/bin/activate
 cmdbsyncer sys self_configure
 ```
 
@@ -188,7 +188,7 @@ first:
 ```bash
 pip install gunicorn
 cd /opt/cmdbsyncer
-/opt/cmdbsyncer/ENV/bin/gunicorn --bind 0.0.0.0:9090 --workers 2 --threads 2 application:app
+/opt/cmdbsyncer/venv/bin/gunicorn --bind 0.0.0.0:9090 --workers 2 --threads 2 application:app
 ```
 
 For a real deployment, wrap it in a systemd unit so it starts at boot,
@@ -216,7 +216,7 @@ Type=simple
 User=cmdbsyncer
 WorkingDirectory=/opt/cmdbsyncer
 Environment=config=prod
-ExecStart=/opt/cmdbsyncer/ENV/bin/gunicorn \
+ExecStart=/opt/cmdbsyncer/venv/bin/gunicorn \
     --bind 0.0.0.0:9090 \
     --workers 2 --threads 2 \
     --access-logfile - \
@@ -363,7 +363,7 @@ PyPI install) live in
     against the system Python (e.g. 3.9 / 3.11), not your 3.14 venv,
     and Apache will fail to import the `application` package. Run
     `pip install mod_wsgi && mod_wsgi-express module-config` from
-    inside `/opt/cmdbsyncer/ENV` and use the resulting `LoadModule`
+    inside `/opt/cmdbsyncer/venv` and use the resulting `LoadModule`
     line. Full instructions: see the linked guide above.
 
 ### Option C: Docker Compose

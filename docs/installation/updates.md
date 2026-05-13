@@ -43,7 +43,7 @@ If the application fails to start after an update, check the UWSGI logs in `/var
 
 ```bash
 cd /opt/cmdbsyncer
-source ENV/bin/activate
+source venv/bin/activate
 pip install -r requirements.txt
 ```
 

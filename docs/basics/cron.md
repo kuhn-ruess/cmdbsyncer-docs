@@ -37,19 +37,19 @@ The Syncer does not have a built-in scheduler daemon. Instead, call the run comm
 **Full example with environment activation:**
 
 ```bash
-*/5 * * * * cd /opt/cmdbsyncer && source ./ENV/bin/activate && ./cmdbsyncer cron run_jobs
+*/5 * * * * cd /opt/cmdbsyncer && source ./venv/bin/activate && ./cmdbsyncer cron run_jobs
 ```
 
 **PyPI install** (the `cmdbsyncer` binary lives inside the venv created by [`pip install cmdbsyncer`](../installation/setup_pip.md); `cd` into the deployment directory so `local_config.py` is picked up):
 
 ```bash
-*/5 * * * * cd /opt/cmdbsyncer && /opt/cmdbsyncer/ENV/bin/cmdbsyncer cron run_jobs
+*/5 * * * * cd /opt/cmdbsyncer && /opt/cmdbsyncer/venv/bin/cmdbsyncer cron run_jobs
 ```
 
 If running from a different cwd is unavoidable (e.g. a system cron without `cd`), point the binary at the deployment directory explicitly:
 
 ```bash
-*/5 * * * * CMDBSYNCER_CONFIG_DIR=/opt/cmdbsyncer /opt/cmdbsyncer/ENV/bin/cmdbsyncer cron run_jobs
+*/5 * * * * CMDBSYNCER_CONFIG_DIR=/opt/cmdbsyncer /opt/cmdbsyncer/venv/bin/cmdbsyncer cron run_jobs
 ```
 
 **Docker:**

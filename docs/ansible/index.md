@@ -69,7 +69,7 @@ If you not have an Ansible installation or the Ansible Knowledge, you can just r
 After that, the workflow is:
 
 - Change into the CMDB Syncer Directory
-- Load his environment (source ENV/bin/activate)
+- Load his environment (source venv/bin/activate)
 - Change to the ansible subdir: cd ./ansible
 -  You are Ready
 

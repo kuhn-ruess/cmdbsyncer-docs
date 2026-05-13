@@ -45,14 +45,14 @@ The Syncer requires Python **3.14 or newer**. The interpreter on your system may
 
 ```bash
 cd /opt/cmdbsyncer
-python3.14 -m venv ENV
-source ENV/bin/activate
+python3.14 -m venv venv
+source venv/bin/activate
 ```
 
 !!! warning
     The virtual environment must be activated every time you interact with the Syncer manually or via cron jobs:
     ```bash
-    source /opt/cmdbsyncer/ENV/bin/activate
+    source /opt/cmdbsyncer/venv/bin/activate
     ```
 
 ## Install Python Requirements

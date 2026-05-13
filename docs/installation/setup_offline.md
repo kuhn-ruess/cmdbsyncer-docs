@@ -117,8 +117,8 @@ environment, and run the bundled installer:
 ```bash
 cd /opt
 tar -xzf /tmp/offline_bundle.tar.gz
-python3.11 -m venv ENV
-source ENV/bin/activate
+python3.11 -m venv venv
+source venv/bin/activate
 /opt/offline_bundle/install.sh
 ```
 
@@ -168,7 +168,7 @@ install, re-run `self_configure` so new default values are seeded:
 
 ```bash
 cd /opt/cmdbsyncer
-source ENV/bin/activate
+source venv/bin/activate
 ./cmdbsyncer sys self_configure
 ```
 
