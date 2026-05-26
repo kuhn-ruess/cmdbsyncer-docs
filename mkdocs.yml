@@ -32,6 +32,7 @@ nav:
     - Export Hosts as CSV: basics/host_csv_export.md
     - Remove Hosts: basics/maintenance.md
     - Hosts, Labels and Inventory: basics/host_labels_inventory.md
+    - Host Search Syntax: basics/host_search.md
     - Conditions: basics/conditions.md
     - Outcomes List Mode: basics/list_mode.md
     - Custom Attributes: basics/custom_attributes.md

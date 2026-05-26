@@ -1,12 +1,16 @@
 # Export all Hosts as CSV
 
-The Syncer has a hidden endpoint that returns every host in the database as a
-single CSV file. The endpoint is not linked from the menu — you reach it by
-appending `/csv` to the Host admin URL:
+The Syncer can return the hosts visible in the admin list as a single CSV
+file. The host list page has an **Export CSV** button next to the
+saved-search bar; the same download is also reachable directly via the URL:
 
 ```text
 https://<your-syncer>/admin/host/csv
 ```
+
+The export honours the same filters and search expression as the host list,
+so what you see in the table is what ends up in the file. To export every
+host, open the list with no filters and search box empty.
 
 The response is a download named `hosts_export_<YYYYMMDD_HHMMSS>.csv`.
 
