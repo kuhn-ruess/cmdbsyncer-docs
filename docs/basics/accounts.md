@@ -38,7 +38,7 @@ Object types are assigned during import and serve two purposes:
 
 ## Additional Configurations
 
-![Account additional fields example](attachments/Pasted%20image%2020241126165050.png)
+![Account additional fields example](img/account_fields.png)
 
 Some account types (e.g. CSV or JSON) require additional plugin-specific fields that are not shown by default. Simply save the account once — the relevant fields will appear automatically afterwards.
 
