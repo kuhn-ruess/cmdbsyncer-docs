@@ -95,7 +95,7 @@ In addition to the global account fields, each account can hold plugin-specific 
 
 When set, the plugin only processes objects that match the specified object types for this operation.
 
-![Object filter configuration](attachments/Pasted%20image%2020241126165023.png)
+![Object filter configuration](img/account_object_filter.png)
 
 ## Reference Fields
 
