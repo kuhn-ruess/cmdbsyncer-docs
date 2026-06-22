@@ -2,7 +2,8 @@
 
 The VMware plugin connects to a vCenter and can:
 
-- **Inventorize** virtual machines into the Syncer (power state, guest OS, resource pool, ESXi host, VMware Tools version, CPU/memory, network cards, virtual disks, IDE/SCSI controllers, datastores, networks and existing custom attributes).
+- **Inventorize VM hardware** into the Syncer (power state, guest OS, resource pool, ESXi host, VMware Tools version, CPU/memory, network cards, virtual disks, IDE/SCSI controllers, datastores, networks).
+- **Inventorize Custom Attributes** – the VMs' own vCenter Custom Attributes.
 - **Export Custom Attributes** back to the VMs, driven by the Syncer rules.
 
 ## Setup
@@ -48,11 +49,17 @@ vCenter API). VMs that are not found in vCenter, or hosts excluded by the
 ## Commands
 
 ```bash
-# Inventorize VMs from vCenter into the Syncer
+# Inventorize VM hardware (stored under the "<inventorize_key>_hardware" key)
+cmdbsyncer vmware inventorize_vm_hardware <account>
+
+# Inventorize the VMs' own vCenter Custom Attributes
 cmdbsyncer vmware inventorize_custom_attributes <account>
 
 # Export Custom Attributes from the Syncer back to the VMs
 cmdbsyncer vmware export_custom_attributes <account>
 ```
 
-Both commands accept `--debug`.
+All commands accept `--debug` and `--dry-run`. With `--dry-run` the command
+reports what it *would* do — no custom attributes are written to vCenter and no
+inventory data is written to the Syncer. Which VMs are processed is governed by
+the `inventory_filter` account setting (see above) for every command.
