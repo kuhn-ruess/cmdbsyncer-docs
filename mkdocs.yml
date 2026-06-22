@@ -113,6 +113,8 @@ nav:
     - Plugin Dataflow: netbox/dataflow.md
   - I-Doit:
       - Idoit Basics: i-doit/index.md
+  - VMware:
+      - VMware vCenter: vmware/index.md
   - Rest APIs/ Json:
      - Import RestApis or Json: rest_json/index.md
   - "Advanced":
