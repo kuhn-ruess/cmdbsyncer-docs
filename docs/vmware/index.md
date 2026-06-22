@@ -61,5 +61,8 @@ cmdbsyncer vmware export_custom_attributes <account>
 
 All commands accept `--debug` and `--dry-run`. With `--dry-run` the command
 reports what it *would* do — no custom attributes are written to vCenter and no
-inventory data is written to the Syncer. Which VMs are processed is governed by
-the `inventory_filter` account setting (see above) for every command.
+inventory data is written to the Syncer. On the export, `--debug` additionally
+reports for every custom attribute whether it is written or skipped and why
+(its value differs from the one on the VM, or it is not set yet). Which VMs are
+processed is governed by the `inventory_filter` account setting (see above) for
+every command.
