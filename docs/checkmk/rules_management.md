@@ -36,6 +36,31 @@ If you need a specific top-to-bottom order in a ruleset, just set
 the `Folder Index` on each `RuleMngmtOutcome` (lower index = higher
 in the list) and re-run `checkmk export_rules`.
 
+## Static (host-independent) rules
+
+Most setup rules are calculated per host: the Syncer loops over every
+host, renders the templates against that host's attributes and matches
+the conditions. When a rule does **not** depend on any host data — its
+value, folder and conditions contain no host attributes and resolve to
+exactly the same Checkmk rule for every host — that per-host pass is
+pure overhead.
+
+Enable **Static** on such a rule. The Syncer then renders it **once**
+against an empty context and always creates it, skipping the per-host
+calculation entirely. On large inventories this noticeably speeds up
+`checkmk export_rules`.
+
+Notes:
+
+- The rule's match conditions (`Condition Type` / conditions) are
+  **ignored** for static rules — a static rule is always emitted once.
+- Only use it when the templates reference no host attributes. A
+  hardcoded `Condition Host`, a fixed `Value Template`, or a
+  `{% for %}` loop over a literal list are fine; anything reading
+  `{{HOSTNAME}}` or other host labels is not.
+- `Loop over list` is not supported on static rules (it iterates a host
+  attribute list) and is skipped with a log entry.
+
 ## Finding the Ruleset ID and Value Format
 
 The easiest way to find the correct ruleset ID and the expected JSON value format is to:
