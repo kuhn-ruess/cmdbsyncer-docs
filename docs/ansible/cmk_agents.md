@@ -61,12 +61,17 @@ The following Variables exist in the `cmk_host_agent` Ansible Role. You learn be
 Some of these are already part of the Inventory after you inventorized Checkmk, others are hardcoded (like Credentials). And finally, there are condition-based ones, like `cmk_register_bakery`, which should only be true if the registration is missing.
 
 ### Seed a rule set with one click
-To start quickly, open **Rules → Ansible → Rules by Project**, pick (or create) a project, and click **Seed Checkmk Agent variables**. This creates a small, ready-made rule set that already reflects the required logic:
+To start quickly, open **Rules → Ansible → Rules by Project**, pick (or create) a project, and click **Checkmk Agent rules**. This creates a small, orthogonal rule set — one action per rule, each triggered by exactly the Checkmk signal that makes that action necessary:
 
-- **Agent Base Config** — matches every host and carries all static variables (credentials, servers, ports, temp dirs). Every action flag defaults to `false` here.
-- **Install Agent**, **Register TLS**, **Register Bakery**, **Discover Services** — one conditional rule each. Every rule matches on a Checkmk inventory attribute (e.g. the *Check_MK* service output for a TLS error) and flips a single flag to `true`, overriding the base rule's default for the hosts it matches.
+| Rule | Match type | Condition (Checkmk service output) | Sets |
+| :----|:-----------|:-----------------------------------|:-----|
+| **Agent Base Config** | anyway | always | all static variables; every action `false` |
+| **Install Agent** | any | `Check_MK` reports `[agent] Empty output` or `[agent] Communication failed` (agent missing/unreachable) | `cmk_install_agent` |
+| **Register TLS** | all | `Check_MK` reports `TLS is not activated on monitored host` | `cmk_register_tls` |
+| **Register Bakery** | all | `Check_MK Agent` (updater) reports the host is `not registered` | `cmk_register_bakery` |
+| **Run Discovery** | all | `Check_MK Discovery` reports `unmonitored` services | `cmk_discover` |
 
-The rules are ordered by their sort field: the base rule (sort 0) supplies the defaults, the action rules (sort 10+) turn things on where their condition matches. All rules are created **disabled** — treat them as a template: adapt the server and credential values, verify the conditions against `./cmdbsyncer ansible debug_host HOST`, then enable them. Re-running the seed only fills in rules that don't exist yet, so your edits are never overwritten.
+The rules converge step by step: a broken host first gets the agent installed, and on the next inventorize the TLS / bakery / discovery signals appear and their rules fire. The base rule (sort 0) supplies the defaults; each action rule (sort 10+) flips only its own flag where its condition matches. All rules are created **disabled** — treat them as a template: adapt the server and credential values, verify the conditions against `./cmdbsyncer ansible debug_host HOST` (Checkmk's exact wording varies by version), then enable them. Re-running the seed only fills in rules that don't exist yet, so your edits are never overwritten.
 
 Alternatively, you can seed a set of default rules from the command line:
 
