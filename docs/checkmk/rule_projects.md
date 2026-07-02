@@ -36,6 +36,22 @@ test rules can never reach production before they are approved.
 Assign a rule to a project by picking the project in the **Project** field of a
 Checkmk Setup Rule.
 
+## The project page
+
+Click a project's **name** in the list to open its overview page. It shows the
+project's status and test/prod targets and lists every Setup Rule assigned to
+the project (with its ruleset and enabled/static state). All project actions are
+right there on the page:
+
+* **Import Rules from Checkmk Folder** (see below),
+* **Push to Test**, **Approve for Production**, **Push to Prod**,
+* **Export as JSON**,
+* jump straight to editing a rule, adding a new one, or managing the project's
+  rules in the Setup Rule list.
+
+The same actions are also available in the project list via the *With selected*
+menu.
+
 ## Workflow
 
 The project status advances automatically as you work through it:
@@ -65,8 +81,9 @@ keeps the plain `cmdbsyncer_<account_id>` marker).
 
 You can seed a project from rules that already exist in Checkmk:
 
-Select the project → **Import Rules from Checkmk Folder** → choose a Checkmk
-account and a folder.
+Open the project page → **Import Rules from Checkmk Folder** → choose a Checkmk
+account and a folder. (The same action is also on the *With selected* menu in
+the project list.)
 
 * Every Setup Rule in that folder is imported into the project as a **static
   rule** (its value and conditions are taken over verbatim, so pushing it back
