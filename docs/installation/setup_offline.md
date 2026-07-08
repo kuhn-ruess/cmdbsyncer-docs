@@ -47,13 +47,18 @@ lives in `tools/` and wraps `pip download` plus a bit of packaging:
 git clone https://github.com/kuhn-ruess/cmdbsyncer
 cd cmdbsyncer
 ./tools/build_offline_bundle.sh --include-syncer --include-enterprise \
+    --with-extras --with-ansible \
     --python-version 3.11 \
     --platform manylinux2014_x86_64
 ```
 
-The bundle always ships the **base, extras and ansible** Python
-dependencies plus the **default Ansible playbook collection** — there
-are no toggles for these any more. The script produces:
+The bundle **always ships the base Python dependencies**
+(`requirements.txt`). The optional requirement sets are **opt-in** via the
+`--with-*` flags, so a bundle only carries what the target deployment needs:
+`--with-extras` (LDAP / SQL / MCP / vmware), `--with-ansible` (Ansible for
+Linux/SSH targets plus the playbook collection) and `--with-ansible-windows`
+(WinRM + Kerberos/NTLM for Windows targets, implies `--with-ansible`). The
+script produces:
 
 - `offline_bundle/` — directory with `packages/`, the three
   `requirements*.txt` files, the bundled `ansible/` playbook tree, an
@@ -65,6 +70,10 @@ are no toggles for these any more. The script produces:
 
 | Flag                       | Purpose                                                                                  |
 | -------------------------- | ---------------------------------------------------------------------------------------- |
+| `--with-extras`            | Also bundle the optional extras (`requirements-extras.txt`: LDAP / SQL / MCP / vmware). Not needed for normal operation. |
+| `--with-ansible`           | Also bundle Ansible for Linux/SSH targets (`requirements-ansible.txt`) and the playbook collection |
+| `--with-ansible-windows`   | Also bundle the Ansible Windows deps (WinRM + Kerberos/NTLM); implies `--with-ansible`   |
+| `--syncer-only`            | Bundle ONLY the `cmdbsyncer` package (no dependencies) and install it with `--no-deps`, keeping the dependencies already installed on the target. Needs a syncer source; ignores the `--with-*` flags. |
 | `--include-syncer`         | Also download the `cmdbsyncer` package from PyPI into the bundle                         |
 | `--syncer-from-git`        | Build the `cmdbsyncer` wheel from the current local checkout instead of PyPI (see below). Mutually exclusive with `--include-syncer` / `--syncer-version`. |
 | `--include-enterprise`     | Also download the `cmdbsyncer-enterprise` package from PyPI                              |
@@ -115,6 +124,21 @@ are no toggles for these any more. The script produces:
     sources are mutually exclusive — pass either `--include-syncer`
     (PyPI) or `--syncer-from-git` (local), not both. The bundle's
     `README.txt` records which source was used.
+
+!!! tip "Updating only the syncer (keep installed dependencies)"
+    To update the Syncer on a host whose dependencies are already installed —
+    for example a locked-down server that cannot reach PyPI to (re)download
+    dependencies — add `--syncer-only`:
+
+    ```bash
+    ./tools/build_offline_bundle.sh --syncer-from-git --syncer-only
+    ```
+
+    The bundle then contains **only** the `cmdbsyncer` wheel; its `install.sh`
+    installs it with `pip install --no-deps --upgrade`, so every existing
+    dependency on the target is left untouched. No requirement files are
+    downloaded or shipped, which also sidesteps proxies that block source
+    tarballs.
 
 ## Transfer the Bundle
 

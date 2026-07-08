@@ -67,18 +67,21 @@ they would need system libraries such as libldap, ODBC, Kerberos and the
 vmware SDK. Use the matching pip **extra** to pull them in:
 
 ```bash
-# LDAP, MS-SQL / MySQL, vmware SDK, markdown editor, MCP server
+# LDAP, MS-SQL / MySQL, vmware SDK, MCP server
 pip install 'cmdbsyncer[extras]'
 
-# Ansible + Kerberos / pywinrm
+# Ansible for Linux / SSH targets
 pip install 'cmdbsyncer[ansible]'
 
-# Both at once
-pip install 'cmdbsyncer[extras,ansible]'
+# Ansible Windows targets (WinRM + Kerberos/NTLM; needs system Kerberos libs)
+pip install 'cmdbsyncer[ansible-windows]'
+
+# Several at once
+pip install 'cmdbsyncer[extras,ansible,ansible-windows]'
 ```
 
-The exact version pins are tracked in `requirements-extras.txt` and
-`requirements-ansible.txt` in the
+The exact version pins are tracked in `requirements-extras.txt`,
+`requirements-ansible.txt` and `requirements-ansible-windows.txt` in the
 [Git repository](https://github.com/kuhn-ruess/cmdbsyncer); the pip
 extras read directly from those files so they always match the released
 wheel.
