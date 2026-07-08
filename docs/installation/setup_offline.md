@@ -73,7 +73,7 @@ script produces:
 | `--with-extras`            | Also bundle the optional extras (`requirements-extras.txt`: LDAP / SQL / MCP / vmware). Not needed for normal operation. |
 | `--with-ansible`           | Also bundle Ansible for Linux/SSH targets (`requirements-ansible.txt`) and the playbook collection |
 | `--with-ansible-windows`   | Also bundle the Ansible Windows deps (WinRM + Kerberos/NTLM); implies `--with-ansible`   |
-| `--syncer-only`            | Bundle ONLY the `cmdbsyncer` package (no dependencies) and install it with `--no-deps`, keeping the dependencies already installed on the target. Needs a syncer source; ignores the `--with-*` flags. |
+| `--syncer-only`            | Bundle ONLY the `cmdbsyncer` package (no dependencies) and install it with `--no-deps`, keeping the dependencies already installed on the target. Defaults to downloading the released wheel from PyPI (add `--syncer-from-git` to build the local checkout); ignores the `--with-*` flags. |
 | `--include-syncer`         | Also download the `cmdbsyncer` package from PyPI into the bundle                         |
 | `--syncer-from-git`        | Build the `cmdbsyncer` wheel from the current local checkout instead of PyPI (see below). Mutually exclusive with `--include-syncer` / `--syncer-version`. |
 | `--include-enterprise`     | Also download the `cmdbsyncer-enterprise` package from PyPI                              |
@@ -128,17 +128,21 @@ script produces:
 !!! tip "Updating only the syncer (keep installed dependencies)"
     To update the Syncer on a host whose dependencies are already installed —
     for example a locked-down server that cannot reach PyPI to (re)download
-    dependencies — add `--syncer-only`:
+    dependencies — use `--syncer-only`. By default it takes the released
+    `cmdbsyncer` wheel from PyPI:
 
     ```bash
-    ./tools/build_offline_bundle.sh --syncer-from-git --syncer-only
+    # released version from PyPI
+    ./tools/build_offline_bundle.sh --syncer-only
+
+    # or the current local checkout instead
+    ./tools/build_offline_bundle.sh --syncer-only --syncer-from-git
     ```
 
-    The bundle then contains **only** the `cmdbsyncer` wheel; its `install.sh`
-    installs it with `pip install --no-deps --upgrade`, so every existing
-    dependency on the target is left untouched. No requirement files are
-    downloaded or shipped, which also sidesteps proxies that block source
-    tarballs.
+    Build this on a host **with** PyPI access, then transfer the archive. The
+    bundle contains **only** the `cmdbsyncer` wheel; its `install.sh` installs it
+    with `pip install --no-deps --upgrade`, so every existing dependency on the
+    target is left untouched. No requirement files are downloaded or shipped.
 
 ## Transfer the Bundle
 
