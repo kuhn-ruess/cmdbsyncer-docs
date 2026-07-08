@@ -66,6 +66,7 @@ are no toggles for these any more. The script produces:
 | Flag                       | Purpose                                                                                  |
 | -------------------------- | ---------------------------------------------------------------------------------------- |
 | `--include-syncer`         | Also download the `cmdbsyncer` package from PyPI into the bundle                         |
+| `--syncer-from-git`        | Build the `cmdbsyncer` wheel from the current local checkout instead of PyPI (see below). Mutually exclusive with `--include-syncer` / `--syncer-version`. |
 | `--include-enterprise`     | Also download the `cmdbsyncer-enterprise` package from PyPI                              |
 | `--syncer-version VER`     | Pin `cmdbsyncer` to exactly this version (e.g. `4.1.0.dev3`). Required for pre-releases. |
 | `--enterprise-version VER` | Same idea for `cmdbsyncer-enterprise`                                                    |
@@ -98,6 +99,22 @@ are no toggles for these any more. The script produces:
     release. Either way the generated `install.sh` pins to the same
     exact wheel, so the customer's pip never has to make a resolution
     decision in the field.
+
+!!! tip "Shipping your current checkout instead of a PyPI release"
+    When you want to bundle the exact state of your local Git checkout —
+    for example an unreleased branch or a hotfix that is not on PyPI yet —
+    use `--syncer-from-git` instead of `--include-syncer`:
+
+    ```bash
+    ./tools/build_offline_bundle.sh --syncer-from-git \
+        --python-version 3.11 --platform manylinux2014_x86_64
+    ```
+
+    The script builds a `cmdbsyncer` wheel from the checkout, drops it in
+    `packages/`, and pins `install.sh` to that exact version. The two
+    sources are mutually exclusive — pass either `--include-syncer`
+    (PyPI) or `--syncer-from-git` (local), not both. The bundle's
+    `README.txt` records which source was used.
 
 ## Transfer the Bundle
 
@@ -145,9 +162,9 @@ After install, point cmdbsyncer at the playbook directory by exporting
 
 ### Next Steps
 
-If you built the bundle with `--include-syncer`, the `cmdbsyncer`
-console script is now on your `PATH` — the application behaves exactly
-like a regular PyPI install. Continue with
+If you built the bundle with `--include-syncer` or `--syncer-from-git`,
+the `cmdbsyncer` console script is now on your `PATH` — the application
+behaves exactly like a regular PyPI install. Continue with
 [Installation from PyPI](setup_pip.md#initialize-the-application) to
 initialize the application (`cmdbsyncer sys self_configure`), point it
 at MongoDB, and set up a WSGI server.
