@@ -68,7 +68,7 @@ nav:
       - Set Folders and Host Attributes: checkmk/export_rules.md
       - Host-/ Contact-/ Service-Groups: checkmk/groups_management.md
       - Checkmk Setup Rules: checkmk/rules_management.md
-      - Setup Rule Projects (Test/Prod): checkmk/rule_projects.md
+      - Setup Rule Projects: checkmk/rule_projects.md
       - Limit Host Export to Folders: checkmk/limit_host_export_folders.md
       - Host Tags: checkmk/create_hosttags.md
       - Checkmk Users: checkmk/users.md

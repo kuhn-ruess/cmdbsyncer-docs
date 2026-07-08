@@ -1,37 +1,49 @@
-# Setup Rule Projects (Test → Approve → Prod)
+# Setup Rule Projects
 
-Rule Projects group [Checkmk Setup Rules](rules_management.md) so you can build
-them safely on a **test** Checkmk instance, get them **approved**, and then push
-them to **production** as one unit. A project can also be exported and imported
-as JSON to move it between separate Syncer instances.
+Rule Projects group [Checkmk Setup Rules](rules_management.md) and **limit which
+Checkmk accounts they are exported to**. A project can also be exported and
+imported as JSON to move it between separate Syncer instances.
 
-Go to: _Modules → Checkmk → Setup Rule Projects (Test/Prod)_
+Go to: _Modules → Checkmk → Setup Rule Projects_
 
 ## Why projects?
 
-Without a project, every enabled Setup Rule is pushed to a single Checkmk
-instance on each `checkmk export_rules` run — there is no staging and no
-approval. A project gives you:
+Normally every enabled Setup Rule is exported to whichever Checkmk account you
+run `checkmk export_rules` against. A project lets you:
 
-* a **group** of Setup Rules that belong together,
-* its own **test** and **production** Checkmk target,
-* a **status workflow** with an audit trail (who approved, when),
-* one-click **import** of existing rules from a Checkmk folder,
-* **JSON im-/export** for multi-instance setups.
+* **group** Setup Rules that belong together, and
+* **restrict** those rules to specific Checkmk accounts via an account filter.
 
-Rules that belong to a project are **excluded from the global
-`export_rules`** — they are only ever pushed through the project workflow, so
-test rules can never reach production before they are approved.
+A project's rules are exported through the normal `export_rules` run — there is
+no separate push and no approval workflow.
+
+## The account filter
+
+Each project has an **Exported to Accounts** list (`limit_by_accounts`):
+
+* **empty** — no restriction: the project's rules are exported to **every**
+  account, exactly like ordinary rules;
+* **one or more accounts** — the project's rules are exported **only** to those
+  accounts. `checkmk export_rules <other-account>` skips them.
+
+So you can build a set of rules, keep them scoped to a lab/test account while you
+try them out, and roll them out to the remaining accounts simply by **removing
+the filter** (or adding the other accounts to it).
+
+!!! note
+    A single `checkmk export_rules <account>` run always writes the account's
+    global rules **plus** the rules of every project whose filter allows that
+    account, under the account's normal ownership marker
+    (`cmdbsyncer_<account_id>`). If an account later drops out of a project's
+    filter, that project's rules are removed from it on the next export.
 
 ## Configuration
 
-| Option        | Description                                                        |
-| :------------ | :---------------------------------------------------------------- |
-| Name          | Unique project name                                               |
-| Documentation | Free text                                                         |
-| Status        | `draft` → `in_test` → `approved` → `live` (see below)             |
-| Test Instance | Checkmk account the project is pushed to for testing             |
-| Prod Instance | Checkmk account the project is pushed to for production          |
+| Option              | Description                                                             |
+| :------------------ | :--------------------------------------------------------------------- |
+| Name                | Unique project name                                                    |
+| Documentation       | Free text                                                              |
+| Exported to Accounts | Checkmk accounts the project's rules are limited to (empty = all)     |
 
 Assign a rule to a project by picking the project in the **Project** field of a
 Checkmk Setup Rule.
@@ -39,43 +51,13 @@ Checkmk Setup Rule.
 ## The project page
 
 Click a project's **name** in the list to open its overview page. It shows the
-project's status and test/prod targets and lists every Setup Rule assigned to
-the project (with its ruleset and enabled/static state). All project actions are
-right there on the page:
+project's target accounts and lists every Setup Rule assigned to the project —
+each with its match condition and the resulting rule value — and offers:
 
 * **Import Rules from Checkmk Folder** (see below),
-* **Push to Test**, **Approve for Production**, **Push to Prod**,
 * **Export as JSON**,
 * jump straight to editing a rule, adding a new one, or managing the project's
   rules in the Setup Rule list.
-
-The same actions are also available in the project list via the *With selected*
-menu.
-
-## Workflow
-
-The project status advances automatically as you work through it:
-
-1. **draft** — you create the project and assign rules to it.
-2. **Push to Test** — pushes the project's rules to its *Test Instance*; the
-   status moves to **in_test**.
-3. **Approve for Production** — a reviewer marks the project **approved**; the
-   approver's e-mail and the timestamp are recorded.
-4. **Push to Prod** — pushes to the *Prod Instance*; the status moves to
-   **live**. This is **only allowed once the project is approved** — an attempt
-   to push an unapproved project to production is refused.
-
-Each action is available in the list view (select one or more projects, then
-pick the action from the *With selected* menu).
-
-### Sharing a Checkmk instance between projects
-
-Rules pushed by a project are tagged in Checkmk with a project-specific
-ownership marker (`cmdbsyncer_<account_id>_<project>`). Cleanup during a push
-only ever touches rules carrying that project's own marker, so **several
-projects can push to the same Checkmk instance without deleting each other's
-rules** (and without touching the rules of the global `export_rules`, which
-keeps the plain `cmdbsyncer_<account_id>` marker).
 
 ## Import rules from a Checkmk folder
 
@@ -86,7 +68,7 @@ account and a folder. (The same action is also on the *With selected* menu in
 the project list.)
 
 * Every Setup Rule in that folder is imported into the project as a **static
-  rule** (its value and conditions are taken over verbatim, so pushing it back
+  rule** (its value and conditions are taken over verbatim, so exporting it back
   reproduces the exact same Checkmk rule).
 * Tick **Include subfolders** to also import rules from folders below the given
   one.
@@ -97,20 +79,14 @@ the project list.)
 
 Use the list actions **Export as JSON** (downloads the project and all of its
 rules) and **Import** (upload such a file). This is useful when you build a
-project on one Syncer instance and want to replicate it on another. An imported
-project always starts in status **draft** — it never inherits an
-`approved`/`live` status from the source instance.
+project on one Syncer instance and want to replicate it on another.
 
 ## Command line
 
 ```bash
-# Push a project's rules to its test or prod instance
-./cmdbsyncer checkmk export_project_rules <PROJECT> --stage test
-./cmdbsyncer checkmk export_project_rules <PROJECT> --stage prod
-
 # Import all rules of a Checkmk folder into a project
 ./cmdbsyncer checkmk import_project_rules <PROJECT> <ACCOUNT> <FOLDER> --recursive
-```
 
-Both `export_project_rules` (Test/Prod) and `import_project_rules` are also
-available as cron jobs.
+# Export rules (global + the projects whose filter allows this account)
+./cmdbsyncer checkmk export_rules <ACCOUNT>
+```
