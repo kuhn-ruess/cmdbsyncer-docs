@@ -1,109 +1,113 @@
-# How To: Deploy a Rule with a Password from Test to Prod
+# How To: Use a Stored Password in a Rule Body
 
-A concrete, click-by-click walkthrough of the recommended way to handle a secret
-in a Setup Rule. For the concepts behind it, see
+A concrete example of writing a Setup Rule whose value carries a secret, using a
+reference to the Syncer [Password Store](password_store.md) instead of an inline
+password — and how to convert a rule body you copied out of Checkmk where the
+password was **explicit**. For the concepts, see
 [Passwords in Setup Rules](passwords_in_rules.md).
 
-**Scenario.** You have an Azure special-agent rule in your **test** Checkmk and
-want the same rule in **production**, managed by the Syncer, without the secret
-ever living inside the rule.
+## The rule body
 
-**Prerequisites.**
+A [Checkmk Setup Rule](rules_management.md) in the Syncer carries, per outcome, a
+**Value** — the Checkmk `value_raw`, written as a Python literal (a dict). It is
+rendered with Jinja before it is sent to Checkmk, so you can use macros inside it.
 
-* Two enabled Checkmk (cmkv2) accounts in the Syncer, e.g. `test-cmk` and
-  `prod-cmk`.
-* A [Setup Rule Project](rule_projects.md) to hold the rule (e.g. `azure`).
-
----
-
-## Step 1 — Import the rule from test
-
-_Modules → Checkmk → Setup Rule Projects_ → open the **azure** project →
-**Import Rules from Checkmk Folder**.
-
-* **Checkmk account:** `test-cmk`
-* **Folder:** `/azure`
-* Click **Import**.
-
-You get two messages:
-
-* `Imported 1 rule(s) from folder '/azure' (account test-cmk)`
-* `These rules reference password store entries: secret. Create a Checkmk
-  Password in the syncer with each name (real secret), then run the password
-  export …`
-
-The imported rule now stores the secret as a reference, not the password:
+For a value that holds a secret, write the password field as a **stored_password**
+reference to a Syncer password entry:
 
 ```python
-'secret': ('cmk_postprocessed', 'stored_password', ('{{ cmk_password("secret") }}', ''))
+('cmk_postprocessed', 'stored_password', ('{{ cmk_password("NAME") }}', ''))
 ```
 
-## Step 2 — (optional) Give the macro a clearer name
+* `NAME` is the **Name** of a `CheckmkPassword` entry in the Syncer.
+* `{{ cmk_password("NAME") }}` resolves, on export, to that entry's Checkmk
+  password-store ident (`cmdbsyncer_<id>`) — the same on every Checkmk instance.
+* The second tuple element stays an empty string `''` (a stored password carries
+  no value in the rule).
 
-The default macro name is the field (`secret`). To use a nicer name, open the
-rule under _Modules → Checkmk → Manage Checkmk Setup Rules_, and in the value
-change `cmk_password("secret")` to e.g. `cmk_password("azure-prod")`. **Save.**
+## Step 1 — Create the password in the Syncer
 
-A later re-import of the folder keeps your renamed macro.
+_Modules → Checkmk → Manage Password Store → Create_:
 
-## Step 3 — Create the password in the Syncer
+| Field    | Value                        |
+| :------- | :--------------------------- |
+| Name     | `my-api` (used in the macro) |
+| Title    | `My API user` (label in Checkmk) |
+| Password | the **real** secret          |
+| Enabled  | ticked                       |
 
-_Modules → Checkmk → Manage Password Store_ → **Create**.
+## Step 2 — Write the rule body
 
-| Field    | Value                                            |
-| :------- | :----------------------------------------------- |
-| Name     | `azure-prod` — **must match the macro**          |
-| Title    | `Azure Prod Secret` (free label shown in Checkmk)|
-| Password | the **real** secret                              |
-| Enabled  | ticked                                           |
+_Modules → Checkmk → Manage Checkmk Setup Rules → Create_. Pick the ruleset and
+folder, and put the body in the outcome's **Value**. A minimal special-agent
+example:
 
-**Save.**
+```python
+{
+    'user': 'svc-monitoring',
+    'password': ('cmk_postprocessed', 'stored_password', ('{{ cmk_password("my-api") }}', '')),
+    'port': 443,
+}
+```
 
-## Step 4 — Push the password to both Checkmks
+Save. That is all — the secret never appears in the rule.
 
-The rule export does **not** push passwords for you, so do it once per target
-(and again whenever you rotate the secret):
+## Adapting a rule body copied from Checkmk
+
+Often you already have a working rule in Checkmk and want the Syncer to manage it.
+Copy its `value_raw` (Setup → the rule → *Export for API*, or the REST API's
+`value_raw`) into the outcome Value, then fix up the password.
+
+If that password was entered **explicitly** in Checkmk, its body looks like this —
+note Checkmk returns the secret **masked as `******`**, so it is useless to
+copy as-is:
+
+```python
+# copied from Checkmk — password was explicit, value is masked
+{
+    'user': 'svc-monitoring',
+    'password': ('cmk_postprocessed', 'explicit_password', ('uuid-7f3c…', '******')),
+    'port': 443,
+}
+```
+
+Replace the `explicit_password` tuple with a `stored_password` reference:
+
+```python
+# managed by the Syncer — real secret lives in the password store
+{
+    'user': 'svc-monitoring',
+    'password': ('cmk_postprocessed', 'stored_password', ('{{ cmk_password("my-api") }}', '')),
+    'port': 443,
+}
+```
+
+Concretely, for each secret field:
+
+1. Change `'explicit_password'` → `'stored_password'`.
+2. Replace the inner `('uuid…', '******')` with `('{{ cmk_password("NAME") }}', '')`.
+3. Leave every other field (ports, proxies, options) exactly as Checkmk returned
+   it.
+
+## Step 3 — Make the password available and export
+
+The rule only resolves on a Checkmk whose password store already holds the entry,
+and the rule export does **not** push passwords for you. So push the password
+once per target (and again after a rotation), then export the rules:
 
 ```bash
-./cmdbsyncer checkmk export_passwords test-cmk
-./cmdbsyncer checkmk export_passwords prod-cmk
+./cmdbsyncer checkmk export_passwords my-cmk
+./cmdbsyncer checkmk export_rules my-cmk
 ```
 
-Check in Checkmk under _Setup → Passwords_: an entry `cmdbsyncer_<id>` appears —
-the same id on both sites.
-
-## Step 5 — Export the rules
-
-```bash
-./cmdbsyncer checkmk export_rules test-cmk
-./cmdbsyncer checkmk export_rules prod-cmk
-```
-
-Then **activate changes** in each Checkmk. Both sites now have the identical
-rule, each resolving its **own** stored secret through the shared
-`cmdbsyncer_<id>` reference.
-
----
-
-## Rotating the secret
-
-Edit the entry under _Manage Password Store_ and re-run the password export for
-each target:
-
-```bash
-./cmdbsyncer checkmk export_passwords test-cmk
-./cmdbsyncer checkmk export_passwords prod-cmk
-```
-
-The ident does not change, so the rules do **not** need re-exporting.
+Activate changes in Checkmk. The rule now uses the password from that site's own
+store.
 
 ## Troubleshooting
 
-* **A rule fails to deploy / Checkmk reports an unknown password** — the macro
-  name has no matching `CheckmkPassword`, or the entry is **disabled** or was
-  never exported. Only that one rule fails; the rest of the export continues.
-  Fix the name / enable the entry, run `export_passwords` for the target, then
-  `export_rules` again.
-* **The rule still shows `******`** — you deployed before rewriting/creating the
-  password. Re-import the folder (or edit the rule to add the macro), create the
-  password, export it, and export the rule again.
+* **Checkmk reports an unknown password / the rule fails to create** — the macro
+  name has no matching `CheckmkPassword`, or the entry is disabled or was never
+  exported. Only that rule fails; fix the name / enable the entry, run
+  `export_passwords`, then `export_rules` again.
+* **The password shows as `******` in Checkmk** — you left the `explicit_password`
+  tuple in the body. Swap it for the `stored_password` reference as shown above.

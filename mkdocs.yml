@@ -89,7 +89,7 @@ nav:
         - Manage Contact Groups: checkmk/recipe_contact_groups.md
         - Create Checkmk Rules Automatically: checkmk/recipe_checkmk_rules.md
         - Multiple HTTP Checks per Host: checkmk/recipe_multiple_http_rules.md
-        - Deploy a Rule with a Password (Test to Prod): checkmk/recipe_rule_passwords.md
+        - Use a Stored Password in a Rule Body: checkmk/recipe_rule_passwords.md
         - Agent Deployment Automation: ansible/cmk_agents.md
         - Site Update Automation: ansible/cmk_sites.md
         - Bake and Sign Agents: checkmk/bake_sign.md

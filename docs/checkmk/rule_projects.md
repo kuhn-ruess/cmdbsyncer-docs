@@ -86,7 +86,7 @@ tells you which entry names it used.
 Create a matching Checkmk Password in the Syncer, export it to each target Checkmk
 (`export_passwords`), then export the rules. The full explanation is in
 [Passwords in Setup Rules](passwords_in_rules.md), with a step-by-step example in
-[How To: Deploy a Rule with a Password](recipe_rule_passwords.md).
+[How To: Use a Stored Password in a Rule Body](recipe_rule_passwords.md).
 
 ## Move a project between Syncer instances
 

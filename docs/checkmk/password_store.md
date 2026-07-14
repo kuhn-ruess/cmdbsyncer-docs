@@ -26,7 +26,7 @@ A [Checkmk Setup Rule](rules_management.md) can reference a stored password inst
 
 This resolves to the entry's Checkmk ident (`cmdbsyncer_<id>`) when the rule is exported. Use it wherever Checkmk expects a *stored* password, e.g. a special agent's `stored_password` value.
 
-The macro only resolves on a Checkmk whose password store already holds the entry, so run `export_passwords` for that account before (or after) exporting the rules — the rule export does **not** push passwords for you. This reference is what lets rules imported from one Checkmk deploy to another without exposing the secret. See [Passwords in Setup Rules](passwords_in_rules.md) for the full workflow and [How To: Deploy a Rule with a Password](recipe_rule_passwords.md) for a step-by-step example.
+The macro only resolves on a Checkmk whose password store already holds the entry, so run `export_passwords` for that account before (or after) exporting the rules — the rule export does **not** push passwords for you. This reference is what lets rules imported from one Checkmk deploy to another without exposing the secret. See [Passwords in Setup Rules](passwords_in_rules.md) for the full workflow and [How To: Use a Stored Password in a Rule Body](recipe_rule_passwords.md) for a step-by-step example.
 
 ## Command Line
 
