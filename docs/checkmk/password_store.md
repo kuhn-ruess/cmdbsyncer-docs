@@ -14,8 +14,23 @@ The Syncer decrypts the password internally before sending it to Checkmk — Che
 
 Configure one entry per password. The fields correspond directly to what you would configure in the Checkmk Password Manager. Jinja templating is not yet supported in this module.
 
+Each entry has a unique **Name**. In Checkmk the entry is stored under the stable ident `cmdbsyncer_<id>`, which is the same on every Checkmk instance you export it to.
+
+## Referencing a password from a Setup Rule
+
+A [Checkmk Setup Rule](rules_management.md) can reference a stored password instead of inlining it, so the secret never lives inside the rule:
+
+```jinja
+{{ cmk_password("name") }}
+```
+
+This resolves to the entry's Checkmk ident (`cmdbsyncer_<id>`) when the rule is exported. Use it wherever Checkmk expects a *stored* password, e.g. a special agent's `stored_password` value.
+
+The macro only resolves on a Checkmk whose password store already holds the entry, so run `export_passwords` for that account before (or after) exporting the rules — the rule export does **not** push passwords for you. This reference is what lets rules imported from one Checkmk deploy to another without exposing the secret. See [Passwords in Setup Rules](passwords_in_rules.md) for the full workflow and [How To: Deploy a Rule with a Password](recipe_rule_passwords.md) for a step-by-step example.
+
 ## Command Line
 
 ```bash
+# Export every enabled password to an account's password store
 ./cmdbsyncer checkmk export_passwords ACCOUNTNAME
 ```

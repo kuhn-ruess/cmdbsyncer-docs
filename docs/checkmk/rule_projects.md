@@ -75,6 +75,19 @@ the project list.)
 * Re-running the import **updates the same rules** instead of creating
   duplicates (rules are matched by their Checkmk rule ID).
 
+### Passwords in imported rules
+
+Checkmk masks an inline (explicit) password in a rule as `******` on every read,
+so a rule imported from your test Checkmk carries **no usable secret**. The import
+therefore rewrites every inline password into a reference to the Syncer's
+[Password Store](password_store.md) — a `{{ cmk_password("name") }}` macro — and
+tells you which entry names it used.
+
+Create a matching Checkmk Password in the Syncer, export it to each target Checkmk
+(`export_passwords`), then export the rules. The full explanation is in
+[Passwords in Setup Rules](passwords_in_rules.md), with a step-by-step example in
+[How To: Deploy a Rule with a Password](recipe_rule_passwords.md).
+
 ## Move a project between Syncer instances
 
 Use the list actions **Export as JSON** (downloads the project and all of its

@@ -76,6 +76,7 @@ nav:
       - Notification Rules: checkmk/notification_rules.md
       - DCD Rules: checkmk/dcd_rules.md
       - Password Store: checkmk/password_store.md
+      - Passwords in Setup Rules: checkmk/passwords_in_rules.md
       - Business Intelligence: checkmk/bi.md
       - Folder Pools: checkmk/folder_pools.md
       - Inventorize Checkmk: checkmk/inventorize.md
@@ -88,6 +89,7 @@ nav:
         - Manage Contact Groups: checkmk/recipe_contact_groups.md
         - Create Checkmk Rules Automatically: checkmk/recipe_checkmk_rules.md
         - Multiple HTTP Checks per Host: checkmk/recipe_multiple_http_rules.md
+        - Deploy a Rule with a Password (Test to Prod): checkmk/recipe_rule_passwords.md
         - Agent Deployment Automation: ansible/cmk_agents.md
         - Site Update Automation: ansible/cmk_sites.md
         - Bake and Sign Agents: checkmk/bake_sign.md
