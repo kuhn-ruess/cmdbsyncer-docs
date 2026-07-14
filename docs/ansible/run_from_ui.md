@@ -49,3 +49,6 @@ Everything the UI can dispatch is also reachable from the shell. Each CLI run be
 
 - `ansible-playbook` must be on the Syncer's `PATH`. Override via the `CMDBSYNCER_ANSIBLE_PLAYBOOK_BIN` env var or the `ANSIBLE_PLAYBOOK_BIN` Flask config key.
 - The playbook directory defaults to `<repo>/ansible/`. Override via `CMDBSYNCER_ANSIBLE_DIR` / `ANSIBLE_DIR` if you ship playbooks from a non-default location.
+
+!!! warning "Staging files under mod_wsgi"
+    A UI run executes in the web worker's context. Under mod_wsgi that worker usually has a **private `/tmp`** (`PrivateTmp=yes`) that is invisible to your shell and to later playbook steps, and is wiped on restart. Playbooks that download/stage a file locally and then copy it to the targets must stage **outside `/tmp`** — see the [Checkmk site management](cmk_sites.md) *Installation Staging Path* setting for an example.
