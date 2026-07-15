@@ -3,6 +3,27 @@
 The Syncer can create Interfaces in Netbox. 
 This can be set in Modules -> Netbox -> DCIM Interfaces.
 
+## Importing Interfaces from Netbox
+
+Analogous to the device and VM import, the Syncer can also import interfaces
+back from Netbox:
+
+```bash
+cmdbsyncer netbox import_dcim_interfaces <account>   # interfaces of devices
+cmdbsyncer netbox import_virt_interfaces <account>   # interfaces of virtual machines
+```
+
+By default each host's Netbox interfaces — including their assigned IPv4 and
+IPv6 addresses — are stored on the matching host's inventory (the host the
+interface belongs to). The import respects the account's `import_filter` and
+`rewrite_hostname` settings.
+
+If you want the interfaces to become first-class objects you can export again,
+set the account option [`import_as_hosts`](./account.md) to `true`. Every
+interface is then imported as its own host (named `parentdevice/interfacename`)
+with the interface fields as labels, instead of being stored on the parent
+host's inventory.
+
 As in other Syncer Functions, you can match your Host Attributes to Netbox Attributes.  Here you will find some Examples.
 
 The "ID of Assigned Device" for example, can be found in an Attribute like "accountname_device_id". This attribute is automatically set when you used the device export of the Syncer. But the name depends on the Account Name you used. The part accountname is replaced by this Accounts Name. 

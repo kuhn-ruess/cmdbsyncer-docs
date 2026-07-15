@@ -7,3 +7,4 @@ The Following Extra Configuration is possible for Netbox Accounts
 | `rewrite_hostname` | Imported Hostnames are rewritten with Jinja                                             |
 | `verify_cert`      | `True` for Certificate validation, else `False'                                         |
 | `import_filter`    | Comma seperated key:value pairs which will be passed as filters for vm or device import. Note: Custom Field Names need to start with cf_ |
+| `import_as_hosts`  | `true` makes the interface import create one host per interface (so they can be exported again) instead of storing them on the parent host's inventory |
