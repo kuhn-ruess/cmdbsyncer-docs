@@ -3,8 +3,9 @@
 This page walks you through the essential setup steps after installation — from creating the first user to running your first sync.
 
 !!! tip "First Steps wizard"
-    Since version 4.3 the web interface ships a **First Steps** page (first
-    entry in the menu) that mirrors this guide as an interactive checklist:
+    Since version 4.3 the web interface ships a **First Steps** page (reachable
+    via the profile icon menu) that mirrors this guide as an interactive
+    checklist:
     create an account, import objects, connect an export target, define rules,
     schedule cron jobs, invite users. Every step checks itself off
     automatically and links to the right view. Fresh installations land on it
