@@ -65,7 +65,7 @@ Secrets (`password`, bakery passphrase, CA certificates) and internal ids are
 
 ## Rule Projects
 
-DCD rules can be assigned to a [Setup Rule Project](rule_projects.md). They then
+DCD rules can be assigned to a [Project](../basics/projects.md). They then
 show up on the project overview, follow the project's account filter on export
 (only exported to the accounts the project allows), and are included in the
 project's JSON export/import.

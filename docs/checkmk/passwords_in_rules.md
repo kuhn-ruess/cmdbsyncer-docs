@@ -16,7 +16,7 @@ it **masked as `******`** on every read of that rule:
 
 So a rule read from one Checkmk carries no usable secret. If you copied that rule
 to another Checkmk as-is, you would overwrite its password with `******`. This is
-why rules [imported from a Checkmk folder](rule_projects.md#import-rules-from-a-checkmk-folder)
+why rules [imported from a Checkmk folder](../basics/projects.md#import-rules-from-a-checkmk-folder)
 can't simply be re-deployed with their inline password.
 
 ## The solution: reference the Syncer password store

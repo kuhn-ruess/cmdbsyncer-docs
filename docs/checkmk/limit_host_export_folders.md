@@ -12,7 +12,7 @@ Go to: _Modules → Checkmk → Limit Host Export to Folders_
 A typical use case is populating a **test** Checkmk instance with only a slice
 of production: you point a test account at a few folders and its export then
 carries just the hosts of those folders, instead of every host. Combined with
-[Setup Rule Projects](rule_projects.md) — which stage the *rules* of the same
+[Projects](../basics/projects.md) — which stage the *rules* of the same
 folders — you get a test instance that holds exactly the rules and the hosts of
 the approved folders.
 
