@@ -87,6 +87,16 @@ CMDBsyncer will automatically merge the provided files into a temporary certific
 !!! note
     Both certificate fields are optional. If your entire CA chain is contained in a single file, filling in only one field is sufficient.
 
+## Request Timeout
+
+By default, every HTTP request the syncer makes uses the global timeout (`HTTP_REQUEST_TIMEOUT`, 30 seconds). If a single target system responds slower — for example a large distributed Checkmk setup where downtime operations fan out to all sites — you can raise the timeout for just that connection.
+
+Add a custom field named `request_timeout` to the account and set the value in seconds:
+
+| Field             | Description                                                          |
+| :---------------- | :------------------------------------------------------------------- |
+| `request_timeout` | HTTP request timeout in seconds for this account (e.g. `300`). Overrides the global `HTTP_REQUEST_TIMEOUT` for all requests made through this account. |
+
 ## Extra Plugin Options
 
 In addition to the global account fields, each account can hold plugin-specific options. These allow you to configure behavior that applies only when the account is used for a particular action — even if the same account is reused across multiple operations.
