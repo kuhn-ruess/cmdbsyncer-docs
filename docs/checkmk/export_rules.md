@@ -64,3 +64,34 @@ The Syncer creates all required folders automatically. You can set Checkmk folde
 ```
 
 The pipe syntax is separate from the Jinja syntax — note where the pipe is placed relative to the closing `}}`.
+
+### Contact Groups and WATO Permissions
+
+Contact groups are just another folder attribute, named `contactgroups`. Its value is a dict: `groups` holds the list of contact groups and `use` grants those groups permission on the folder (WATO permissions).
+
+```text
+/{{customer}} | {'contactgroups': {'groups': ['team_{{customer}}'], 'use': True}}
+```
+
+Optional flags inside `contactgroups`:
+
+| Flag            | Meaning                                                                    |
+| :-------------- | :------------------------------------------------------------------------- |
+| `use`           | Add these contact groups to the hosts in this folder.                      |
+| `recurse_use`   | Also add the groups as contacts to the hosts in **all sub-folders**.       |
+| `recurse_perms` | Also grant permission on **all sub-folders**.                              |
+
+This assigns the groups on the **folder**. To have the Syncer create the group objects themselves from host attributes, see [Manage Contact Groups](recipe_contact_groups.md).
+
+### Merging when hosts share a folder
+
+Several hosts can land in the same folder while each brings its **own** contact groups — for example one rule per customer adding `team_a`, another adding `team_b`, both resolving to the same folder. In that case the Syncer **unions** the `groups` lists (duplicates removed), so the folder ends up with the contact groups of **all** its hosts:
+
+```text
+Host A → /shared | {'contactgroups': {'groups': ['team_a'], 'use': True}}
+Host B → /shared | {'contactgroups': {'groups': ['team_b'], 'use': True}}
+
+Result folder /shared → contactgroups.groups = ['team_a', 'team_b']
+```
+
+Scalar options such as `title` or `site` cannot be merged — two hosts cannot pick one title — so the **first** host to reach the folder wins for those. The Syncer is the source of truth for the merged group list: it replaces whatever contact groups are currently set on that folder in Checkmk. If you manage some folders' contact groups by hand in Checkmk, do not also set them via a folder option.
