@@ -31,7 +31,26 @@ All string-based conditions are case-insensitive, except `regex`.
 
 Every condition can be **negated** with the corresponding negate checkbox, which inverts the match result.
 
+## Built-in Attributes
+
+Besides the host's labels, inventory and custom attributes, every rule can match on these attributes, which the syncer provides automatically:
+
+| Attribute        | Description                                                                     |
+| :--------------- | :------------------------------------------------------------------------------ |
+| `SOURCE_ACCOUNT` | Name of the account the host was imported from (empty for manually created hosts) |
+
+They are also available in Jinja values, e.g. `{{SOURCE_ACCOUNT}}`.
+
 ## Match FAQ
+
+### Limit a rule to the hosts of one import account
+
+If you import from several accounts (e.g. one per object type) and need different rules per account, use `SOURCE_ACCOUNT`:
+
+- Set _Tag Match_ to `String Equal` and _Tag_ to `SOURCE_ACCOUNT`
+- Set _Value Match_ to `String Equal` and the value to the account name, e.g. `jira-prod-vms`
+
+This works in every rule type, including export rules, so an export can be restricted to the hosts of a single import account without relying on hostname patterns.
 
 ### Match if an attribute does NOT exist on a host
 
