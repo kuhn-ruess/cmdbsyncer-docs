@@ -36,6 +36,19 @@ Thats default enabled with Syncer Version 3.12.4.
 
 Hosts created this way are treated as CMDB-managed entries inside the syncer.
 
+### Bulk add and CSV import
+<span class="since">Since 4.3</span>
+
+In CMDB mode the host list has two more buttons next to *Export CSV*:
+
+- **Bulk add hosts** — paste a plain list of hostnames (one per line) or a CSV, optionally
+  pick a template, and create them all at once.
+- **Import CSV** — upload or paste a CSV. A preview lets you choose **which column holds the
+  hostname** (any header works, not just `hostname`), toggle *first row has no header* if you
+  forgot it, assign an optional template, and review the parsed rows before anything is
+  created. Every column other than `hostname` / `folder` / `lifecycle_state` and
+  `inventory_<name>` becomes a host label.
+
 ## Create objects
 
 1. Open the admin UI.

@@ -47,3 +47,15 @@ config = {
 ```bash
 ./cmdbsyncer checkmk export_downtimes ACCOUNTNAME
 ```
+
+The run ends with a status line <span class="since">Since 4.2</span> showing how many
+downtimes were created, how many already existed in Checkmk and how many failed — so a run
+where everything already exists no longer finishes silently. The same counts are recorded in
+the run's log entry.
+
+!!! tip "Performance on large inventories"
+    <span class="since">Since 4.2</span>
+    The export reads all existing Checkmk downtimes in a single query instead of one request
+    per host, so large inventories that previously appeared to hang now finish quickly. If a
+    Checkmk/livestatus timeout occurs while reading downtimes, the real error is surfaced
+    (and re-raised with `--debug`) instead of a generic failure.
