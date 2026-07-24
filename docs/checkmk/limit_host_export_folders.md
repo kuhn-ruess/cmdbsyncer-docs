@@ -56,6 +56,12 @@ The match is recursive, so selecting `/test` also covers `/test/linux`,
 To disable the scope again, clear the selection (untick everything, empty the
 custom field) and save — the account goes back to exporting all hosts.
 
+!!! note "Setup Rules follow the same scope"
+    <span class="since">Since 4.2</span>
+    A folder-scoped account also only receives **Setup Rules** whose target folder is in
+    scope — just like the host export — so a test instance limited to a few folders is not
+    flooded with rules for folders it never exports to.
+
 ## Setting it without the page
 
 `limit_by_folders` is a normal account custom field, so you can also set it

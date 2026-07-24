@@ -22,6 +22,21 @@ Access all Checkmk commands with `./cmdbsyncer checkmk <command> <account>`.
 | show_hosts             | Print all hosts that would be exported to Checkmk                              |
 | show_labels            | List all labels that would be set in Checkmk after the sync                    |
 | show_missing_hosts     | Show hosts present in Checkmk but not in the Syncer                            |
+| assign_template        | Assign a CMDB template to every host of a Checkmk folder (see below)           |
+
+## Assign a CMDB template from a Checkmk folder
+<span class="since">Since 4.3</span>
+
+Unlike the commands above, `assign_template` takes extra arguments — the Checkmk
+folder and the template name:
+
+```bash
+./cmdbsyncer checkmk assign_template <account> <folder> <template> [--dry-run]
+```
+
+It reads the hosts of the given Checkmk folder and assigns the named CMDB template to
+each host that exists in the Syncer. Use `--dry-run` to preview which hosts would be
+changed without writing anything.
 
 ## Debugging
 

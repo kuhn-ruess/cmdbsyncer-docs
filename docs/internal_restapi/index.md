@@ -10,7 +10,7 @@ When `SWAGGER_ENABLED = True` is set in `local_config.py`, you can explore all e
 API authentication uses the user accounts configured in the GUI (**Profile → Users**).
 The user needs appropriate API roles assigned to access specific endpoints.
 
-### Basic Auth (recommended)
+### Basic Auth
 
 Send credentials using standard HTTP Basic Auth over HTTPS:
 
@@ -19,22 +19,65 @@ curl -u "username:password" https://cmdbsyncer.example.com/api/v1/syncer/logs
 ```
 
 !!! warning
-    Basic Auth requires HTTPS. On plain HTTP the request will be rejected with 401.
-    When running behind Apache mod_wsgi, `WSGIPassAuthorization On` must be set in the Apache config,
-    otherwise the `Authorization` header never reaches the application.
-    See [Apache Setup](../installation/install_wsgi.md#key-directives-explained).
+    All API authentication requires HTTPS (or a loopback connection). On plain HTTP the
+    request is rejected with 401. When running behind Apache mod_wsgi, `WSGIPassAuthorization On`
+    must be set in the Apache config, otherwise the `Authorization` header never reaches the
+    application. See [Apache Setup](../installation/install_wsgi.md#key-directives-explained).
+
+### Personal API tokens
+<span class="since">Since 4.3</span>
+
+Instead of sending a password on every call, a user can generate personal API tokens under
+**Profile → API Tokens**. Each token:
+
+* authenticates **as its owner**, so it carries exactly that user's API roles and
+  [account scope](#restricting-a-user-to-accounts);
+* is shown in plaintext **once** on creation (store it safely);
+* can have a label and an optional expiry date, and can be revoked at any time.
+
+Send it as a Bearer token in the `Authorization` header:
+
+```bash
+curl -H "Authorization: Bearer cmdb_pat_xxxxxxxx" \
+     https://cmdbsyncer.example.com/api/v1/syncer/logs
+```
+
+The token is also accepted via the `x-login-token` header, and — for convenience with the
+Swagger UI — the leading `Bearer ` is optional:
+
+```bash
+curl -H "x-login-token: cmdb_pat_xxxxxxxx" https://cmdbsyncer.example.com/api/v1/syncer/logs
+curl -H "Authorization: cmdb_pat_xxxxxxxx"  https://cmdbsyncer.example.com/api/v1/syncer/logs
+```
+
+!!! note
+    Admins can list and revoke a user's tokens from **Profile → Users**, but never see or
+    generate a token's plaintext on the user's behalf.
 
 ### `x-login-user` Header (fallback)
 
-As a fallback — for example when Basic Auth is not available in a client — you can pass credentials via a custom header:
+As a fallback — for example when Basic Auth is not available in a client — you can pass
+username/password via a custom header:
 
 ```bash
 curl -H "x-login-user: username:password" https://cmdbsyncer.example.com/api/v1/syncer/logs
 ```
 
-!!! note
-    The `x-login-user` header is a legacy fallback. Basic Auth is the preferred method.
-    The old `x-login-token` header has been removed.
+### Authenticating in the Swagger UI
+<span class="since">Since 4.3</span>
+
+On the `/api/v1` Swagger page, click **Authorize** and either fill in your username and
+password (basic auth) **or** paste a personal API token into the *apiToken* field (with or
+without a leading `Bearer `). Then use *Try it out* on any endpoint.
+
+### Restricting a user to accounts
+<span class="since">Since 4.3</span>
+
+A user can be limited to one or more accounts under **Profile → Users → Restrict to accounts**.
+When set, every host-facing API call (read, create, bulk, delete, inventory, relations) only
+sees and touches hosts bound to those accounts — and creates may only name an allowed account.
+Leaving the field empty keeps full access. The same restriction also applies to the Host and
+Objects lists in the web UI.
 
 ---
 

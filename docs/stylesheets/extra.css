@@ -1,0 +1,46 @@
+/*
+ * Version badges for the CMDBsyncer docs.
+ *
+ * Usage in any Markdown file — write the badge as a plain HTML span:
+ *
+ *     <span class="since">Since 4.3</span>
+ *
+ * For a heading, put the badge on its OWN line right below it (with a blank
+ * line after), never inside the heading text — a badge in the heading would
+ * change the heading's anchor/slug:
+ *
+ *     ## Personal API tokens
+ *     <span class="since">Since 4.3</span>
+ *
+ * Inline in a sentence, list item or table cell is fine:
+ *
+ *     - **Set Account** bulk action <span class="since">Since 4.3</span>
+ *
+ * Use `.since` for the version a feature first shipped in, and `.enterprise`
+ * for Enterprise-only features. Keep the text short: "Since 4.3".
+ */
+
+.since,
+.enterprise {
+  display: inline-block;
+  padding: 0.05em 0.5em;
+  margin: 0 0.15em;
+  border-radius: 999px;
+  font-size: 0.72em;
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  vertical-align: middle;
+  color: #fff;
+}
+
+/* "Since x.y" — teal, matches the site's primary colour. */
+.since { background: #009485; }
+
+/* Enterprise-only marker — amber. */
+.enterprise { background: #b7791f; }
+
+/* Slightly stronger contrast on the dark (slate) scheme. */
+[data-md-color-scheme="slate"] .since { background: #00bfa5; color: #05221f; }
+[data-md-color-scheme="slate"] .enterprise { background: #d69e2e; color: #241a05; }

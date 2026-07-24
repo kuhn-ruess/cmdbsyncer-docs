@@ -36,6 +36,19 @@ Thats default enabled with Syncer Version 3.12.4.
 
 Hosts created this way are treated as CMDB-managed entries inside the syncer.
 
+### Bulk add and CSV import
+<span class="since">Since 4.3</span>
+
+In CMDB mode the host list has two more buttons next to *Export CSV*:
+
+- **Bulk add hosts** — paste a plain list of hostnames (one per line) or a CSV, optionally
+  pick a template, and create them all at once.
+- **Import CSV** — upload or paste a CSV. A preview lets you choose **which column holds the
+  hostname** (any header works, not just `hostname`), toggle *first row has no header* if you
+  forgot it, assign an optional template, and review the parsed rows before anything is
+  created. Every column other than `hostname` / `folder` / `lifecycle_state` and
+  `inventory_<name>` becomes a host label.
+
 ## Create objects
 
 1. Open the admin UI.
@@ -274,12 +287,28 @@ Instead they are **archived**: lifecycle state moves to *Archived* and a
 The **Objects → Archive** menu lists every archived host with the deletion
 timestamp and reason. From there you can:
 
-- **Restore** selected hosts — they come back with lifecycle state *Active*.
-- **Hard Delete** selected hosts — irreversible removal; admin role required.
+- **Restore** — bring a host back to lifecycle state *Active*. Use the
+  per-row <span class="since">Since 4.3</span> Restore button for a single
+  host, or the bulk *Restore* action for several at once.
+- **Hard Delete** — irreversible removal; admin role required.
 
 Archived hosts are excluded from the regular Hosts list, exports and
 sync runs, but they still show up in the API for tooling that wants to
 audit removals.
+
+## Assigning the account of a host
+<span class="since">Since 4.3</span>
+
+Every host is bound to a **source account**. You can set it in two places:
+
+- **On the host edit form** — the *Account* field is a dropdown. Saving a
+  host no longer forces it to the internal CMDB account; you pick the
+  account explicitly.
+- **In bulk** — select hosts in the list and use the **Set Account** action
+  to reassign many at once.
+
+Users that are [restricted to accounts](../installation/authentication.md#restricting-a-user-to-accounts)
+only ever see and can pick their own accounts here.
 
 ## Lifecycle states
 

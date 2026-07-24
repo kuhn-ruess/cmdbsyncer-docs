@@ -26,6 +26,15 @@ The State Table keeps one entry per group, showing:
 
 To force a group to run immediately or to reset its state, delete or edit its State Table entry.
 
+## Status panel on the start page
+<span class="since">Since 4.3</span>
+
+The dashboard (start page) shows a **Cron Jobs** panel below *Recent Errors* with each
+group's status — *ok*, *running*, *error* or *disabled*, plus a *queued* marker when a one-off
+run is already pending — and its last start time. The **Run** button schedules the group for
+the next cron pass (it sets the group's "run once next" flag). The panel is only shown to users
+with the *Cron* permission (or global admins).
+
 ## Running the Scheduler
 
 The Syncer does not have a built-in scheduler daemon. Instead, call the run command periodically from your system cron — every 5 to 10 minutes is typical:

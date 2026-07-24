@@ -4,6 +4,13 @@ The Groups Management feature creates Contact-, Host-, and Service-Groups in Che
 
 Go to: _Modules → Checkmk → Manage Host-/Contact-/Service-Groups_
 
+!!! note "Including CMDB objects in the group calculation"
+    <span class="since">Since 4.2</span>
+    By default the group export only looks at hosts. If you also want CMDB objects /
+    shadow hosts to contribute their group values, set an **object filter** on the account
+    (or child account) for *Checkmk: Export Groups*. Without a filter the export stays
+    host-only as before.
+
 ## Object Cache
 
 The Syncer maintains a local cache of all groups it has created (_Rules → Checkmk → Object Cache_). This allows it to safely remove groups from Checkmk when they are no longer needed — without deleting groups that were created manually by a user.
