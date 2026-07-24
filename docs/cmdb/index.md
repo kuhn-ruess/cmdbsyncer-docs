@@ -274,12 +274,28 @@ Instead they are **archived**: lifecycle state moves to *Archived* and a
 The **Objects → Archive** menu lists every archived host with the deletion
 timestamp and reason. From there you can:
 
-- **Restore** selected hosts — they come back with lifecycle state *Active*.
-- **Hard Delete** selected hosts — irreversible removal; admin role required.
+- **Restore** — bring a host back to lifecycle state *Active*. Use the
+  per-row <span class="since">Since 4.3</span> Restore button for a single
+  host, or the bulk *Restore* action for several at once.
+- **Hard Delete** — irreversible removal; admin role required.
 
 Archived hosts are excluded from the regular Hosts list, exports and
 sync runs, but they still show up in the API for tooling that wants to
 audit removals.
+
+## Assigning the account of a host
+<span class="since">Since 4.3</span>
+
+Every host is bound to a **source account**. You can set it in two places:
+
+- **On the host edit form** — the *Account* field is a dropdown. Saving a
+  host no longer forces it to the internal CMDB account; you pick the
+  account explicitly.
+- **In bulk** — select hosts in the list and use the **Set Account** action
+  to reassign many at once.
+
+Users that are [restricted to accounts](../installation/authentication.md#restricting-a-user-to-accounts)
+only ever see and can pick their own accounts here.
 
 ## Lifecycle states
 
