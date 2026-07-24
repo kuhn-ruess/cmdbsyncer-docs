@@ -101,6 +101,7 @@ CMDBsyncer imports hosts and attributes from one or more sources, processes them
 | [CSV](csv/index.md) | Import hosts or enrich attributes from CSV files |
 | [LDAP](ldap/index.md) | Import objects from LDAP directories |
 | [JDisc](jdisc/index.md) | Import devices from JDisc Discovery |
+| [ServiceNow](servicenow/index.md) | Import hosts from the ServiceNow Table API (CMDB CIs) |
 | [Jira](jira/index.md) | Import objects from Jira (on-prem and cloud) |
 | [Cisco DNA](ciscodna/index.md) | Import devices and interface information |
 | BMC Remedy | Limited import from BMC Remedy |
