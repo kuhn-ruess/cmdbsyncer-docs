@@ -16,10 +16,10 @@ Every connection to an external system is configured through an [Account](basics
 - **Built-in CMDB mode** for managing objects, hosts, and templates directly in CMDBsyncer
 - **Plugin API** to integrate custom data sources with minimal code
 - **Cron management** to schedule sync jobs from the UI, including externally-triggered runs via per-group webhook tokens
-- **Notifications** with email out of the box and rule-based routing — Slack, MS Teams and signed webhooks add on with the Enterprise license
+- **Notifications** with email out of the box and rule-based routing
 - **REST API** for external automation
 - **Ansible support** — dynamic inventory source plus a built-in [UI runner](ansible/run_from_ui.md), [run history](ansible/run_from_ui.md#run-history), and [event-driven onboarding rules](ansible/fire_rules.md)
-- **Encryption** of stored credentials, with optional external secret stores (KeePass / Vault) under the Enterprise license
+- **Encryption** of stored credentials
 - **Debug tooling** via CLI and web-based debug views
 - **Monitoring integration** via Checkmk Exchange check
 
@@ -29,47 +29,10 @@ Every connection to an external system is configured through an [Account](basics
 
 Version 4.0 is a major release. Highlights — see the [changelog](https://github.com/Bastian-Kuhn/cmdbsyncer/blob/main/changelog/v4.0.md) for the full list:
 
-### Community Edition
-
 - **Admin UI refresh** across every page — consistent card layout for edit forms, sticky table headers, modernised login and start page, plugin-picker for new accounts
 - **Notifications** — Settings → Notifications with Channels and Rules, email out of the box
 - **Cron groups**: external webhook trigger with per-group token; resilient mode that continues remaining tasks on failure; auto-released locks; per-group "last successful run" tracking
-
-### Enterprise (license-gated)
-
-- **[Audit log](enterprise/audit_log.md)** — append-only compliance trail with field-level diffs, CSV/JSON export, optional [SIEM streaming](enterprise/audit_log.md#streaming-to-an-external-siem) (Splunk HEC, syslog, generic webhook)
-- **[Native OIDC login](enterprise/oidc_login.md)** — Azure AD, Okta, Keycloak, Google Workspace, Auth0
-- **[4-Eyes Approval Workflow](enterprise/approval_workflow.md)** — changes to critical resources queue up until a second admin approves
-- **[Scheduled backups](enterprise/scheduled_backup.md)** — encrypted, rotated DB backups to any S3-compatible target or local path, each backup auto-manages its own protected cron group
-- **[Prometheus metrics](enterprise/prometheus_metrics.md)** — `/metrics` endpoint with license info, per-cron-group state and host totals
-- **[Signed webhook triggers](enterprise/webhook_signatures.md)** — HMAC-signed cron-trigger requests with replay window and per-group IP allowlists
-- **[Notification routing](enterprise/notifications.md)** — Slack, MS Teams, signed webhooks; rules with templates, cooldowns and hourly caps
-- **[Secrets manager](enterprise/secrets_manager.md)** — account passwords resolve from KeePass, LastPass, HashiCorp Vault, AWS Secrets Manager or an environment variable, transparent to every plugin
-- **[JSON log stream](enterprise/json_logging.md)** — Elastic Common Schema on stdout for Loki / Elastic / CloudWatch / Datadog / Splunk
-
----
-
-## Coming Soon
-
-Two larger features are on dedicated branches and will land in a follow-up 4.x release:
-
-### Ansible Workspace
-A first-class workspace for running Ansible from CMDBsyncer:
-
-- **Ansible Projects** — per-project rule sources, served as their own inventory provider
-- **Run Playbook page** with a `--check --diff` preview button and a per-run inventory-provider picker
-- **Fire Rule outcome** that triggers a playbook with the inventory of the matched hosts and is recorded as an audit event
-- **Playbook catalog** via manifest with friendly names plus a `.local` override file
-- **CLI under `cmdbsyncer ansible …`** with backward-compat shims for the old `-i ansible/inventory` invocations
-
-### Notification Hub
-A local "who do we alert and how" layer that is event-source agnostic, with Checkmk wired as the first caller:
-
-- **Contacts**, **Contact Groups** (static + tag-dynamic + LDAP) and **Vacation** records
-- **Shift calendars** synced from any iCal URL (Google, Outlook, CalDAV) — used as an on-call intersection filter
-- **Dispatch rules** that match by source / event type / context regex and pick channels per recipient
-- **REST endpoint** `POST /api/v1/notify/dispatch` and a sample Checkmk notification script
-- **Channel reuse** — Slack, MS Teams, signed webhooks and email come from the Enterprise Notification Channels when licensed; falls back to a stdout log otherwise
+- **Ansible Workspace** — Ansible Projects as their own inventory providers, a Run Playbook page with `--check --diff` preview, event-driven Fire Rules, a playbook catalog and a `cmdbsyncer ansible …` CLI
 
 ---
 
