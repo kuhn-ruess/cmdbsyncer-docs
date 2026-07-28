@@ -79,6 +79,7 @@ nav:
       - Passwords in Setup Rules: checkmk/passwords_in_rules.md
       - Business Intelligence: checkmk/bi.md
       - Folder Pools: checkmk/folder_pools.md
+      - Site Pools: checkmk/site_pools.md
       - Inventorize Checkmk: checkmk/inventorize.md
       - Local Config Variables: checkmk/config_vars.md
       - Checkmk Attributes and Host Tags: checkmk/cmk_attributes.md
