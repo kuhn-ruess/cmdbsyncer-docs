@@ -6,6 +6,8 @@ Go to: _Modules → Checkmk → Set Folder and Attributes of Host_
 
 Folder-based rules stack automatically. All folder outcomes across all matching rules are combined in sort order to produce a nested folder path like `/this/is/my/folder`. Use the **Last Match** option on rules to stop evaluation after the first match and avoid unexpected stacking.
 
+Each outcome action is chosen from a set of categorized cards (Folder placement, Attributes, Built-in Attributes, Labels, Opt-outs, …). An outcome you are not editing stays compact and shows only the selected action — click **Change action** to pick a different one. **Every parameter supports Jinja**, so you can reference `{{hostname}}` or any host attribute in any action's value.
+
 ## Available Actions
 
 | Action                                 | Description                                                                                                                      |
@@ -24,6 +26,28 @@ Folder-based rules stack automatically. All folder outcomes across all matching 
 | Prefix Labels                          | Every exported label gets the configured prefix.                                                                                 |
 | Update only Prefixed Labels            | Only labels with the given prefix are changed by the Syncer.                                                                     |
 | Dont update prefixed Labels            | Labels with the given prefix are never touched by the Syncer.                                                                    |
+
+## Built-in Host Attributes
+
+For the most common Checkmk host attributes there are ready-made actions, so you do not need to know the attribute key or use **Custom CMK Attribute**. For the enum-based ones the form offers the valid values as one-click suggestions; the parameter field stays editable and supports Jinja.
+
+| Action              | Sets attribute       | Example values                                             |
+| :------------------ | :------------------- | :--------------------------------------------------------- |
+| IP Address Family   | `tag_address_family` | `ip-v4-only`, `ip-v6-only`, `ip-v4v6`, `no-ip`             |
+| IPv4 Address        | `ipaddress`          | `192.168.10.5`, `{{ip}}`                                   |
+| IPv6 Address        | `ipv6address`        | `2001:db8::5`                                              |
+| Checkmk Agent       | `tag_agent`          | `cmk-agent`, `all-agents`, `special-agents`, `no-agent`    |
+| SNMP                | `tag_snmp_ds`        | `no-snmp`, `snmp-v1`, `snmp-v2`                            |
+| Piggyback           | `tag_piggyback`      | `auto-piggyback`, `piggyback`, `no-piggyback`             |
+| Criticality         | `tag_criticality`    | `prod`, `critical`, `test`, `offline`                     |
+| Networking Segment  | `tag_networking`     | `lan`, `wan`, `dmz`                                        |
+| Alias               | `alias`              | any text, e.g. `{{description}}`                          |
+| Monitored on Site   | `site`               | your Checkmk site id, e.g. `cmk`                          |
+
+`Criticality` and `Networking Segment` are Checkmk's default tag groups — if you customized those tag groups, just type your own value instead of using the suggestions.
+
+!!! note "Deprecated actions"
+    A few older actions (`Deprecated: Use move_folder with Jinja`, `Migrate to Custom CMK Attribute`, and `Just switch to normal Custom Attribute`) are being phased out. They can no longer be selected for new rules and **will be removed with 4.4**. Rules that still use one cannot be saved until migrated, and the start page lists them for you.
 
 ## Write Status Back (CMK_WRITE_STATUS_BACK)
 

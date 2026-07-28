@@ -4,6 +4,9 @@ The Syncer can set any Checkmk host attribute — including built-in attributes 
 
 All of this is configured in: _Modules → Checkmk → Set Folder and Attributes of Host_
 
+!!! tip "Ready-made actions for common attributes"
+    For the most common host attributes — IP address family (e.g. `no-ip`), IPv4/IPv6 address, Checkmk agent, SNMP, Piggyback, Criticality, Networking segment, Alias and Monitored-on-Site — there are dedicated actions with one-click value suggestions, so you do not need to know the attribute key. See [Built-in Host Attributes](export_rules.md#built-in-host-attributes). Use **Custom CMK Attribute** (below) for everything else.
+
 ## Finding the Attribute Name
 
 If you do not know the exact attribute name, set the attribute manually on a host in Checkmk and then query that host via the Checkmk Swagger API.
@@ -19,7 +22,7 @@ Find and test the host endpoint:
 The response JSON shows you the attribute names as used by the API.
 
 ## Setting an IP Address
-You can create it using the **Custom CMK Attribute** action 
+The quickest way is the ready-made **IPv4 Address** (or **IPv6 Address**) action — just enter the address (Jinja like `{{ip}}` works too). Alternatively you can set it with the **Custom CMK Attribute** action:
 
 ![Set IP address attribute](img/outcome_create_attribute.png)
 
