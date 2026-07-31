@@ -23,13 +23,26 @@ The recommended way to run maintenance is through a dedicated **Maintenance acco
 
 | Field                           | Description                                                                                       |
 | :------------------------------ | :------------------------------------------------------------------------------------------------ |
-| `delete_hosts_after_days`       | Grace period in days. Hosts not seen for longer than this will be deleted. Set to `0` to disable. |
-| `dont_delete_hosts_if_more_then`| Safety threshold. If more hosts than this number would be deleted, the run is aborted.            |
-| `account_filter`                | Name of another account. If set, only hosts imported by that account are considered for deletion. |
+| `delete_hosts_after_days`       | Grace period in days. Hosts not seen for longer than this are archived. Set to `0` to disable.    |
+| `dont_delete_hosts_if_more_then`| Safety threshold. If more hosts than this number would be archived, the run is aborted.           |
+| `account_filter`                | Name of another account. If set, only hosts imported by that account are considered.              |
+| `purge_archived_after_days`     | Days a host may stay in the archive before it is permanently deleted. Defaults to `30` if unset; set to `0` to keep archived hosts forever. |
 
 1. Create a Cron job using the **"Syncer: Maintenance"** job with this account.
 
 ![Maintenance account configuration](img/maintenance_account.png)
+
+## Permanent Deletion of Archived Hosts
+
+Archiving is only the first stage: a host that is no longer found is
+soft-deleted and moved to the **Archive**, where it can still be reviewed and
+restored. The maintenance run also cleans up the archive itself — hosts that
+have been archived for longer than `purge_archived_after_days` (default **30
+days**) are then permanently deleted and can no longer be restored.
+
+This applies to every archived host, including ones you removed manually in the
+UI. Protected hosts (`no_autodelete`) and templates are never purged. Set
+`purge_archived_after_days` to `0` to keep archived hosts indefinitely.
 
 ## Running Maintenance Manually
 
