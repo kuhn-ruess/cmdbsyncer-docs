@@ -8,7 +8,7 @@ Go to: _Modules → Checkmk → Create Checkmk Setup Rules_
 
 | Option                   | Description                                                                           |
 | :----------------------- | :------------------------------------------------------------------------------------ |
-| Ruleset                  | Checkmk ruleset ID                                                                    |
+| Ruleset                  | Checkmk ruleset ID (autocompletes from the known 2.4/2.5 rulesets — see below)        |
 | Folder                   | Target folder in Checkmk (Jinja supported)                                            |
 | Folder Index             | Position of the rule within the folder                                                |
 | Comment                  | Rule comment                                                                          |
@@ -60,6 +60,30 @@ Notes:
   `{{HOSTNAME}}` or other host labels is not.
 - `Loop over list` is not supported on static rules (it iterates a host
   attribute list) and is skipped with a log entry.
+
+## Ruleset Autocomplete
+
+The **Ruleset** field on the edit form has a searchable picker over every
+internal ruleset of Checkmk 2.4 and 2.5. Start typing to search — matches are
+found both by the ruleset **ID** (e.g. `checkgroup_parameters:filesystem`) and
+by its plain-language **name** ("File systems (used space and growth)"). Each
+suggestion shows which Checkmk version(s) it belongs to, so version-specific
+rulesets are easy to spot. Free text stays possible — the picker only suggests.
+
+Rulesets that ship an example are marked with a `★`. When you pick one, its
+example is shown below the field together with an **Apply example to Value
+Template** button — click it to fill the Value Template. If that field already
+holds something different, the Syncer asks before overwriting it.
+
+The suggestion list is data-driven and lives in JSON files under
+`application/plugins/checkmk/data/`:
+
+- `rulesets_<version>.json` — the ruleset catalog per Checkmk version.
+  Regenerate or add a version by running
+  `cmdbsyncer checkmk export_rulesets <account>` against a Checkmk of that
+  version; the file is named automatically from the probed version.
+- `ruleset_examples.json` — the example Value Templates, keyed by ruleset ID.
+  Add entries here to grow the pre-fill suggestions — no code change needed.
 
 ## Finding the Ruleset ID and Value Format
 
