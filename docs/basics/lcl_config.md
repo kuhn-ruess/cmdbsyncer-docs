@@ -72,12 +72,14 @@ plain `pip` install defaults to `127.0.0.1`.
 | Name                         | Default   | Description                                                                         |
 | :--------------------------- | :-------- | :---------------------------------------------------------------------------------- |
 | `LOWERCASE_HOSTNAMES`        | `False`   | Force all hostnames to lowercase on import                                          |
-| `CHECK_FOR_VALID_HOSTNAME`   | `True`    | Reject imports where object type is Host but the hostname is not RFC-valid          |
 | `LOWERCASE_ATTRIBUTE_KEYS`   | `False`   | Store all attribute keys in lowercase                                               |
 | `REPLACE_ATTRIBUTE_KEYS`     | `False`   | Apply the `REPLACERS` list to attribute keys as well as values                      |
 | `LABELS_ITERATE_FIRST_LEVEL` | `False`   | If an attribute value is a dict, import its first-level keys as separate attributes |
 | `LABELS_IMPORT_EMPTY`        | `False`   | Set to `True` to also import attributes with empty values                           |
 | `REPLACERS`                  | see below | List of `(from, to)` tuples applied to attribute values during import               |
+
+!!! note "Moved to the Account"
+    The former `CHECK_FOR_VALID_HOSTNAME` and `REQUIRE_FQDN` settings are no longer configured here. They are now per-account options under **Object Settings** (see [Accounts](accounts.md)) and no longer apply to object accounts. Running `cmdbsyncer sys self_configure` warns you if either key is still present in `local_config.py` so you can migrate it.
 
 Default `REPLACERS` list (replaces special characters to produce clean attribute values):
 

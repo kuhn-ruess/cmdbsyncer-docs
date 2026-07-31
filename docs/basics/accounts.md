@@ -36,6 +36,15 @@ Object types are assigned during import and serve two purposes:
 - They allow you to filter which objects are used in a specific export.
 - Some types have additional behavior: if the type is set to **Host**, any imported entry with an invalid hostname is rejected and logged as an error rather than saved silently.
 
+### Import name checks
+
+Two options under **Object Settings** control how strictly imported names are validated. Both apply per account and are ignored for object accounts (an object's name is not a real hostname):
+
+- **Check for valid hostname** (on by default): reject imported hosts whose name is not RFC-valid.
+- **Require FQDN** (off by default): reject imported hosts whose name is not a fully-qualified domain name (must contain a dot).
+
+These replace the former global `CHECK_FOR_VALID_HOSTNAME` and `REQUIRE_FQDN` local config settings; `cmdbsyncer sys self_configure` warns you to migrate if either is still set in `local_config.py`.
+
 ## Additional Configurations
 
 ![Account additional fields example](img/account_fields.png)
