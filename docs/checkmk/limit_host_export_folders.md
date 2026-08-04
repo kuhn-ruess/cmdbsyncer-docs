@@ -62,6 +62,14 @@ custom field) and save — the account goes back to exporting all hosts.
     scope — just like the host export — so a test instance limited to a few folders is not
     flooded with rules for folders it never exports to.
 
+!!! tip "Projects override the folder scope"
+    <span class="since">Since 4.2.10</span>
+    The folder scope only limits objects that are **not** in a
+    [Project](../basics/projects.md). A host or rule assigned to a project is
+    routed solely by the project's account lists, so you can pull a few
+    individual hosts or rules onto a folder-scoped test account **without**
+    adding their whole folder to the scope.
+
 ## Setting it without the page
 
 `limit_by_folders` is a normal account custom field, so you can also set it

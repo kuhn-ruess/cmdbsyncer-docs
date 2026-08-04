@@ -26,26 +26,46 @@ separate push and no approval workflow.
 
 ## The account filters
 
-Each project has two account lists:
+A project steers its **hosts** and its **rules** to accounts **separately**, so
+you can promote them on different schedules. Each has an allow list and a deny
+list:
 
-* **Exported to Accounts** (`limit_by_accounts`) —
-  empty means no restriction (the members are exported to **every** account);
-  with entries, the members are exported **only** to those accounts.
-* **Never export to Accounts** (`deny_by_accounts`) —
-  the members are **never** exported to these accounts. The exclusion always
-  wins over "Exported to Accounts".
+| Members | Allow list | Deny list |
+| :------ | :--------- | :-------- |
+| Hosts   | **Export HOSTS to Accounts** (`limit_by_accounts`) | **Never export HOSTS to Accounts** (`deny_by_accounts`) |
+| Rules   | **Export RULES to Accounts** (`rule_limit_by_accounts`) | **Never export RULES to Accounts** (`rule_deny_by_accounts`) |
 
-So you can build a set of rules and hosts, keep them scoped to a lab/test
-account while you try them out, and roll them out to the remaining accounts by
-removing the filter — or keep single accounts permanently excluded via the
-deny list.
+For each list, **empty** means no restriction (exported to **every** account);
+with entries, the members are exported **only** to those accounts. A deny list
+always **wins** over its allow list.
+
+!!! tip "Rule lists fall back to the host lists"
+    <span class="since">Since 4.2.10</span>
+    Leave a **rule** list empty and it falls back to the matching **host**
+    list. A project that only fills the host lists therefore keeps steering its
+    rules exactly as before — you only fill the rule lists when rules and hosts
+    should go to *different* accounts.
+
+This solves the classic test/prod promotion: keep the **hosts** on
+`[prod, test]` (they already exist on prod, you additionally want them on test)
+while the **rules** start on `[test]` only. Once the rules are proven, add
+`prod` to the rule list — the hosts are never touched.
 
 !!! note
     A single `checkmk export_rules <account>` run always writes the account's
-    global rules **plus** the rules of every project whose filters allow that
-    account, under the account's normal ownership marker
+    global rules **plus** the rules of every project whose **rule** filters
+    allow that account, under the account's normal ownership marker
     (`cmdbsyncer_<account_id>`). If an account later drops out of a project's
     filters, that project's rules are removed from it on the next export.
+
+### Projects ignore the folder scope
+
+<span class="since">Since 4.2.10</span>
+An account's [folder scope](../checkmk/limit_host_export_folders.md)
+(`limit_by_folders`) only gates objects that are **not** in a project. A host
+or rule assigned to a project is routed **solely** by the project's account
+lists above — so a single host or rule can reach a scoped test instance without
+having to add its whole folder to that account's scope.
 
 ## Assign rules
 
@@ -69,12 +89,14 @@ host into a CMDB object and does not touch any other host data.
 
 ## Configuration
 
-| Option                   | Description                                                        |
-| :----------------------- | :----------------------------------------------------------------- |
-| Name                     | Unique project name                                                |
-| Documentation            | Free text                                                          |
-| Exported to Accounts     | Accounts the project's members are limited to (empty = all)        |
-| Never export to Accounts | Accounts the members are never exported to (wins over the allow list) |
+| Option                        | Description                                                           |
+| :---------------------------- | :------------------------------------------------------------------- |
+| Name                          | Unique project name                                                  |
+| Documentation                 | Free text                                                            |
+| Export HOSTS to Accounts      | Accounts the project's hosts are limited to (empty = all)            |
+| Never export HOSTS to Accounts| Accounts the hosts are never exported to (wins over the allow list)  |
+| Export RULES to Accounts      | Accounts the project's rules are limited to (empty = fall back to the host list) |
+| Never export RULES to Accounts| Accounts the rules are never exported to (empty = fall back to the host deny list) |
 
 ## The project page
 
