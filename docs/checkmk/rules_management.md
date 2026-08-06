@@ -13,8 +13,28 @@ Go to: _Modules → Checkmk → Create Checkmk Setup Rules_
 | Folder Index             | Position of the rule within the folder                                                |
 | Comment                  | Rule comment                                                                          |
 | Value Template           | Jinja template for the rule value (check Checkmk Swagger API for the expected format) |
+| Keep manual Value        | Write the Value only once (on rule creation) and never overwrite it afterwards, so it can be adjusted in Checkmk. A hint is added to the rule comment. |
 | Condition Label Template | Syntax: `label:value`. Jinja supported. `{{HOSTNAME}}` available.                     |
 | Condition Host           | Comma-separated list of hostnames. Jinja supported including `{{HOSTNAME}}`.          |
+
+If a syncer-owned rule is found in a folder other than the one configured
+here, the export moves it to the configured folder on the next run instead
+of leaving the misplaced copy behind.
+
+## Removing rules that are no longer generated
+
+While a rule still produces at least one Checkmk rule, the export removes any
+of its earlier copies that no longer match. But when you **disable or delete**
+a rule so it produces nothing at all, its previously created Checkmk rules are
+left in place by default.
+
+Set the Checkmk account custom field `remove_orphaned_rules` to `True` to also
+clean those up: on every `checkmk export_rules` run the Syncer scans all
+rulesets it no longer generates anything for and deletes the rules carrying its
+own `cmdbsyncer_<account_id>` marker. Rules created by hand in Checkmk (without
+that marker) are never touched. Rules with **Keep manual Value** are removed
+here like any other — once a rule is no longer generated there is nothing left
+to keep.
 
 ## Rule Order
 
