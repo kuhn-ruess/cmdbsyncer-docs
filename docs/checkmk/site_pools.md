@@ -43,6 +43,18 @@ The seat counters are kept up to date on every export. To recount them from the 
 
 This also runs as the cron job _Checkmk: Sync Site Pools_.
 
+## Reset the Assignments
+
+Because the assignment is sticky, hosts stay on their site even after you changed the member sites of a pool or the rules that assign it. To throw the whole distribution away and let the next export calculate it from scratch:
+
+```bash
+./cmdbsyncer checkmk reset_sitepools
+```
+
+This clears the site of every host, resets the seat counters and drops the cached rule results. The next export spreads all hosts across the pools again — which means hosts can move to a different site, so plan it like any other site change.
+
+To redistribute only a few hosts, select them in the host list and use the action _Redistribute Site Pool_.
+
 ## Site Pools vs. Folder Pools
 
 Both spread hosts for load balancing, but on different axes:
