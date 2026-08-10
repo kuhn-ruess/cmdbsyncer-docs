@@ -53,6 +53,8 @@ Because the assignment is sticky, hosts stay on their site even after you change
 
 This clears the site of every host, resets the seat counters and drops the cached rule results. The next export spreads all hosts across the pools again — which means hosts can move to a different site, so plan it like any other site change.
 
+To reset only one pool, select it in the Site Pool overview and use the action _Reset Pool_ — that releases the hosts on this pool's member sites and leaves every other pool untouched.
+
 To redistribute only a few hosts, select them in the host list and use the action _Redistribute Site Pool_.
 
 ## Site Pools vs. Folder Pools

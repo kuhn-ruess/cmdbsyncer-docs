@@ -50,6 +50,8 @@ A host keeps its pool folder until it no longer matches a Folder Pool rule, so c
 
 This clears the folder of every host, resets the seat counters and drops the cached rule results. The next export distributes all hosts again — hosts can end up in a different folder, so plan it like any other folder move. The older `./cmdbsyncer sys reset_folder_pools` does the same, but asks for confirmation first.
 
+To reset only one pool, select it in the Folder Pool overview and use the action _Reset Pool_ — that releases the hosts sitting in this pool's folder and leaves every other pool untouched.
+
 ## Auto-creating Pools with Autocreate Rules
 
 For environments where the set of sites changes frequently, you can use the [Autocreate Rules](../basics/auto_rules.md) feature to generate Folder Pool entries automatically based on imported site objects.
