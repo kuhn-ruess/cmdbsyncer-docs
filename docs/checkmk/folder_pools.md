@@ -34,11 +34,21 @@ This ensures a host is only placed in one of the listed pools, ignoring any othe
 
 ## Sync Command
 
-To synchronize pool state without running a full export:
+To recount the used seats from the current host assignments without running a full export:
 
 ```bash
-./cmdbsyncer checkmk sync_folder_pools ACCOUNTNAME
+./cmdbsyncer checkmk sync_folderpools
 ```
+
+## Reset the Assignments
+
+A host keeps its pool folder until it no longer matches a Folder Pool rule, so changed pools or changed rules never move a host that is already assigned. The host debug page points this out whenever a host holds such an assignment. To throw the whole distribution away and let the next export calculate it from scratch:
+
+```bash
+./cmdbsyncer checkmk reset_folderpools
+```
+
+This clears the folder of every host, resets the seat counters and drops the cached rule results. The next export distributes all hosts again — hosts can end up in a different folder, so plan it like any other folder move. The older `./cmdbsyncer sys reset_folder_pools` does the same, but asks for confirmation first.
 
 ## Auto-creating Pools with Autocreate Rules
 

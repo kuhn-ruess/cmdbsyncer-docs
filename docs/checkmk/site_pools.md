@@ -45,7 +45,7 @@ This also runs as the cron job _Checkmk: Sync Site Pools_.
 
 ## Reset the Assignments
 
-Because the assignment is sticky, hosts stay on their site even after you changed the member sites of a pool or the rules that assign it. To throw the whole distribution away and let the next export calculate it from scratch:
+Because the assignment is sticky, hosts stay on their site even after you changed the member sites of a pool or the rules that assign it. The host debug page points this out whenever a host holds such an assignment. To throw the whole distribution away and let the next export calculate it from scratch:
 
 ```bash
 ./cmdbsyncer checkmk reset_sitepools
