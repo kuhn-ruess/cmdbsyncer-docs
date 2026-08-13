@@ -54,6 +54,60 @@ From the CLI, without an account:
 
 This deletes all hosts not seen in the last 7 days. The number is the grace period in days.
 
+## Database Size
+
+To see what occupies the space in MongoDB:
+
+```bash
+./cmdbsyncer sys db_stats
+```
+
+It prints the database totals and every collection with its document count,
+data size, size on disk and index size, biggest first. `--indexes` adds the
+size of each index, `--collection <name>` lists the largest documents of one
+collection. Collections that keep growing — the run log, the label history,
+the audit log, the Ansible run history and the inventory trees — are pointed
+out below the table.
+
+## Label History
+
+The **Timeline** tab of a host records who changed which label when. It is
+**off by default**: every host save that changes labels writes an entry, so on
+installations whose import rewrites labels on every run it becomes the largest
+collection in the database.
+
+Switch it on under *Config → Local Config → Label history*:
+
+| Setting | Meaning |
+| --- | --- |
+| `LABEL_HISTORY_ENABLED` | Record label changes (default `False`) |
+| `LABEL_HISTORY_RETENTION_DAYS` | Days an entry is kept (default `90`, minimum `1`) |
+
+The retention is enforced by MongoDB itself through a TTL index. Run
+`./cmdbsyncer sys self_configure` after changing the number of days — that is
+where the index is updated.
+
+To find out what a history is costing and what fills it:
+
+```bash
+./cmdbsyncer sys label_history
+```
+
+The breakdown by label key answers the usual question: which label is rewritten
+on every import. Fix that label (or leave the history off) and the growth stops.
+
+To clean up — including the history written by versions before 4.3, which had
+no retention:
+
+```bash
+./cmdbsyncer sys purge_label_history               # dry run
+./cmdbsyncer sys purge_label_history --apply       # delete beyond the retention
+./cmdbsyncer sys purge_label_history --all --apply # drop it completely
+```
+
+Deleting entries leaves the space reserved by MongoDB for reuse; only `--all`
+(a collection drop) or a manual `compact` returns it to the filesystem.
+
 ## Account Filter
 
 The `account_filter` field restricts deletion to hosts that were last imported by a specific account. This is useful when you have multiple import sources and only want to clean up hosts from one of them — for example, to avoid deleting hosts that are exclusively managed by a different source.
