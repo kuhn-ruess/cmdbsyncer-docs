@@ -69,6 +69,33 @@ collection. Collections that keep growing — the run log, the label history,
 the audit log, the Ansible run history and the inventory trees — are pointed
 out below the table.
 
+## Retention
+
+Every collection that gets one document per run, per host or per decision has
+an upper bound. MongoDB drops the expired documents itself through a TTL index,
+so there is no cleanup job that can be forgotten:
+
+| Setting | Applies to | Default |
+| --- | --- | --- |
+| `LABEL_HISTORY_RETENTION_DAYS` | Label history (Timeline tab) | 90 |
+| `ANSIBLE_RUN_STATS_RETENTION_DAYS` | Ansible run history, including each run's log | 90 |
+| `FIELD_APPROVAL_RETENTION_DAYS` | Decided field approvals | 365 |
+| `AUDIT_RETENTION_DAYS` | Audit log | 365 |
+| `APPROVAL_RETENTION_DAYS` | Decided approval-queue entries | 365 |
+
+Entries still waiting for a decision are never dropped — they carry no decision
+date for the retention to work from. A value of `0` is read as one day; there
+is no "keep forever".
+
+Run `./cmdbsyncer sys self_configure` after changing one of these — that is
+where the TTL index is updated. It also removes the stored inventory trees of
+hosts that no longer exist.
+
+`AUDIT_IMPORT_LABEL_CHANGES` (default off) decides whether label changes made
+by an import reach the audit log. Leave it off where an import rewrites labels
+on every run: it would write one entry per host per run and bury the changes
+people made.
+
 ## Label History
 
 The **Timeline** tab of a host records who changed which label when. It is
