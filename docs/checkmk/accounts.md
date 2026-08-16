@@ -10,6 +10,7 @@ These extra settings are available on Checkmk accounts in addition to the standa
 | `list_disabled_hosts`                | Print a list of disabled hosts at the end of the export run                              |
 | `dont_delete_hosts_if_more_then`     | Do not delete any hosts if the total number of hosts to delete exceeds this number       |
 | `dont_activate_changes_if_more_then` | Do not activate changes if the number of pending changes exceeds this number             |
+| `wait_for_activate_changes`          | Wait until Checkmk has finished the activation and report whether it succeeded — by default the Syncer only starts the activation and returns |
 | `import_filter`                      | Hosts whose names start with any of the given strings (comma-separated) are not imported |
 | `bakery_key_id` / `bakery_passphrase` | Signing key for `bake_and_sign_agents` — see [Bake and Sign Agents](bake_sign.md)       |
 
@@ -21,6 +22,12 @@ apply to Checkmk accounts too — see [Accounts](../basics/accounts.md).
 The `dont_delete_hosts_if_more_then` and `dont_activate_changes_if_more_then` settings act as safety guards. They prevent bulk deletions or large change activations from happening automatically — for example if an import source is temporarily unavailable and returns an empty dataset.
 
 Set these to a value that represents an unexpected number of changes for your environment.
+
+## Waiting for Activate Changes
+
+By default the Syncer only triggers the activation and finishes; Checkmk applies the changes on its own afterwards. That keeps a sync run short even when an activation takes minutes.
+
+Set `wait_for_activate_changes` on the account if you want the Syncer to wait until Checkmk reports the activation as done. Only then can the run tell you that the activation itself failed — for example because the user is not allowed to activate foreign changes. Note that the run then takes as long as the activation does.
 
 ## Object Type Limiting
 
