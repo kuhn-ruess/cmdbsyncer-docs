@@ -9,7 +9,9 @@ This page walks you through the essential setup steps after installation — fro
     create an account, import objects, connect an export target, define rules,
     schedule cron jobs, invite users. Every step checks itself off
     automatically and links to the right view. Fresh installations land on it
-    after login until the checklist is complete or dismissed.
+    after login until the checklist is complete or dismissed. Once dismissed,
+    the start page keeps a small progress card listing the steps still open
+    until every one of them is done.
 
 !!! note "Docker vs. native"
     All `./cmdbsyncer` commands below run either directly in your shell (with the virtualenv activated) or inside the container:
