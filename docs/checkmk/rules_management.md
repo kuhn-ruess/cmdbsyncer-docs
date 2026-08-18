@@ -14,6 +14,7 @@ Go to: _Modules → Checkmk → Create Checkmk Setup Rules_
 | Comment                  | Rule comment                                                                          |
 | Value Template           | Jinja template for the rule value (check Checkmk Swagger API for the expected format) |
 | Keep manual Value        | Write the Value only once (on rule creation) and never overwrite it afterwards, so it can be adjusted in Checkmk. A hint is added to the rule comment. |
+| Enforce exact Value      | Compare the Value exactly, so entries removed from the Value Template are applied too (see below) |
 | Condition Label Template | Syntax: `label:value`. Jinja supported. `{{HOSTNAME}}` available.                     |
 | Condition Host           | Comma-separated list of hostnames. Jinja supported including `{{HOSTNAME}}`.          |
 
@@ -35,6 +36,58 @@ own `cmdbsyncer_<account_id>` marker. Rules created by hand in Checkmk (without
 that marker) are never touched. Rules with **Keep manual Value** are removed
 here like any other — once a rule is no longer generated there is nothing left
 to keep.
+
+## How the Value is compared (removing keys)
+
+On every run the Syncer compares the value it renders with the value stored in
+Checkmk. The comparison is deliberately **one-way**: every key the Syncer sets
+must be present in Checkmk with the same value, but keys that exist *only* in
+Checkmk are accepted. Checkmk enriches saved rule values with the defaults of
+the ruleset schema, and treating those additions as a difference would re-write
+every rule on every run (endless pending changes).
+
+The consequence: **removing a key from the Value Template is not detected as a
+change.** If the previous value was
+
+```python
+{'ec2': {'selection': 'all', 'limits': True}}
+```
+
+and you change the template to
+
+```python
+{'ec2': {'selection': 'all'}}
+```
+
+the Syncer still considers the rule up to date and leaves it untouched — it
+cannot tell whether `limits` was added by Checkmk as a default or removed by
+you. Changing a value (`'all'` → `'tags'`) or adding a key is detected normally
+and updated in place.
+
+Writing the key with an "off" value instead of removing it usually does not
+work either: many rulesets model an optional setting as a checkbox whose only
+allowed content is `True`, so Checkmk rejects the update, for example with
+
+```
+Problem in (sub-)field 'servicesec2limits' ... Invalid value, must be 'True' but is 'False'
+```
+
+### Enforce exact Value
+
+Enable **Enforce exact Value** on the affected rule to switch that rule to an
+exact comparison. Both values then have to carry the same keys, so a key you
+removed from the Value Template is written to Checkmk on the next
+`checkmk export_rules` run.
+
+Only enable it where you need it. If Checkmk does add schema defaults to that
+particular ruleset when saving, the exact comparison never matches again and
+the rule is rewritten on **every** run, which leaves permanent pending changes
+in Checkmk. If you see that happening, switch the option off again and instead
+delete the affected rule once in Checkmk — the next run recreates it from the
+current Value Template.
+
+**Keep manual Value** takes precedence: when both are enabled the Value is
+never overwritten.
 
 ## Rule Order
 
