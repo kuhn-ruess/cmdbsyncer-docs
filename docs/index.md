@@ -83,3 +83,16 @@ CMDBsyncer imports hosts and attributes from one or more sources, processes them
 4. [Set up an Import](basics/import.md)
 5. [Configure Rules](basics/conditions.md)
 6. [Export to a target system](basics/export.md)
+
+---
+
+## Trademarks
+
+Checkmk, Netbox, Ansible, I-Doit, Jira, ServiceNow, VMware, PRTG, JDisc, Cisco DNA,
+BMC Remedy and all other product names used in this documentation are trademarks or
+registered trademarks of their respective owners. They are named solely to describe
+which systems CMDBsyncer can exchange data with.
+
+CMDBsyncer is an independent project and is not affiliated with, endorsed by, or
+sponsored by any of these vendors. No vendor logo ships with the software — the
+module icons shown in the "Modules" menu are neutral in-house marks.
