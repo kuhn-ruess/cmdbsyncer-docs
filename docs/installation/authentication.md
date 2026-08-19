@@ -6,7 +6,7 @@ To log in, you first need to create a local user. The command to create one is:
 ./cmdbsyncer sys create_user mail@example.com
 ```
 
-You can manage users in the UI under **Profile → Users**.
+You can manage users in the UI under **Settings → User**.
 
 ## Permissions (roles)
 
@@ -46,10 +46,33 @@ roles and account scope, is shown once on creation, can be labelled and given an
 expiry, and can be revoked any time. See
 [REST API → Personal API tokens](../internal_restapi/index.md#personal-api-tokens).
 
+## Read-only users
+<span class="since">Since 4.3</span>
+
+Ticking **Read only** on a user under **Settings → User** turns their account into a
+look-but-don't-touch account. It works the other way round from the permissions above and
+beats all of them, global admin included: the user keeps every view their roles open up and
+can change nothing.
+
+This covers both ways into the syncer:
+
+* **Web interface** — no Create, Edit or Delete buttons, no bulk actions, no Commit button,
+  no import or clone. Lists, detail pages, the log and the CSV export stay available.
+* **REST API** — every reading call works as before, every writing one is answered with
+  `403`. A [personal API token](#personal-api-tokens) authenticates as its owner and carries
+  the flag, so it is no way around the restriction.
+
+Two things stay open, because they are the user's own account rather than syncer data: their
+password, 2FA, theme and API tokens, and their own saved searches.
+
+!!! note "Read only cannot be lifted from inside"
+    A read-only user cannot edit users either, so they cannot clear the flag on themselves.
+    Another admin has to do it.
+
 ## Restricting a user to accounts
 <span class="since">Since 4.3</span>
 
-Under **Profile → Users → Restrict to accounts** you can limit a user to one or more accounts.
+Under **Settings → User → Restrict to accounts** you can limit a user to one or more accounts.
 When set, the user only sees and can act on hosts bound to those accounts — both in the REST
 API and in the web-UI **Host** and **Objects** lists (and the bulk *Set Account* action only
 offers those accounts). Leave it empty for full access.
