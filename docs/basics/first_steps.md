@@ -62,7 +62,7 @@ After logging in, the navigation gives you access to all main areas:
 
 ## 4. Create an Account
 
-Every external system requires an [Account](accounts.md) before you can import from or export to it. Go to **Accounts → Add** and fill in the connection details for your first system.
+Every external system requires an [Account](accounts.md) before you can import from or export to it. Go to **Settings → Accounts**, add one, and fill in the connection details for your first system.
 
 After saving, module-specific fields appear automatically if the selected type requires them.
 
@@ -88,7 +88,7 @@ After a successful import, the hosts appear under **Hosts** in the web interface
 
 ## 6. Set Up Cron Jobs
 
-For automated, recurring syncs, configure a **Cronjob Group** under **Cronjobs → Cronjob Group**. Add the import and export jobs in the order they should run. If one job fails, the group stops — this prevents exports from running with stale or missing data.
+For automated, recurring syncs, configure a **Cronjob Group** under **Settings → Cronjobs → Cronjob Group**. Add the import and export jobs in the order they should run. If one job fails, the group stops — this prevents exports from running with stale or missing data.
 
 Then schedule the cron trigger on your system:
 

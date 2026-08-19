@@ -4,7 +4,7 @@ The Syncer manages all its automation cronjobs internally. You define which modu
 
 ## Cronjob Groups
 
-Go to: _Cronjobs → Cronjob Groups_
+Go to: _Settings → Cronjobs → Cronjob Group_
 
 A Cronjob Group defines:
 
@@ -16,7 +16,7 @@ Jobs inside a group run sequentially. If any job fails, the entire group stops. 
 
 ## State Table
 
-Go to: _Cronjobs → State Table_
+Go to: _Settings → Cronjobs → State Table_
 
 The State Table keeps one entry per group, showing:
 

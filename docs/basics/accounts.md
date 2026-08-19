@@ -4,7 +4,7 @@ An **Account** is the central configuration unit in CMDBsyncer. Every external s
 
 Without an account, no data can be read from or written to an external system. This applies to every supported integration: Checkmk, Netbox, Jira, REST APIs, CSV files, and all others.
 
-You will find the account settings under **Accounts** in the navigation.
+You will find the account settings under **Settings → Accounts** in the navigation.
 
 ## Basic Fields
 

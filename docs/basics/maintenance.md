@@ -17,7 +17,7 @@ Before any deletion happens, two safeguards apply:
 
 The recommended way to run maintenance is through a dedicated **Maintenance account** combined with a [Cron job](cron.md).
 
-1. Go to **Accounts → Add**
+1. Go to **Settings → Accounts** and add a new one
 2. Set the type to **Syncer Maintenance**
 3. Configure the custom fields:
 
