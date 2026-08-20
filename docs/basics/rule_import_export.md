@@ -53,15 +53,21 @@ Without an argument, the Syncer writes to a timestamped file such as `syncer_rul
 
 The output is line-delimited JSON. Each rule type is introduced by a header line `{"rule_type": "..."}`, followed by one JSON object per rule of that type. All known rule types are written into the same file in one pass.
 
-!!! note "Hosts, objects and accounts are skipped by default"
-    Two rule types are excluded from `export_all_rules` unless explicitly requested, because they are usually noise (or sensitive) in a rule backup:
+!!! note "Hosts, objects, accounts and users are skipped by default"
+    Three rule types are excluded from `export_all_rules` unless explicitly requested, because they are usually noise (or sensitive) in a rule backup:
 
     - `host_objects` — hosts and objects stored in the shared Host collection. Enable with `--include-hosts`.
     - `accounts` — account definitions (including encrypted credentials). Enable with `--include-accounts`.
+    - `users` — user accounts including hashed passwords and roles. Enable with `--include-users`, and treat the resulting file as secret.
 
     ```bash
     ./cmdbsyncer rules export_all_rules --include-hosts --include-accounts
     ```
+
+!!! note "CMDB templates are exported separately"
+    Since version 4.3, CMDB templates have their own rule type `cmdb_templates`. They are configuration rather than data and are therefore part of every `export_all_rules` run — no flag needed. `host_objects` in turn never contains templates, so a backup taken with `--include-hosts` holds each document exactly once.
+
+    Use `./cmdbsyncer rules export_rules cmdb_templates` to export only the templates, for example to move a template set from test to production without carrying the hosts along.
 
 ## CLI Import
 
