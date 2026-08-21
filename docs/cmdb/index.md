@@ -92,11 +92,26 @@ Templates are special CMDB objects used to standardize fields.
 
 When an object/host is created or processed and its labels match the expression, the template is added automatically to `cmdb_templates`.
 
-If you changed template matching rules and want to re-apply matching to existing objects/hosts, run:
+Editing a template never re-assigns it on its own — which hosts carry a template stays as it is until you say otherwise.
+
+To re-apply the matching after you changed a `cmdb_match`, select the template in **Objects** → **Templates** and run one of the two actions:
+
+- **Re-apply to matching hosts**: every object/host matching the pattern gets the template. Existing assignments are kept.
+- **Re-apply and remove from non-matching hosts**: the pattern becomes authoritative — every object/host that does not match loses the template. Use this to clean up after a changed `cmdb_match`, but keep in mind that it also removes templates that were assigned by hand.
+
+A template without a `cmdb_match` is only ever assigned by hand and is skipped by both actions.
+
+### Archived templates
+
+If you delete a template it is archived (soft-deleted) and stops taking effect: it no longer contributes any field to the hosts that carry it, it is not assigned to new objects/hosts and it cannot be picked in a form. The existing assignments are kept, so restoring the template from **Archive** brings its fields back. In the host list such a template is shown as `(archived)`.
+
+On the command line the same re-matching is available for all templates at once:
 
 ```bash
 ./cmdbsyncer sys update_cmdb
 ```
+
+The command only adds templates to matching hosts, it never removes an assignment — use the **Re-sync assignments on hosts** action for that.
 
 ### Jinja in template values
 
