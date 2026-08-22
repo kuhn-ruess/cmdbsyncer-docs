@@ -21,36 +21,62 @@ Complements the two existing Enterprise auth features:
 Ideal for Docker / Kubernetes deployments, where the reverse-proxy
 approach either isn't available or shouldn't be the auth boundary.
 
-## Routes
-
-| Route             | Purpose                                                          |
-| ----------------- | ---------------------------------------------------------------- |
-| `/oidc/login`     | Start the authorization-code flow (redirects to the IdP).        |
-| `/oidc/callback`  | IdP redirects back here; CMDBsyncer exchanges the code for tokens and logs the user in. |
-
-Register `https://<your-syncer>/oidc/callback` as the allowed redirect URI in the IdP.
-
 ## Configuration
 
-The issuer URL and the client credentials live on a Syncer **Account**.
+Everything except the group-to-role table is configured in the web UI —
+no `local_config.py` editing needed.
 
-1. Create a Syncer Account:
+### 1. Create the Account
 
-    | Field    | Value                                                      |
-    | -------- | ---------------------------------------------------------- |
-    | name     | `entra-id`                                                 |
-    | address  | `https://login.microsoftonline.com/<tenant>/v2.0` *(issuer)* |
-    | username | `<app-registration-id>` *(client id)*                      |
-    | password | `<client-secret>`                                          |
+**Accounts → New**, type **OIDC identity provider**:
 
-2. Point `local_config.py` at that Account:
+| Field    | Value                                                        |
+| -------- | ------------------------------------------------------------ |
+| name     | `entra-id`                                                   |
+| address  | `https://login.microsoftonline.com/<tenant>/v2.0` *(issuer)*  |
+| username | `<app-registration-id>` *(client id)*                        |
+| password | `<client-secret>`                                            |
+
+The `address` is the **base** of the discovery document, not the
+`/.well-known/openid-configuration` URL itself.
+
+### 2. Apply the "OIDC / SSO login" preset
+
+**Config → Local Config → Quick configurations → OIDC / SSO login**.
+Fill in the fields and press *Apply preset*:
+
+| Key                   | Meaning                                                                 |
+| --------------------- | ----------------------------------------------------------------------- |
+| `OIDC_LOGIN`          | Master toggle.                                                          |
+| `OIDC_ACCOUNT`        | Name of the Account from step 1.                                        |
+| `OIDC_SCOPES`         | Scopes to request, space separated. `openid` is always included.        |
+| `OIDC_EMAIL_CLAIM`    | Claim holding the email — the local user is matched on it.              |
+| `OIDC_NAME_CLAIM`     | Claim used for the display name on auto-create.                         |
+| `OIDC_GROUPS_CLAIM`   | Claim carrying the user's groups.                                       |
+| `OIDC_REQUIRED_GROUP` | Optional gate — only members of this group may log in.                  |
+| `OIDC_AUTO_CREATE`    | Create a local user on first successful login.                          |
+| `OIDC_ADMIN_GROUP`    | Members of this group become global admins.                             |
+| `OIDC_DEFAULT_ROLES`  | Roles every accepted user receives, comma separated.                    |
+
+The preset also shows the **redirect URI** of this installation.
+Register it at the identity provider exactly as printed — a mismatch is
+the single most common reason an OIDC login fails.
+
+### 3. Restart and log in
+
+The OIDC keys take effect after a service restart. The login page then
+shows a **Sign in with SSO** button.
+
+### Editing local_config.py directly
+
+The same settings can be written by hand; the preset only produces this:
 
 ```python
 config = {
     'OIDC_LOGIN': True,
     'OIDC_ACCOUNT': 'entra-id',
 
-    'OIDC_SCOPES': ['openid', 'email', 'profile', 'groups'],
+    'OIDC_SCOPES': 'openid email profile groups',
 
     # Which claim holds the user's email address and display name
     'OIDC_EMAIL_CLAIM': 'email',
@@ -60,6 +86,16 @@ config = {
     'OIDC_GROUPS_CLAIM': 'groups',
     'OIDC_REQUIRED_GROUP': 'cmdbsyncer-users',   # optional gate
     'OIDC_AUTO_CREATE': True,
+    'OIDC_ADMIN_GROUP': 'cmdbsyncer-admins',
+    'OIDC_DEFAULT_ROLES': 'host, log',
+}
+```
+
+For mappings that go beyond "admins" and "everyone", add the nested
+`OIDC_ROLE_MAPPING` dict — it cannot be written from the UI:
+
+```python
+config = {
     'OIDC_ROLE_MAPPING': {
         'cmdbsyncer-admins': {'global_admin': True},
         'cmdbsyncer-ops':    {'roles': ['host', 'log']},
@@ -67,6 +103,9 @@ config = {
     },
 }
 ```
+
+`OIDC_ADMIN_GROUP` and `OIDC_DEFAULT_ROLES` are merged into that dict,
+so both forms can be used together.
 
 ## Provider-specific notes
 
@@ -105,9 +144,10 @@ config = {
 Same union-of-groups semantics as [LDAP Login](ldap_login.md):
 
 - The user's `groups` claim is intersected with the keys of
-  `OIDC_ROLE_MAPPING`.
+  `OIDC_ROLE_MAPPING` — `OIDC_ADMIN_GROUP` counts as an entry of that
+  table granting `global_admin`.
 - For each match, `roles`, `api_roles`, and `global_admin` are
-  **unioned**.
+  **unioned**, plus everything in `OIDC_DEFAULT_ROLES`.
 - The user's local `roles` / `api_roles` / `global_admin` are
   replaced by the computed union on every login.
 
@@ -117,8 +157,18 @@ So:
   admin on their next login. No manual sync needed.
 - Do **not** grant ad-hoc permissions via the CMDBsyncer UI —
   they get reverted on next login.
-- Leave `OIDC_ROLE_MAPPING = {}` to opt out of role sync; new
-  users are then created with no roles and you grant manually.
+- Leave `OIDC_ROLE_MAPPING`, `OIDC_ADMIN_GROUP` and
+  `OIDC_DEFAULT_ROLES` all empty to opt out of role sync; new users
+  are then created with no roles and you grant them manually.
+
+## Routes
+
+| Route             | Purpose                                                          |
+| ----------------- | ---------------------------------------------------------------- |
+| `/oidc/login`     | Start the authorization-code flow (redirects to the IdP).        |
+| `/oidc/callback`  | IdP redirects back here; CMDBsyncer exchanges the code for tokens and logs the user in. |
+
+Register `https://<your-syncer>/oidc/callback` as the allowed redirect URI in the IdP.
 
 ## Audit trail
 
@@ -143,8 +193,8 @@ discovery document, not the discovery URL itself).
 
 **`token_exchange_failed`**  
 - Redirect URI mismatch — must match exactly in the IdP.
-- Client secret wrong or not set in the env var.
-- `OIDC_SCOPES` doesn't include `openid`.
+- Client secret wrong or missing in the Account's password field.
+- Wrong Account named in `OIDC_ACCOUNT`, or the Account is disabled.
 
 **Groups are empty even though the user is in groups in Azure AD**  
 Azure only emits groups in the ID token when configured — see the
