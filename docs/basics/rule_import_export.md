@@ -53,16 +53,22 @@ Without an argument, the Syncer writes to a timestamped file such as `syncer_rul
 
 The output is line-delimited JSON. Each rule type is introduced by a header line `{"rule_type": "..."}`, followed by one JSON object per rule of that type. All known rule types are written into the same file in one pass.
 
-!!! note "Hosts, objects, accounts and users are skipped by default"
-    Three rule types are excluded from `export_all_rules` unless explicitly requested, because they are usually noise (or sensitive) in a rule backup:
+Since version 4.3, everything you configure in the web interface is part of the export: all rules of every module, plus site and folder pools, Checkmk notification rules, projects, cron groups, notification channels and rules, saved searches and the system config. Restoring such a file into an empty Syncer rebuilds the configuration as it was.
+
+!!! note "Hosts, objects, accounts, users and passwords are skipped by default"
+    Four rule types are excluded from `export_all_rules` unless explicitly requested, because they are either bulk data or sensitive:
 
     - `host_objects` — hosts and objects stored in the shared Host collection. Enable with `--include-hosts`.
     - `accounts` — account definitions (including encrypted credentials). Enable with `--include-accounts`.
     - `users` — user accounts including hashed passwords and roles. Enable with `--include-users`, and treat the resulting file as secret.
+    - `cmk_passwords` — the Checkmk password store. The entries stay encrypted with the key of the Syncer that wrote them, so they can only be read back by an instance using the same `CRYPTOGRAPHY_KEY`. Enable with `--include-passwords`, and treat the resulting file as secret.
 
     ```bash
     ./cmdbsyncer rules export_all_rules --include-hosts --include-accounts
     ```
+
+!!! note "What is never exported"
+    Runtime data is left out on purpose: the syncer log, cronjob and playbook run statistics, caches (Checkmk objects, Jira schema), host inventory data, label history and the field approval queue. All of it is rebuilt by the syncer itself.
 
 !!! note "CMDB templates are exported separately"
     Since version 4.3, CMDB templates have their own rule type `cmdb_templates`. They are configuration rather than data and are therefore part of every `export_all_rules` run — no flag needed. `host_objects` in turn never contains templates, so a backup taken with `--include-hosts` holds each document exactly once.
