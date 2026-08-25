@@ -28,114 +28,23 @@ Access all Checkmk commands with `./cmdbsyncer checkmk <command> <account>`.
 ## Improve Setup Rules that name every host individually
 <span class="since">Since 4.3</span>
 
-When a Setup Rule outcome uses **Condition Host** with `{{HOSTNAME}}` and no
-other condition, the rule applies to "this host" — so the Syncer merges every
-matching host into **one** Checkmk rule whose condition lists every hostname. On
-a large installation that produces rules naming hundreds of hosts. They are hard
-to read in Checkmk, slower to match, and the Syncer has to rewrite them whenever
-a single host joins or leaves.
-
-Usually those hosts already share a label, and the rule can use that label
-instead. `analyse_rules` finds which one:
+`analyse_rules` finds the Setup Rules whose export ends up listing hundreds of
+hostnames in one condition, and the host attribute that could replace that list.
+It can apply the change for you. See
+[Rule Optimization](rule_optimization.md) for the full description.
 
 ```bash
 ./cmdbsyncer checkmk analyse_rules --min-hosts 50
 ```
 
-```text
- * Setup Rule Agent Access Prod — 902 hosts end up in one condition
-   ruleset: agent_config:only_from   folder: /
-   comment: Agent access
-   value:   {'only_from': ['10.0.0.1']}
-   -> in the outcome set Condition Label to env:prod and clear Condition Host
-      — covers all 902 hosts and no other host
-   ~  site:hamburg covers all 902 hosts, but 14 more host(s) would get the rule too
-   ~  role:web covers 890 of 902 hosts, no other host — 12 would lose the rule
-```
-
-The candidates are every attribute the hosts carry **in the Syncer** — labels,
-inventory and CMDB template values alike — not only the ones that are currently
-exported. They are shown the way the host export writes them as a Checkmk label.
-
-An attribute whose value cannot be a label on its own — a comma-separated list,
-a value with spaces, a wildcard or a service pattern — is offered **hashed**
-instead. The hash is a valid label value and groups exactly the same hosts:
-
-```text
-   -> in the outcome set Condition Label to roles_hash:3ae68845 and clear Condition Host
-      'roles' is no usable label on its own, so roles_hash is a hash of it —
-      needs a Rewrite rule adding roles_hash = {{ roles | hash }}
-```
-
-`--apply` creates that Rewrite rule for you. It adds a *new* attribute rather
-than renaming, so the original value stays available to every other rule, and a
-host that does not carry the source attribute gets nothing. If the suggested attribute does not pass your export filter, Checkmk
-never sees it as a host label, and the report says so:
-
-```text
-   -> in the outcome set Condition Label to env:prod and clear Condition Host
-      note: 'env' does not pass the export filter, so Checkmk never sees it as a
-            host label — add it to the filter rules first
-```
-
-The report names the **Setup Rule**, because that is where the change belongs —
-open it, and in the outcome set **Condition Label Template** to the suggested
-label and clear **Condition Host**.
-
-| Marker | Meaning |
-| :----- | :------ |
-| `->`   | The label covers exactly the hosts of the rule. Switching is a straight swap: same hosts, one short condition. |
-| `~` (more would get it) | The label covers the rule, but additional hosts carry it as well. Switching widens the rule to those hosts. |
-| `~` (covers N of M) | No host outside carries the label, but it does not reach all hosts of the rule. Those hosts would lose it. |
-
-If no label comes close, the hosts share nothing the others do not. A
-[Rewrite rule](../basics/rewrite_attributes.md) that sets a label on exactly those
-hosts gives the Setup Rule something to match on.
-
 | Option | Description |
 | :----- | :---------- |
 | `--min-hosts` | Only report rules built from at least this many hosts (default: 10). |
 | `--top` | How many of the largest rules to report (default: 20). |
-| `--apply` | Make the change instead of only reporting it (see below). |
+| `--apply` | Make the change instead of only reporting it. |
 | `--hash-labels` | With `--apply`: match on a hash instead of letting raw attribute values through as Checkmk labels. |
 
-### Applying the findings
-
-```bash
-./cmdbsyncer checkmk analyse_rules --min-hosts 50 --apply
-```
-
-For every `->` finding this sets the outcome's **Condition Label Template** to
-the suggested label, clears its **Condition Host**, and — if the attribute does
-not pass the export filter — whitelists it in a filter rule named
-`Syncer: attributes used by rule conditions`, so Checkmk actually receives it as
-a label. The cached export data of every host is dropped afterwards, exactly as
-a rule edit in the web interface does it.
-
-Only the `->` findings are applied. They are a straight swap: the label covers
-the hosts of the rule and no others, so the export keeps producing the same rule
-for the same hosts. The `~` findings change *which* hosts get the rule, so they
-are yours to decide. A rule condition produced by more than one Setup Rule is
-skipped as well — there is no telling which of them to rewrite. If several
-labels are equally exact, the first by name is used and the report names the
-alternatives.
-
-With `--hash-labels` no raw attribute value reaches Checkmk at all: an attribute
-that would have to be newly let through the filter is matched by a hash of it
-instead. Use it when the values are long, noisy or none of Checkmk's business —
-the condition still groups exactly the same hosts, the label is just not
-readable.
-
-Run it once without `--apply` first and read the list.
-
-The command reads the Syncer database and nothing else — it never changes a rule
-and never contacts Checkmk, so it also works while the site is unreachable.
-
-The account is optional. Given one, the report is narrowed to what an export of
-*that* account would produce: its project scope, its `limit_by_folders` scope
-and its object-type filter. Without one, every enabled rule is reported. The
-rule cache is ignored either way, so the report always judges the rules as they
-are configured right now.
+The account argument is optional, and nothing is ever sent to Checkmk.
 
 ## Assign a CMDB template from a Checkmk folder
 <span class="since">Since 4.3</span>

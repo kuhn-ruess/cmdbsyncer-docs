@@ -22,6 +22,14 @@ If a syncer-owned rule is found in a folder other than the one configured
 here, the export moves it to the configured folder on the next run instead
 of leaving the misplaced copy behind.
 
+!!! tip
+    A rule using **Condition Host** with `{{HOSTNAME}}` ends up as one Checkmk
+    rule listing every matching host — on a large installation that means
+    hundreds of hostnames in one condition.
+    [Rule Optimization](rule_optimization.md) finds those rules and the host
+    label that covers exactly the same hosts, and can switch them over for you.
+    It is linked above the rule list.
+
 ## Removing rules that are no longer generated
 
 While a rule still produces at least one Checkmk rule, the export removes any
