@@ -23,6 +23,74 @@ Access all Checkmk commands with `./cmdbsyncer checkmk <command> <account>`.
 | show_labels            | List all labels that would be set in Checkmk after the sync                    |
 | show_missing_hosts     | Show hosts present in Checkmk but not in the Syncer                            |
 | assign_template        | Assign a CMDB template to every host of a Checkmk folder (see below)           |
+| analyse_rules          | Find Setup Rules whose export lists hundreds of hostnames and suggest a host label (account optional) |
+
+## Improve Setup Rules that name every host individually
+<span class="since">Since 4.3</span>
+
+When a Setup Rule outcome uses **Condition Host** with `{{HOSTNAME}}` and no
+other condition, the rule applies to "this host" — so the Syncer merges every
+matching host into **one** Checkmk rule whose condition lists every hostname. On
+a large installation that produces rules naming hundreds of hosts. They are hard
+to read in Checkmk, slower to match, and the Syncer has to rewrite them whenever
+a single host joins or leaves.
+
+Usually those hosts already share a label, and the rule can use that label
+instead. `analyse_rules` finds which one:
+
+```bash
+./cmdbsyncer checkmk analyse_rules --min-hosts 50
+```
+
+```text
+ * Setup Rule Agent Access Prod — 902 hosts end up in one condition
+   ruleset: agent_config:only_from   folder: /
+   comment: Agent access
+   value:   {'only_from': ['10.0.0.1']}
+   -> in the outcome set Condition Label to env:prod and clear Condition Host
+      — covers all 902 hosts and no other host
+   ~  site:hamburg covers all 902 hosts, but 14 more host(s) would get the rule too
+   ~  role:web covers 890 of 902 hosts, no other host — 12 would lose the rule
+```
+
+The candidates are every attribute the hosts carry **in the Syncer** — labels,
+inventory and CMDB template values alike — not only the ones that are currently
+exported. If the suggested attribute does not pass your export filter, Checkmk
+never sees it as a host label, and the report says so:
+
+```text
+   -> in the outcome set Condition Label to env:prod and clear Condition Host
+      note: 'env' does not pass the export filter, so Checkmk never sees it as a
+            host label — add it to the filter rules first
+```
+
+The report names the **Setup Rule**, because that is where the change belongs —
+open it, and in the outcome set **Condition Label Template** to the suggested
+label and clear **Condition Host**.
+
+| Marker | Meaning |
+| :----- | :------ |
+| `->`   | The label covers exactly the hosts of the rule. Switching is a straight swap: same hosts, one short condition. |
+| `~` (more would get it) | The label covers the rule, but additional hosts carry it as well. Switching widens the rule to those hosts. |
+| `~` (covers N of M) | No host outside carries the label, but it does not reach all hosts of the rule. Those hosts would lose it. |
+
+If no label comes close, the hosts share nothing the others do not. A
+[Rewrite rule](../basics/rewrite_attributes.md) that sets a label on exactly those
+hosts gives the Setup Rule something to match on.
+
+| Option | Description |
+| :----- | :---------- |
+| `--min-hosts` | Only report rules built from at least this many hosts (default: 10). |
+| `--top` | How many of the largest rules to report (default: 20). |
+
+The command reads the Syncer database and nothing else — it never changes a rule
+and never contacts Checkmk, so it also works while the site is unreachable.
+
+The account is optional. Given one, the report is narrowed to what an export of
+*that* account would produce: its project scope, its `limit_by_folders` scope
+and its object-type filter. Without one, every enabled rule is reported. The
+rule cache is ignored either way, so the report always judges the rules as they
+are configured right now.
 
 ## Assign a CMDB template from a Checkmk folder
 <span class="since">Since 4.3</span>
