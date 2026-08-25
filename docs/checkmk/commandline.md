@@ -55,9 +55,21 @@ instead. `analyse_rules` finds which one:
 
 The candidates are every attribute the hosts carry **in the Syncer** — labels,
 inventory and CMDB template values alike — not only the ones that are currently
-exported. They are shown the way the host export writes them as a Checkmk label,
-and an attribute that cannot be a single label value is never suggested:
-comma-separated lists, values with spaces, wildcards and service patterns. If the suggested attribute does not pass your export filter, Checkmk
+exported. They are shown the way the host export writes them as a Checkmk label.
+
+An attribute whose value cannot be a label on its own — a comma-separated list,
+a value with spaces, a wildcard or a service pattern — is offered **hashed**
+instead. The hash is a valid label value and groups exactly the same hosts:
+
+```text
+   -> in the outcome set Condition Label to roles_hash:3ae68845 and clear Condition Host
+      'roles' is no usable label on its own, so roles_hash is a hash of it —
+      needs a Rewrite rule adding roles_hash = {{ roles | hash }}
+```
+
+`--apply` creates that Rewrite rule for you. It adds a *new* attribute rather
+than renaming, so the original value stays available to every other rule, and a
+host that does not carry the source attribute gets nothing. If the suggested attribute does not pass your export filter, Checkmk
 never sees it as a host label, and the report says so:
 
 ```text
@@ -85,6 +97,7 @@ hosts gives the Setup Rule something to match on.
 | `--min-hosts` | Only report rules built from at least this many hosts (default: 10). |
 | `--top` | How many of the largest rules to report (default: 20). |
 | `--apply` | Make the change instead of only reporting it (see below). |
+| `--hash-labels` | With `--apply`: match on a hash instead of letting raw attribute values through as Checkmk labels. |
 
 ### Applying the findings
 
@@ -106,6 +119,12 @@ are yours to decide. A rule condition produced by more than one Setup Rule is
 skipped as well — there is no telling which of them to rewrite. If several
 labels are equally exact, the first by name is used and the report names the
 alternatives.
+
+With `--hash-labels` no raw attribute value reaches Checkmk at all: an attribute
+that would have to be newly let through the filter is matched by a hash of it
+instead. Use it when the values are long, noisy or none of Checkmk's business —
+the condition still groups exactly the same hosts, the label is just not
+readable.
 
 Run it once without `--apply` first and read the list.
 

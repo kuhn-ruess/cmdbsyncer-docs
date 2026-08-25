@@ -62,3 +62,33 @@ When using conditions with `regex`, `swith`, `ewith`, and similar types, you may
 
 - `{{FIRST_MATCHING_TAG}}` — the name of the attribute that caused the condition to match
 - `{{FIRST_MATCHING_VALUE}}` — the value of that attribute
+
+## Hashing a value
+
+Some values cannot be used as a Checkmk label or rule condition: a comma-separated
+list, a value with spaces, a service pattern. The `hash` filter turns them into a
+short, stable value that can:
+
+```text
+{{ roles | hash }}          ->  3ae68845
+{{ roles | hash(16) }}      ->  3ae688450e83a1b7
+{{ hash_value(roles) }}     ->  3ae68845
+```
+
+The same input always gives the same result, on every run and every installation
+— it is a sha256 digest, not Python's `hash()`. A list is sorted first, so the
+order its entries happen to have does not change the result.
+
+Typical use: create a hashed copy of an attribute so a rule can match on it,
+without losing the original.
+
+| Field | Value |
+| :---- | :---- |
+| Old attribute name | `roles_hash` |
+| Overwrite name | *(leave empty)* |
+| Overwrite value | With Jinja Template |
+| New value | `{{ roles | hash }}` |
+
+This adds `roles_hash` and leaves `roles` untouched. A host without `roles` gets
+nothing. `checkmk analyse_rules --apply` writes exactly this rule when it needs a
+hashed label.
