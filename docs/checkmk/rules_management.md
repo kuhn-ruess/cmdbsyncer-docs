@@ -117,6 +117,21 @@ If you need a specific top-to-bottom order in a ruleset, just set
 the `Folder Index` on each `RuleMngmtOutcome` (lower index = higher
 in the list) and re-run `checkmk export_rules`.
 
+Every move is one Checkmk write plus a pending change, so the export only
+moves the rules that are actually out of place. A ruleset that already has
+the configured order sends no request at all. The run says how many moves it
+will make before it starts:
+
+```text
+ -- Reorder syncer rules
+  * 3 rule(s) to move across 2 ruleset(s)
+```
+
+If you do not care about the order inside Checkmk at all, set the Checkmk
+account custom field `skip_rule_reorder` to `True`. The export then leaves the
+Checkmk-side order untouched, which on a ruleset with hundreds of rules is by
+far the slowest part of the run.
+
 ## Static (host-independent) rules
 
 Most setup rules are calculated per host: the Syncer loops over every
