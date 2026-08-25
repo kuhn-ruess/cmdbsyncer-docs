@@ -55,7 +55,9 @@ instead. `analyse_rules` finds which one:
 
 The candidates are every attribute the hosts carry **in the Syncer** — labels,
 inventory and CMDB template values alike — not only the ones that are currently
-exported. If the suggested attribute does not pass your export filter, Checkmk
+exported. They are shown the way the host export writes them as a Checkmk label,
+and an attribute that cannot be a single label value is never suggested:
+comma-separated lists, values with spaces, wildcards and service patterns. If the suggested attribute does not pass your export filter, Checkmk
 never sees it as a host label, and the report says so:
 
 ```text
@@ -82,6 +84,30 @@ hosts gives the Setup Rule something to match on.
 | :----- | :---------- |
 | `--min-hosts` | Only report rules built from at least this many hosts (default: 10). |
 | `--top` | How many of the largest rules to report (default: 20). |
+| `--apply` | Make the change instead of only reporting it (see below). |
+
+### Applying the findings
+
+```bash
+./cmdbsyncer checkmk analyse_rules --min-hosts 50 --apply
+```
+
+For every `->` finding this sets the outcome's **Condition Label Template** to
+the suggested label, clears its **Condition Host**, and — if the attribute does
+not pass the export filter — whitelists it in a filter rule named
+`Syncer: attributes used by rule conditions`, so Checkmk actually receives it as
+a label. The cached export data of every host is dropped afterwards, exactly as
+a rule edit in the web interface does it.
+
+Only the `->` findings are applied. They are a straight swap: the label covers
+the hosts of the rule and no others, so the export keeps producing the same rule
+for the same hosts. The `~` findings change *which* hosts get the rule, so they
+are yours to decide. A rule condition produced by more than one Setup Rule is
+skipped as well — there is no telling which of them to rewrite. If several
+labels are equally exact, the first by name is used and the report names the
+alternatives.
+
+Run it once without `--apply` first and read the list.
 
 The command reads the Syncer database and nothing else — it never changes a rule
 and never contacts Checkmk, so it also works while the site is unreachable.
