@@ -69,6 +69,9 @@ Access this value in conditions and Jinja templates as `cmk__is_existing`.
 
 The Syncer creates all required folders automatically. You can set Checkmk folder attributes — including the visible title — by appending them after a pipe character in the folder name.
 
+!!! tip "Edit them per folder instead of typing the dict"
+    On a `Move to Folder` or `Create Empty Folder` action, the button **Edit folder attributes** below the value opens an editor with one card per folder level and input fields for the common attributes (title, contact groups, site, labels, tags). It writes the pipe syntax below back into the value field, which stays editable — so you can switch between both at any time. A level the editor cannot read exactly (for example a Jinja expression as the whole options dict) is left untouched and marked as such.
+
 **Hardcoded folder with attributes:**
 
 ```text
