@@ -38,6 +38,27 @@ Add `--debug` to see the LDAP query details and full attribute output:
 ./cmdbsyncer ldap import_objects my-ldap-account --debug
 ```
 
+## Trying Out Queries and Search Filters
+
+`debug_query` runs the query of an account and prints what comes back, without writing anything to the database. Every object is shown with the labels the import would create, objects without the `hostname_field` are marked as ignored, and a broken filter is reported as an LDAP error instead of a traceback.
+
+```bash
+./cmdbsyncer ldap debug_query my-ldap-account
+```
+
+The account settings can be overwritten for a single run, so a new filter can be tested before it is saved:
+
+| Option                  | Description                                                        |
+| ----------------------- | ------------------------------------------------------------------ |
+| `-b`, `--base-dn`       | Search base to use instead of the one on the account               |
+| `-f`, `--search-filter` | LDAP filter to use instead of the one on the account               |
+| `-a`, `--attributes`    | Attributes to request, an empty string requests all of them        |
+| `-l`, `--limit`         | Stop after this many objects (default 10, `0` prints all of them)  |
+
+```bash
+./cmdbsyncer ldap debug_query my-ldap-account -f "(&(objectClass=computer)(operatingSystem=*Server*))" -a "" -l 3
+```
+
 ## Setting Up Automation
 
 For production use, add the command as a [Cron job](../basics/cron.md).
