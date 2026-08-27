@@ -13,6 +13,7 @@ You will find the account settings under **Settings → Accounts** in the naviga
 | Name          | Reference name for the account, also used on the command line                    |
 | Type          | Account type — controls which fields and validation apply                        |
 | Is Master     | This account can overwrite data from other accounts on import                    |
+| Restrict to   | Limit the account to import only or to inventorize only (see below)              |
 | Is Object     | Imported entries are stored as Objects, not Hosts (see below)                    |
 | Object Type   | Classifies the object type for filtering and special behaviors                   |
 | Address       | URL or hostname of the target system                                             |
@@ -35,6 +36,16 @@ Object types are assigned during import and serve two purposes:
 
 - They allow you to filter which objects are used in a specific export.
 - Some types have additional behavior: if the type is set to **Host**, any imported entry with an invalid hostname is rejected and logged as an error rather than saved silently.
+
+### Restrict to Import or Inventorize
+
+Most integrations can be used in two directions: **import** creates and owns hosts, **inventorize** only adds data to hosts that already exist. **Restrict to** limits an account to one of them:
+
+- **No restriction** (default): the account can be used for both.
+- **Only Import**: every inventorize run with this account stops with a message and writes nothing.
+- **Only Inventorize**: the account cannot import hosts of its own. The run stops with an error before the first host is written.
+
+Use it for an account that should only enrich hosts another system owns, or to make sure a cron entry that was pointed at the wrong command cannot quietly create hosts. The setting applies to every plugin and to the CLI, the cron jobs and the API alike.
 
 ### Import name checks
 
