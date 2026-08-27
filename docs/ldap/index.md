@@ -59,6 +59,20 @@ The account settings can be overwritten for a single run, so a new filter can be
 ./cmdbsyncer ldap debug_query my-ldap-account -f "(&(objectClass=computer)(operatingSystem=*Server*))" -a "" -l 3
 ```
 
+### Which Attributes Does a Result Have?
+
+With `-A` / `--list-attributes` the command does not print the objects, but the attributes they carry: in how many of the found objects each attribute exists, whether it has more than one value (only the first one is imported), and an example value. The last line is the attribute list ready to be pasted into the `attributes` field of the account.
+
+```bash
+./cmdbsyncer ldap debug_query my-ldap-account -A
+```
+
+This asks the server for all attributes, so `attributes` on the account is ignored for that run. Operational attributes — for example `memberOf` on OpenLDAP — are not part of "all" and have to be requested by name, or with `-a "*,+"` if the directory supports it:
+
+```bash
+./cmdbsyncer ldap debug_query my-ldap-account -A -a "*,+"
+```
+
 ## Setting Up Automation
 
 For production use, add the command as a [Cron job](../basics/cron.md).
