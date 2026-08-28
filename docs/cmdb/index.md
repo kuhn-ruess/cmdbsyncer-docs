@@ -113,6 +113,29 @@ On the command line the same re-matching is available for all templates at once:
 
 The command only adds templates to matching hosts, it never removes an assignment — use the **Re-sync assignments on hosts** action for that.
 
+### Merged attributes
+
+By default a field only fills a gap: a value the host carries itself wins,
+and if several templates provide the same field the first one wins and the
+others are dropped.
+
+For attributes that are really lists — contact groups, tags, service lists —
+that is the wrong rule. List them under **Configuration** → **System Config**
+→ **Merged attributes**, one attribute key per entry. Such an attribute is
+then collected from every template the host carries, comma separated, and
+appended to the host's own value.
+
+Example with `contact_groups` listed as merged: a host carries the templates
+`base` (`contact_groups = ops`), `db` (`contact_groups = dba`) and `net`
+(`contact_groups = net`) and exports `contact_groups = ops,dba,net`. Without
+the entry it exports `contact_groups = ops`.
+
+The list is kept centrally on purpose: whether an attribute is a list is a
+property of the attribute, so no template edit can change how another
+template behaves. Values that are already comma-separated lists keep their
+order and duplicates are dropped, so the same entry in two templates does
+not show up twice. Changing the list clears the host attribute caches.
+
 ### Jinja in template values
 
 Field values on a template can use Jinja and reference the host's labels,
