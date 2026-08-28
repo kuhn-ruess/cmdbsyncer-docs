@@ -84,7 +84,9 @@ _Modules_ → _LDAP_ → _Search Directory_ does the same thing from the browser
 | Attribute contains             | The given attribute contains the term, e.g. `description`                                           |
 | Own LDAP filter                | The term is used as the LDAP filter, e.g. `(&(objectClass=computer)(cn=srv*))`                      |
 
-Base DN and the attributes to request can be overwritten for a single search, and the search filter of the account can be switched off, so a filter can be tried out before it is saved on the account. Attributes are left empty by default, which asks the server for every attribute of the found objects.
+Base DN, the attributes to request and the encoding can be overwritten for a single search, and the search filter of the account can be switched off, so a filter can be tried out before it is saved on the account. Attributes are left empty by default, which asks the server for every attribute of the found objects.
+
+Values that cannot be read with the encoding of the account are shown with a `�` instead of the character, together with a hint — the usual cause is `ascii` on an account whose directory answers in `utf-8`. Searching again with `utf-8` in the _Encoding_ field shows whether that is the right value before it is saved on the account; the import itself stops with a decoding error as long as the encoding is wrong.
 
 Each result shows whether the import would create a host out of it — objects without the `hostname_field` are marked as skipped and list all of their attributes instead, so it is visible what is missing.
 
