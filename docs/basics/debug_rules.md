@@ -38,6 +38,18 @@ You can combine `--debug-rules` with `--debug` to also raise exceptions during t
 !!! tip
     Use `show_hosts` first to confirm the host name as it appears in the syncer database before passing it to `--debug-rules`.
 
+## Debug Page in the Web Interface
+
+The same analysis is available in the GUI: open a host and switch to its **Debug** tab, or use the **Debug** entry and enter a hostname. Pick the target system (Checkmk, Netbox, Ansible, i-doit, VMware, Jira Cloud) and press *Analyze*.
+
+The page shows:
+
+- **Outcomes** — what the export would do with this host
+- **Filtered Labels** — the attributes left after the filter and rewrite rules
+- **Rules** — one tab per rule group (filter, rewrite, actions, custom attributes, …). Each row tells whether the rule matched, which condition decided it, and **what that single rule contributes to the outcome**. A rule that matched but adds nothing new is marked as such, because an earlier rule already set the value.
+- **Total outcome** — shown below every rule group: the combined result of all its matching rules, which is what the export actually uses
+- **Full Attribute List** — all raw host labels before filtering
+
 ## Inspecting Without Exporting
 
 Some modules provide read-only commands to inspect what would be exported — without making any changes to the target system:
