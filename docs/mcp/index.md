@@ -181,8 +181,8 @@ or a globally installed copy.
 | `list_rule_types()` | Catalog of supported `rule_type` idents. |
 | `export_rules(rule_type)` | Every rule of one type. |
 | `export_all_rules(include_hosts, include_accounts, include_users)` | Bulk export grouped by type. |
-| `create_rule(rule_type, rule)` | Persist one rule (same shape as the export). |
-| `import_rules_bulk(payload)` | Replay an export back into the DB. |
+| `create_rule(rule_type, rule, override)` | Persist one rule (same shape as the export). With `override` an existing rule with the same id or name is replaced. |
+| `import_rules_bulk(payload, override)` | Replay an export back into the DB. With `override` existing rules are replaced instead of skipped. |
 | `run_autorules(debug)` | Trigger the autorules pass that builds rules from current host data. |
 
 ### Syncer / cron / logs

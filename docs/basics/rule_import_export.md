@@ -89,3 +89,11 @@ The import auto-detects the format:
 - If the file has no header (GUI export), the import falls back to guessing the rule type from the filename, as described above.
 
 Rules that already exist in the database (same `_id`) are skipped with an _"Already existed"_ message, so re-running the import is safe and idempotent.
+
+To update rules instead of skipping them, use `--override`:
+
+```bash
+./cmdbsyncer rules import_rules /path/to/file --override
+```
+
+With `--override` every rule from the file replaces the one already in the database — matched either by its `_id` or by its name, so an export from another instance updates the existing rule instead of being refused as duplicate. Rules which are not part of the file stay untouched.
