@@ -73,6 +73,23 @@ This asks the server for all attributes, so `attributes` on the account is ignor
 ./cmdbsyncer ldap debug_query my-ldap-account -A -a "*,+"
 ```
 
+## Searching in the Web Interface
+
+_Modules_ → _LDAP_ → _Search Directory_ does the same thing from the browser: it runs one search against an account and shows the found objects with the labels the import would create. It only reads — neither the directory nor the objects of the Syncer are changed.
+
+| Search for                     | What it does                                                                                       |
+| ------------------------------ | -------------------------------------------------------------------------------------------------- |
+| Hostname — with or without domain | Matches the `hostname_field` exactly and with any domain behind it: `srv01` also finds `srv01.example.com` |
+| Hostname contains              | The `hostname_field` contains the term anywhere                                                     |
+| Attribute contains             | The given attribute contains the term, e.g. `description`                                           |
+| Own LDAP filter                | The term is used as the LDAP filter, e.g. `(&(objectClass=computer)(cn=srv*))`                      |
+
+Base DN and the attributes to request can be overwritten for a single search, and the search filter of the account can be switched off, so a filter can be tried out before it is saved on the account. Attributes are left empty by default, which asks the server for every attribute of the found objects.
+
+Each result shows whether the import would create a host out of it — objects without the `hostname_field` are marked as skipped and list all of their attributes instead, so it is visible what is missing.
+
+Users need the _LDAP_ right to open the page.
+
 ## Setting Up Automation
 
 For production use, add the command as a [Cron job](../basics/cron.md).
