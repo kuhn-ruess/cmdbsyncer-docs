@@ -32,6 +32,30 @@ The sync runs host by host. For each host it reads the host's attributes, render
 
 That is why a label that already carries its target value per host (e.g. one host has `anwendung_kontaktgruppe=app_billing`, another has `app_invoicing`) does not need any loop construct: the values reach Checkmk one rule per distinct rendered body, just because each host contributes its own value through the normal iteration.
 
+## One Rule per List Entry
+
+That changes when a single host carries *several* values — an attribute like `anwendung_kontaktgruppe=grr00_oracle,grr00_sap`. Without a loop the host produces one rule naming both groups. Switch the outcome to _One Rule per List Entry_ and the Syncer renders the list once and then builds one complete rule per entry.
+
+The current entry is offered to every other field of the outcome as `{{name}}`, so conditions and recipients can be derived from it:
+
+| Field                    | Value                                                                                                            |
+| :----------------------- | :--------------------------------------------------------------------------------------------------------------- |
+| One Rule per List Entry  | on                                                                                                                |
+| List to Loop Over        | `{{get_list(anwendung_kontaktgruppe)|safe}}`                                                                       |
+| Filter Contact Groups    | `{{name}}`                                                                                                         |
+| Contact Group Recipients | `gro00_cmk_alarm_sms_{{name|replace('grr00_', '')}}, gro00_cmk_alarm_email_{{name|replace('grr00_', '')}}`         |
+
+For a host carrying `grr00_oracle,grr00_sap` that yields two rules: one matching contact group `grr00_oracle` and notifying `gro00_cmk_alarm_sms_oracle` and `gro00_cmk_alarm_email_oracle`, and the same for `grr00_sap`.
+
+The _List to Loop Over_ field takes any Jinja that renders to a list. Use the `get_list()` helper with `|safe` — it accepts a real list, a Python list literal, and a comma-separated string alike:
+
+```jinja
+{{get_list(anwendung_kontaktgruppe)|safe}}
+{{get_list(['grr00_oracle', 'grr00_sap'])|safe}}
+```
+
+An empty list produces no rule for that host. Rules that several hosts render identically still collapse into one, as everywhere else.
+
 ## Rule Parameters
 
 Top-level conditions on the rule itself filter which hosts the outcomes are evaluated for — same `FullCondition` mechanism as in Setup Rules.
@@ -41,6 +65,10 @@ Each outcome below is rendered once per matching host. All template fields suppo
 ### Notification Method
 
 Free-text plugin name with autocomplete suggestions for the built-in Checkmk plugins (`mail`, `asciimail`, `slack`, `msteams`, `pagerduty`, …). You can type any custom plugin name — useful for site-local notification scripts.
+
+### One Rule per List Entry / List to Loop Over
+
+Build one rule per entry of a list instead of one rule per host, with the entry available to every other field as `{{name}}`. See [One Rule per List Entry](#one-rule-per-list-entry) above.
 
 ### Contact Group Recipients
 
