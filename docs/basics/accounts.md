@@ -19,7 +19,7 @@ You will find the account settings under **Settings → Accounts** in the naviga
 | Address       | URL or hostname of the target system                                             |
 | Username      | Login username for the account                                                   |
 | Password      | Password or API secret for the account                                           |
-| Custom Fields | Additional plugin-specific fields (appear after the first save, if applicable)   |
+| Custom Fields | Additional plugin-specific fields (appear after the first save, if applicable). Each field explains itself in the form: the line under it says what it configures |
 
 !!! tip
     Not every field is required for every integration. An API account typically only needs **Name**, **Address**, and **Password** (as the API token).
@@ -116,6 +116,34 @@ Add a custom field named `request_timeout` to the account and set the value in s
 | Field             | Description                                                          |
 | :---------------- | :------------------------------------------------------------------- |
 | `request_timeout` | HTTP request timeout in seconds for this account (e.g. `300`). Overrides the global `HTTP_REQUEST_TIMEOUT` for all requests made through this account. |
+
+## Custom Request Headers
+
+Some target systems are not reached directly but through an API gateway, which wants a header of its own — an API key, a tenant or a correlation id — that the module itself knows nothing about. Every account carries a `custom_headers` custom field for them, whatever its type, and every HTTP request made through the account sends them.
+
+The field is offered on the account form of every plugin type. An account created before the field existed gets it the next time it is saved.
+
+Write the headers as `Name: value` pairs, separated by a pipe:
+
+```
+X-API-Key: abc123 | X-Tenant: muc
+```
+
+| Field            | Description                                                          |
+| :--------------- | :------------------------------------------------------------------- |
+| `custom_headers` | Extra headers for all requests of this account, as `Name: value` pairs separated by a pipe. |
+
+The pipe separates instead of a comma because a header value may well contain one (`Accept: application/json, text/plain` is a single, valid pair). A pair without a colon is skipped and logged as a warning rather than sent as a broken header.
+
+A header the module sets itself — `Accept` or `Content-Type` of its own API calls — keeps winning, so a custom header never breaks the module's own protocol.
+
+The value must not be a secret in clear text: reference one that is stored encrypted instead, with the [account macro](#reference-fields) `{{ACCOUNT:<account name>:password}}`.
+
+```
+Authorization: Bearer {{ACCOUNT:gateway-key:password}}
+```
+
+Headers whose name looks like a credential (`Authorization`, `X-API-Key`, `X-Auth-Token`, `Cookie`, …) are masked in the debug log.
 
 ## Extra Plugin Options
 
