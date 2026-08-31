@@ -13,7 +13,7 @@ Go to: _Modules → Checkmk → Create Checkmk Setup Rules_
 | Folder Index             | Position of the rule within the folder                                                |
 | Comment                  | Rule comment                                                                          |
 | Value Template           | Jinja template for the rule value (check Checkmk Swagger API for the expected format) |
-| Keep manual Value        | Write the Value only once (on rule creation) and never overwrite it afterwards, so it can be adjusted in Checkmk. A hint is added to the rule comment. |
+| Keep manual Value        | Write the Value only once (on rule creation) and never overwrite it afterwards, so it can be adjusted in Checkmk. A hint is added to the rule description and comment. |
 | Enforce exact Value      | Compare the Value exactly, so entries removed from the Value Template are applied too (see below) |
 | Condition Label Template | Syntax: `label:value`. Jinja supported. `{{HOSTNAME}}` available.                     |
 | Condition Host           | Comma-separated list of hostnames. Jinja supported including `{{HOSTNAME}}`.          |
@@ -30,6 +30,31 @@ of leaving the misplaced copy behind.
     label that covers exactly the same hosts, and can switch them over for you.
     It is linked above the rule list.
 
+## Which Syncer rule created a Checkmk rule
+
+Every rule the Syncer creates carries its own marker in the Checkmk rule
+description, followed by the name of the Setup Rule it was generated from:
+
+```
+cmdbsyncer_<account_id> - <Name of the Syncer rule>
+```
+
+So the Checkmk rule list already says which Syncer rule you have to edit to
+change a rule — no need to search for the matching Value Template.
+
+A rule with **Keep manual Value** additionally ends on `(Value editable)`, as
+a reminder that its Value may be adjusted in Checkmk and the Syncer will not
+overwrite it.
+
+Descriptions are kept up to date: when a Syncer rule is renamed, the next
+export rewrites the description of the Checkmk rules it owns — the rule itself,
+including a manually adjusted Value, stays untouched. Rules created by older
+Syncer versions carry the plain `cmdbsyncer_<account_id>` marker and get the
+name on the next export.
+
+If two Syncer rules are configured with exactly the same outcome, the name is
+left out — the rules cannot be told apart.
+
 ## Removing rules that are no longer generated
 
 While a rule still produces at least one Checkmk rule, the export removes any
@@ -39,9 +64,9 @@ left in place by default.
 
 Set the Checkmk account custom field `remove_orphaned_rules` to `True` to also
 clean those up: on every `checkmk export_rules` run the Syncer scans all
-rulesets it no longer generates anything for and deletes the rules carrying its
-own `cmdbsyncer_<account_id>` marker. Rules created by hand in Checkmk (without
-that marker) are never touched. Rules with **Keep manual Value** are removed
+rulesets it no longer generates anything for and deletes the rules whose
+description starts with its own `cmdbsyncer_<account_id>` marker. Rules created
+by hand in Checkmk (without that marker) are never touched. Rules with **Keep manual Value** are removed
 here like any other — once a rule is no longer generated there is nothing left
 to keep.
 
@@ -107,8 +132,8 @@ relative to user-created rules around it, and every subsequent rule
 is moved to sit directly after the previous one — strictly within
 the syncer's own rules.
 
-Important: rules **not** managed by the syncer (i.e. without the
-`cmdbsyncer_<account_id>` description marker) are never moved. Their
+Important: rules **not** managed by the syncer (i.e. whose description does not
+start with the `cmdbsyncer_<account_id>` marker) are never moved. Their
 position relative to other user rules is preserved; only their
 position relative to the syncer block can shift, because the syncer
 rules cluster together once sorted.
