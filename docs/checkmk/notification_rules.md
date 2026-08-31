@@ -12,11 +12,17 @@ Go to: _Modules → Checkmk → Manage Notification Rules_
 Every rule the Syncer creates carries the description `cmdbsyncer_<account_id> - DO NOT EDIT`. On every run the Syncer:
 
 - fetches all notification rules whose description starts with `cmdbsyncer_<account_id>`
-- compares each rule's full body against the configured outcomes
+- compares each rule's body against the configured outcomes
+- rewrites a rule whose content changed
 - creates rules that are missing in Checkmk
 - deletes rules in Checkmk that no configured outcome produces any more
 
-A manual edit to one of the Syncer's rules in Checkmk is detected on the next run because the body no longer matches what the Syncer would render — the rule is removed and re-created with the configured values. Do not edit them by hand.
+A manual edit to one of the Syncer's rules in Checkmk is detected on the next run because the body no longer matches what the Syncer would render — the rule is rewritten with the configured values. Do not edit them by hand.
+
+!!! note
+    The notification method is the exception: its parameters belong to Checkmk. The Syncer only sets which plugin a rule uses and leaves everything you configured below it — the notification parameters and the bulking settings — untouched. A rule is therefore updated in place instead of being deleted and created again, which would reset those settings.
+
+    A rule the Syncer creates for the first time is bound by Checkmk to the first notification parameter set of that plugin, because the Checkmk API offers no way to name one. Pick the right parameter set on the rule in Checkmk once — it stays from then on.
 
 The Syncer never touches notification rules that are not labelled with its description marker. Rules created manually in Checkmk are left alone.
 
