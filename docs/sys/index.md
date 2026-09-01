@@ -14,7 +14,7 @@ It is only available via the CLI:
 | Command | Arguments | Description |
 | --- | --- | --- |
 | `create_user` | `EMAIL` | Create a new user or reset an existing user's password and disable 2FA. The generated password is printed to the console. The user is created as a global admin. |
-| `delete_all_hosts` | `[ACCOUNT]` | Delete all hosts from the database. Prompts for confirmation. Pass an account name to limit deletion to hosts imported by that account. Hosts with `no_autodelete` set and templates are never deleted. |
+| `delete_all_hosts` | `[ACCOUNT]` `--include-protected` | Delete all hosts from the database. Prompts for confirmation. Pass an account name to limit deletion to hosts imported by that account. Hosts with `no_autodelete` set are kept unless `--include-protected` is given; templates are never deleted. |
 | `delete_cache` | `[CACHE_NAME]` | Clear the attribute cache of all hosts. Pass a prefix to only clear cache keys starting with that string (e.g. `checkmk`). Without argument, the entire cache is cleared. |
 | `delete_inventory` | `[PREFIX]` `--hostname` | Delete inventory data from all hosts. Pass a prefix to only remove inventory keys starting with that string (e.g. `myplugin`). Without argument, all inventory data is cleared. Use `--hostname` to limit the whole operation to a single host. The cached export data of every touched host is dropped as well. |
 | `maintenance` | `[DAYS]` | Delete hosts that have not been seen for more than `DAYS` days (default: 7). Also available as a schedulable cronjob. |
