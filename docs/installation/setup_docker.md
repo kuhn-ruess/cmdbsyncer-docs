@@ -182,6 +182,19 @@ Add the proxy to `~/.docker/config.json` for the user running Docker:
 
 For local development with live code reload, use the `./helper` command provided in the repository. It starts the container with the source directory mounted and Flask in debug mode.
 
+## Shell Completion
+
+`./helper shell` opens a bash login shell in the container with tab completion for the `cmdbsyncer` CLI: press TAB to complete command groups, subcommands and options.
+
+```
+/srv # ./cmdbsyncer checkmk export_<TAB>
+export_bi_aggregations  export_downtimes  export_notifications  export_rules
+export_bi_rules         export_groups     export_passwords      export_rulesets
+export_dcd_rules        export_hosts      export_tags           export_users
+```
+
+Completion is set up by `/etc/profile.d/cmdbsyncer_completion.sh`, so it needs a login shell. If you enter the container yourself, use `docker exec -it <container> bash -l`.
+
 ## Next Steps
 
 - [Configure the application](../basics/lcl_config.md)
