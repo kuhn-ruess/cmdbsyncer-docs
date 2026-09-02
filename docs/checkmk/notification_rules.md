@@ -137,4 +137,10 @@ Run:
 ./cmdbsyncer checkmk export_notifications SITEACCOUNT
 ```
 
+Add `--dry-run` to see which rules would be created, updated or deleted without sending anything to Checkmk:
+
+```bash
+./cmdbsyncer checkmk export_notifications SITEACCOUNT --dry-run
+```
+
 The Syncer iterates all hosts, renders both outcomes for each, dedups by body, and pushes the resulting set to Checkmk. With N distinct contact-group values across the hosts you get 2 × N rules. Activate Changes is **not** triggered automatically — run it explicitly when you are ready.
