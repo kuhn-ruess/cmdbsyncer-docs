@@ -103,7 +103,7 @@ All Jinja-rendered. Empty disables the filter.
 | Filter Service Levels          | Range `min,max` (numeric)                       |
 | Filter Contacts                | Comma-separated user IDs                        |
 
-If `Filter Contact Groups` is set on an outcome but renders empty for a host (the host is missing the source label), the outcome is silently skipped for that host — no nonsense rule with an empty CG match is sent to Checkmk.
+If `Filter Contact Groups` is set on an outcome but renders empty for a host (the host is missing the source label), the outcome is skipped for that host — no nonsense rule with an empty CG match is sent to Checkmk. The run reports how many hosts that affected, see [Nothing Was Exported](#nothing-was-exported-what-now).
 
 ### Disable Rule
 
@@ -144,3 +144,37 @@ Add `--dry-run` to see which rules would be created, updated or deleted without 
 ```
 
 The Syncer iterates all hosts, renders both outcomes for each, dedups by body, and pushes the resulting set to Checkmk. With N distinct contact-group values across the hosts you get 2 × N rules. Activate Changes is **not** triggered automatically — run it explicitly when you are ready.
+
+## Nothing Was Exported — What Now?
+
+Every template field is Jinja, and a template that does not compile renders to an empty string. An outcome without recipients is dropped, so a single typo can cost you the whole rule. Three things make that visible:
+
+**1. The form rejects broken Jinja.** Saving a rule whose field does not compile shows the field name and the parser error, and keeps you on the form.
+
+**2. The export checks all templates before it starts:**
+
+```
+Check Rule Templates
+ !! App Alarm: field 'multiply_list' is not valid Jinja: expected token 'end of print statement', got '.'
+```
+
+**3. Hosts that produce no rule say why:**
+
+```
+Build needed Notification Rules
+ -- 0 rule(s) configured
+ !! 214 outcome(s) skipped: loop list rendered empty (e.g. srv001, srv002, srv003)
+ !! 12 outcome(s) skipped: no contact group recipients rendered (e.g. srv100)
+```
+
+The common reasons:
+
+| Message | Meaning |
+| :------ | :------ |
+| loop list rendered empty | "List to Loop Over" produced nothing — the attribute is missing or empty on those hosts |
+| loop list render error | The loop template raised at render time, e.g. a missing attribute without a `\|default('')` |
+| no contact group recipients rendered | "Contact Group Recipients" rendered empty; the rule would notify nobody |
+| contact group filter rendered empty | "Filter Contact Groups" is set but renders empty on that host |
+| render error | A match field raised at render time |
+
+All of these also land in the Log view of the run, together with the sample host names.
