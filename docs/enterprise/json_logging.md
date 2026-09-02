@@ -91,8 +91,24 @@ live:
 {"@timestamp":"2026-04-23T09:05:11.000Z","log":{"level":"info","logger":"debug"},"message":"ECS JSON logging active","service":{"name":"cmdbsyncer"}}
 ```
 
-No extra config is required — defaults (stdout, `INFO`) match what
-every cloud collector expects.
+No extra config is required for the web application — defaults
+(stdout, `INFO`) match what every cloud collector expects.
+
+### Command runs (imports, exports, cron)
+
+`cmdbsyncer <command>` runs keep their plain, human-readable output by
+default: a JSON banner in front of an interactive command helps nobody.
+Imports, exports and cron runs are command runs too, though, and they
+are usually the events the log pipeline is actually after. Opt them in:
+
+```python
+config = {
+    'JSON_LOGGING_CLI': True,
+}
+```
+
+Third-party chatter (mongoengine, urllib3, …) stays suppressed in
+command runs either way — only the Syncer's own entries are emitted.
 
 ## Configuration knobs
 
@@ -101,6 +117,7 @@ All optional. Set in `local_config.py`:
 | Key                    | Default   | Purpose                                       |
 | ---------------------- | --------- | --------------------------------------------- |
 | `JSON_LOGGING_ENABLED` | `True`    | Override to `False` to keep text output even when the license has `json_logging` (useful for local terminal runs) |
+| `JSON_LOGGING_CLI`     | `False`   | Also emit JSON for `cmdbsyncer <command>` runs — imports, exports, cron |
 | `JSON_LOGGING_STREAM`  | `'stdout'`| `'stdout'` or `'stderr'`                      |
 | `JSON_LOGGING_LEVEL`   | `'INFO'`  | Any standard Python level name                |
 
@@ -179,6 +196,10 @@ plugins.
 No upstream component is setting a trace header. Configure your
 ingress / service mesh to forward one of the recognised headers, or
 set `X-Request-ID` at the reverse proxy.
+
+**An import or export produces no JSON at all**  
+Command runs need `JSON_LOGGING_CLI = True` (see above). Without it
+only the web application and its workers write to the JSON stream.
 
 **Werkzeug request logs are gone**  
 Expected. In production the reverse proxy access log is the right
