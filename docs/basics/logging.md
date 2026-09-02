@@ -14,16 +14,32 @@ This is the most practical place to monitor ongoing syncs without needing shell 
 
 ## Python Logging
 
-CMDBsyncer uses the Python `logging` module for console and syslog output. The configuration follows the standard [Python logging dict config](https://docs.python.org/3/howto/logging-cookbook.html) format and can be fully overridden via the `LOGGING` key in [local_config.py](lcl_config.md).
+Besides the web log, every entry a sync run produces is handed to the
+Python `logging` module, so it can be forwarded to a console, a syslog
+server, a log file or any other log pipeline. The configuration follows
+the standard [Python logging dict config](https://docs.python.org/3/howto/logging-cookbook.html)
+format and can be fully overridden with the `LOGGING` key in
+[local_config.py](lcl_config.md).
 
 Two loggers are always required and must not be removed:
 
-- **`debug`** — used internally for debug output to the console
-- **`syslog`** — used for structured output to an external destination
+- **`debug`** — the human-readable console output. Muted by default
+  (level `100`); switch it on for a single run with `--debug`, or
+  permanently with `LOG_LEVEL`.
+- **`syslog`** — the external sink. This is the one to point at your log
+  destination. It receives *every* entry, exactly like the Log view in
+  the interface, and it does not propagate, so the external copy is
+  never duplicated onto the console.
 
-The `LOG_LEVEL` key is a quick shortcut to change the log level without replacing the full config.
+!!! note
+    A `LOGGING` block in `local_config.py` is applied from version 4.3
+    on. Earlier versions built the logging pipeline before the local
+    configuration was read and silently discarded the override.
 
 ### Example: Change log level only
+
+`LOG_LEVEL` raises the level of both loggers without having to restate
+the whole `LOGGING` dict:
 
 ```python
 config = {
@@ -32,6 +48,10 @@ config = {
 ```
 
 ### Example: Log to remote syslog server (UDP)
+
+!!! warning
+    The `address` has to be a **tuple**, not a list — Python's socket
+    layer rejects a list and every log entry ends in a handler error.
 
 ```python
 config = {
@@ -49,14 +69,14 @@ config = {
             },
             'syslog': {
                 'class': 'logging.handlers.SysLogHandler',
-                'address': ['192.168.1.10', 514],  # remote syslog host and port
+                'address': ('192.168.1.10', 514),  # remote syslog host and port
                 'facility': 'local6',
                 'formatter': 'syslog',
             },
         },
         'loggers': {
-            'debug':  {'handlers': ['console'], 'level': 100,    'propagate': 'True'},
-            'syslog': {'handlers': ['syslog'],  'level': 'INFO', 'propagate': 'True'},
+            'debug':  {'handlers': ['console'], 'level': 100,    'propagate': True},
+            'syslog': {'handlers': ['syslog'],  'level': 'INFO', 'propagate': False},
         },
     },
 }
@@ -86,14 +106,18 @@ config = {
             },
         },
         'loggers': {
-            'debug':  {'handlers': ['console'], 'level': 100,    'propagate': 'True'},
-            'syslog': {'handlers': ['syslog'],  'level': 'INFO', 'propagate': 'True'},
+            'debug':  {'handlers': ['console'], 'level': 100,    'propagate': True},
+            'syslog': {'handlers': ['syslog'],  'level': 'INFO', 'propagate': False},
         },
     },
 }
 ```
 
 ### Example: Log to file
+
+The directory has to exist and has to be writable for the user the
+Syncer runs as — in a container that means mounting it into the
+container as well.
 
 ```python
 config = {
@@ -116,12 +140,18 @@ config = {
             },
         },
         'loggers': {
-            'debug':  {'handlers': ['console'], 'level': 100,    'propagate': 'True'},
-            'syslog': {'handlers': ['syslog'],  'level': 'INFO', 'propagate': 'True'},
+            'debug':  {'handlers': ['console'], 'level': 100,    'propagate': True},
+            'syslog': {'handlers': ['syslog'],  'level': 'INFO', 'propagate': False},
         },
     },
 }
 ```
+
+### Structured output
+
+The handlers above write plain text lines. If the log has to be machine
+readable — JSON for Elasticsearch, Loki, Splunk or another collector —
+see [JSON Logging](../enterprise/json_logging.md).
 
 ## Monitoring
 
