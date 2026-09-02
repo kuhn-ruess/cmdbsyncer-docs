@@ -72,11 +72,16 @@ Fields you can rely on:
 | `trace.id`             | First-match of `X-Request-ID`, `X-Cloud-Trace-Context`, `X-Amzn-Trace-Id`, `traceparent` |
 | `event.source`         | Source string passed to `log.log(..., source=…)`             |
 | `event.outcome`        | `success` / `failure`                                        |
-| `event.details.*`      | Structured key/value details (preserved from `log.log`)      |
+| `event.details.*`      | Structured key/value details (preserved from `log.log`). A key that occurs more than once — one `error` per failed host, for example — becomes an array |
 | `affected_hosts`       | List of hostnames when the event references hosts            |
 
 For exceptions you additionally get `error.type`, `error.message`, and
-`error.stack_trace`.
+`error.stack_trace`. An entry the Syncer logged from inside an exception
+handler carries its traceback in `error.stack_trace` as well.
+
+Everything the **Log** view in the admin panel shows for a run is in the
+JSON record too: the same message, source, affected hosts, every detail
+row, and the traceback.
 
 ## Enabling it
 
