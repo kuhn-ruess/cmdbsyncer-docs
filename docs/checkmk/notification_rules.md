@@ -64,7 +64,54 @@ Each outcome below is rendered once per matching host. All template fields suppo
 
 ### Notification Method
 
-Free-text plugin name with autocomplete suggestions for the built-in Checkmk plugins (`mail`, `asciimail`, `slack`, `msteams`, `pagerduty`, …). You can type any custom plugin name — useful for site-local notification scripts.
+Free-text plug-in name with autocomplete suggestions for the built-in Checkmk plug-ins (`mail`, `asciimail`, `slack`, `msteams`, `pagerduty`, …). You can type any other name — a site-local or third-party notification script.
+
+Checkmk takes a plug-in it ships and everything else through different options of its API, and the Syncer picks the right one for you. A built-in plug-in keeps the notification parameters you configured for it in Checkmk; anything else is pushed as a custom plug-in with the parameters from the field below.
+
+!!! note
+    The plug-in must exist in the target site (`local/share/check_mk/notifications/`). Checkmk rejects a name it does not find there with `<name> does not exist`.
+
+**Read from Checkmk**: the button above the outcomes fills the suggestion list from a site. Checkmk's API has no endpoint listing the installed plug-ins, so what you get is the names the notification rules on that site already use — which is where a third-party plug-in shows up — plus the built-in ones.
+
+### Custom Plug-in Parameters
+
+Only for a method Checkmk does not ship. Built-in plug-ins ignore the field — their parameters live in Checkmk. Jinja-rendered, and there are two shapes because Checkmk expects two:
+
+| Your plug-in | Write | Sent as |
+| :----------- | :---- | :------ |
+| brings its own configuration mask, like the built-in ones | a dict, e.g. `{"webhook_url": "https://…", "channel": "{{ cmk_contact_group }}"}` | its own fields next to the plug-in name |
+| is a plain notification script | a comma-separated list, e.g. `https://hook, {{ cmk_contact_group }}` | the positional parameter list the script is called with |
+
+Anything starting with `{` is read as a dict, anything starting with `[` as a list (JSON or Python literal); everything else is split on commas. An empty field sends the plug-in name alone — which of the two shapes it should mean cannot be guessed, and a wrong guess is not harmless: a list sent to a plug-in with its own configuration makes Checkmk 2.4 answer `Internal Server Error / KeyError: 'params'` and 2.5 reject the request. A script that really takes no parameter is written as `[]`.
+
+#### Using a notification configuration that already exists
+
+A rule cannot point at one of the notification configurations you created in Checkmk: its API has no field for their id, and sending one is rejected. It binds to the configuration whose parameters it **repeats** — enter the same values and the rule lands on your existing configuration; enter different ones and Checkmk stores a copy next to it, named `Auto-generated during rule creation via the REST API`.
+
+**Parameter template**: the second button above the outcomes does that lookup for you. It fills an empty parameter field with the parameters of the first configuration that exists for the plug-in on the chosen site, and names it in the status line. Only when there is none does it fall back to the empty skeleton the plug-in declares — useful in itself, because Checkmk rejects a missing field with `A required (sub-)field is missing.` and never says which one.
+
+A secret cannot be read back: Checkmk hands out an existing password encrypted, so the placeholder stays for you to fill in. Everything else, the password id included, is kept — that is what decides whether the rule matches the configuration. A password from the Checkmk password store carries no secret at all and is repeated as it is, so those match without any further input.
+
+The field names in the dict are the ones the plug-in declares in its own ruleset. A `Password` field does not take a plain string — Checkmk wants the shape it stores on disk:
+
+```json
+{
+  "api_host": "https://eagle.example",
+  "api_token": ["cmk_postprocessed", "explicit_password", ["syncer", "{{ACCOUNT:sms-eagle:password}}"]],
+  "ssl_verify": false
+}
+```
+
+Keep the secret on an Account and pull it in with `{{ACCOUNT:<account>:password}}` as above, so it is not stored in clear text on the rule. A password from the Checkmk password store is referenced instead of inlined:
+
+```json
+{"api_token": ["cmk_postprocessed", "stored_password", ["{{ cmk_password('sms-eagle') }}", ""]]}
+```
+
+!!! note
+    The stored-password variant needs the password to exist in the target site — export it with `checkmk export_passwords` first. Checkmk 2.4 rejects an unknown store id, 2.5 accepts it and fails later.
+
+Unlike the parameters of a built-in plug-in, these belong to the Syncer: change them here and the next run rewrites the rule in Checkmk.
 
 ### One Rule per List Entry / List to Loop Over
 
