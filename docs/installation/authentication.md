@@ -24,6 +24,7 @@ permissions. Each permission unlocks the matching part of the UI:
 | Approvals | the critical-label approval queue |
 | Log View, Files, User Management, … | the matching views |
 | Checkmk / Netbox / Ansible / … | the per-module menus |
+| Checkmk: Data Quality Check <span class="since">Since 4.3</span> | only the Checkmk Data Quality Check page, without the rest of the Checkmk menu |
 
 !!! note "Since 4.3"
     Users without any Settings-area permission no longer see the **Settings** menu at all.
@@ -76,3 +77,22 @@ Under **Settings → User → Restrict to accounts** you can limit a user to one
 When set, the user only sees and can act on hosts bound to those accounts — both in the REST
 API and in the web-UI **Host** and **Objects** lists (and the bulk *Set Account* action only
 offers those accounts). Leave it empty for full access.
+
+## Restricting a user to CMDB templates
+<span class="since">Since 4.3</span>
+
+Under **Settings → User → Restrict to templates** you can limit a user to one or more CMDB
+templates. It works like the account restriction, only on the template side: the user sees
+just the hosts carrying one of those templates — in the web-UI **Host**, **Objects** and
+**Archive** lists as well as over the REST API — and can only assign those templates, in the
+host form and on the Checkmk Data Quality page. Leave it empty for full access.
+
+Both restrictions can be combined: a user carrying an account *and* a template allowlist only
+reaches hosts that satisfy each of them.
+
+!!! note "Data Quality Check"
+    On the Checkmk **Data Quality Check** page a restricted user also sees the hosts no
+    template has claimed yet — those are the ones they may take over with their own template.
+    Hosts carrying somebody else's template stay invisible, and creating hosts there requires
+    picking one of their templates, so a newly created host does not disappear from its
+    creator.
