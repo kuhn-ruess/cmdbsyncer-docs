@@ -47,7 +47,7 @@ The current entry is offered to every other field of the outcome as `{{name}}`, 
 
 For a host carrying `grr00_oracle,grr00_sap` that yields two rules: one matching contact group `grr00_oracle` and notifying `gro00_cmk_alarm_sms_oracle` and `gro00_cmk_alarm_email_oracle`, and the same for `grr00_sap`.
 
-The _List to Loop Over_ field takes any Jinja that renders to a list. Use the `get_list()` helper with `|safe` — it accepts a real list, a Python list literal, and a comma-separated string alike:
+The _List to Loop Over_ field takes any Jinja that renders to a list. Use the `get_list()` helper with `|safe` — it accepts a real list, a Python list literal, and a comma-separated string alike, and an attribute a host does not carry counts as an empty list, so looping over two of them needs no guard:
 
 ```jinja
 {{get_list(anwendung_kontaktgruppe)|safe}}
@@ -219,7 +219,7 @@ The common reasons:
 | Message | Meaning |
 | :------ | :------ |
 | loop list rendered empty | "List to Loop Over" produced nothing — the attribute is missing or empty on those hosts |
-| loop list render error | The loop template raised at render time, e.g. a missing attribute without a `\|default('')` |
+| loop list render error | The loop template raised at render time |
 | no contact group recipients rendered | "Contact Group Recipients" rendered empty; the rule would notify nobody |
 | contact group filter rendered empty | "Filter Contact Groups" is set but renders empty on that host |
 | render error | A match field raised at render time |
