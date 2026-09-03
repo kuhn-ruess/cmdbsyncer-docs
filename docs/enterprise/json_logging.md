@@ -102,14 +102,36 @@ No extra config is required for the web application — defaults
 ### Command runs (imports, exports, cron)
 
 `cmdbsyncer <command>` runs keep their plain, human-readable output by
-default: a JSON banner in front of an interactive command helps nobody.
-Imports, exports and cron runs are command runs too, though, and they
-are usually the events the log pipeline is actually after. Opt them in:
+default. Imports, exports and cron runs are command runs too, though,
+and they are usually the events the log pipeline is actually after.
+Opt them in:
 
 ```python
 config = {
     'JSON_LOGGING_CLI': True,
 }
+```
+
+**Not when you are watching.** A command whose output goes straight to
+a terminal keeps its plain text, even with the setting on: one JSON
+record can carry an entire stack trace on a single line, and no
+collector is reading your terminal anyway. A cron run, a pipe or a
+redirect is not a terminal, and that is where the stream is produced —
+so the one setting serves both without a second switch.
+
+```sh
+cmdbsyncer csv import_hosts prod          # terminal → plain text
+cmdbsyncer csv import_hosts prod | tee /dev/null   # pipe → JSON
+```
+
+**stdout carries the JSON and nothing else.** The progress lines a
+command prints move to stderr for the duration of such a run, so a
+collector reading stdout gets a stream in which *every* line parses,
+while an operator still sees what the run is doing. Redirect the two
+apart if you want them apart:
+
+```sh
+cmdbsyncer checkmk export_hosts prod > /var/log/cmdbsyncer.json 2>/dev/null
 ```
 
 Third-party chatter (mongoengine, urllib3, …) stays suppressed in
@@ -122,7 +144,7 @@ All optional. Set in `local_config.py`:
 | Key                    | Default   | Purpose                                       |
 | ---------------------- | --------- | --------------------------------------------- |
 | `JSON_LOGGING_ENABLED` | `True`    | Override to `False` to keep text output even when the license has `json_logging` (useful for local terminal runs) |
-| `JSON_LOGGING_CLI`     | `False`   | Also emit JSON for `cmdbsyncer <command>` runs — imports, exports, cron |
+| `JSON_LOGGING_CLI`     | `False`   | Also emit JSON for `cmdbsyncer <command>` runs — imports, exports, cron. Runs printing to a terminal keep their plain text regardless |
 | `JSON_LOGGING_STREAM`  | `'stdout'`| `'stdout'` or `'stderr'`                      |
 | `JSON_LOGGING_LEVEL`   | `'INFO'`  | Any standard Python level name                |
 
@@ -206,14 +228,21 @@ set `X-Request-ID` at the reverse proxy.
 Command runs need `JSON_LOGGING_CLI = True` (see above). Without it
 only the web application and its workers write to the JSON stream.
 
+**I set `JSON_LOGGING_CLI` and still see plain text**  
+You are running the command on a terminal, where it stays readable on
+purpose. Pipe or redirect it — `cmdbsyncer … | cat` — to see what the
+collector will get.
+
 **The JSON is in my terminal but not in `docker logs`**  
 `docker logs` shows the stream of the container's main process only. A
 run started with `docker exec` writes to that exec session, which is
 your terminal — it never reaches the container log, and a collector
 scraping the container never sees it. That is Docker behaviour, not a
 setting. Cron runs inside the container do reach the container log:
-`run_cron.sh` writes to the main process's stdout, because the cron
-daemon itself would hand job output to sendmail instead.
+`run_cron.sh` writes to the main process's streams, because the cron
+daemon itself would hand job output to sendmail instead. It keeps them
+apart — JSON on stdout, progress text on stderr — so a collector
+scraping only the stdout stream of the container gets clean JSON.
 
 **Werkzeug request logs are gone**  
 Expected. In production the reverse proxy access log is the right
