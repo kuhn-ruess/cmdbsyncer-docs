@@ -124,15 +124,19 @@ cmdbsyncer csv import_hosts prod          # terminal → plain text
 cmdbsyncer csv import_hosts prod | tee /dev/null   # pipe → JSON
 ```
 
-**stdout carries the JSON and nothing else.** The progress lines a
-command prints move to stderr for the duration of such a run, so a
-collector reading stdout gets a stream in which *every* line parses,
-while an operator still sees what the run is doing. Redirect the two
-apart if you want them apart:
+**Everything the run reports becomes a record.** The progress of a run
+— the retries, the timeouts, the result per host — is printed straight
+to the console by the plugins. On such a run those lines go through the
+pipeline as well, so each arrives as its own record with the colour
+escapes stripped, under `event.source: command_output`:
 
-```sh
-cmdbsyncer checkmk export_hosts prod > /var/log/cmdbsyncer.json 2>/dev/null
+```json
+{"@timestamp":"…","log":{"level":"info"},"message":"Try 1 of 2 failed: HTTPConnectionPool(host='cmk.example.com', port=80): Max retries exceeded","event":{"source":"command_output","category":"app","outcome":"success"}}
 ```
+
+Without it a collector would see that an export failed but not one of
+the attempts leading there — only the closing summary record of the run
+carries a source of its own.
 
 Third-party chatter (mongoengine, urllib3, …) stays suppressed in
 command runs either way — only the Syncer's own entries are emitted.
@@ -240,9 +244,9 @@ your terminal — it never reaches the container log, and a collector
 scraping the container never sees it. That is Docker behaviour, not a
 setting. Cron runs inside the container do reach the container log:
 `run_cron.sh` writes to the main process's streams, because the cron
-daemon itself would hand job output to sendmail instead. It keeps them
-apart — JSON on stdout, progress text on stderr — so a collector
-scraping only the stdout stream of the container gets clean JSON.
+daemon itself would hand job output to sendmail instead. Everything the
+run reports arrives on stdout as records; stderr keeps whatever escapes
+the pipeline, an interpreter-level traceback for instance.
 
 **Werkzeug request logs are gone**  
 Expected. In production the reverse proxy access log is the right
