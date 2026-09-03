@@ -141,9 +141,26 @@ carries a source of its own.
 Third-party chatter (mongoengine, urllib3, …) stays suppressed in
 command runs either way — only the Syncer's own entries are emitted.
 
-## Configuration knobs
+## Turning it on and off
 
-All optional. Set in `local_config.py`:
+Every setting lives in `local_config.py`. You do not have to edit the
+file by hand: **Config → Local Config** in the web interface carries a
+**JSON log stream** preset with all four keys, their defaults and a
+line on what each one does. Saving there writes `local_config.py` for
+you; restart the application afterwards.
+
+By hand it looks like this:
+
+```python
+config = {
+    'JSON_LOGGING_ENABLED': True,    # the main switch
+    'JSON_LOGGING_CLI': True,        # add command runs — imports, exports, cron
+}
+```
+
+### The four keys
+
+All optional — the defaults below apply when the key is absent:
 
 | Key                    | Default   | Purpose                                       |
 | ---------------------- | --------- | --------------------------------------------- |
