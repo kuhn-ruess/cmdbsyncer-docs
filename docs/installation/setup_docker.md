@@ -65,6 +65,15 @@ docker exec -it <container_name> ./cmdbsyncer --help
 
 Sync jobs need to be triggered on a schedule. If you use the provided `Dockerfile`, cron is already set up inside the container. Otherwise, schedule `docker exec` calls from the host cron or your orchestrator.
 
+The scheduler reports itself in the container log, so `docker logs` tells you whether it is alive and what it fired:
+
+```text
+crond: crond 4.5 dillon's cron daemon, started with loglevel info
+crond: FILE /etc/crontabs/root USER root PID 214 run-parts /etc/periodic/15min
+```
+
+The output of the runs themselves lands there too — one line per fired job, plus whatever the sync writes.
+
 ## External Files
 
 If your workflows use CSV files, CA certificates, or other external files, define a Docker volume for them and point `FILEADMIN_PATH` to the mounted path in `local_config.py`:
