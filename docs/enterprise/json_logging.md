@@ -147,8 +147,8 @@ All optional. Set in `local_config.py`:
 
 | Key                    | Default   | Purpose                                       |
 | ---------------------- | --------- | --------------------------------------------- |
-| `JSON_LOGGING_ENABLED` | `True`    | Override to `False` to keep text output even when the license has `json_logging` (useful for local terminal runs) |
-| `JSON_LOGGING_CLI`     | `False`   | Also emit JSON for `cmdbsyncer <command>` runs — imports, exports, cron. Runs printing to a terminal keep their plain text regardless |
+| `JSON_LOGGING_ENABLED` | `True`    | The main switch. `False` keeps plain text everywhere — web, workers and command runs alike — even when the license has `json_logging` |
+| `JSON_LOGGING_CLI`     | `False`   | Adds `cmdbsyncer <command>` runs — imports, exports, cron — to what the web application and its workers already emit. Setting it to `False` turns *those runs* back to plain text, not the stream as a whole; that is `JSON_LOGGING_ENABLED`. Runs printing to a terminal keep their plain text regardless |
 | `JSON_LOGGING_STREAM`  | `'stdout'`| `'stdout'` or `'stderr'`                      |
 | `JSON_LOGGING_LEVEL`   | `'INFO'`  | Any standard Python level name                |
 
