@@ -136,6 +136,7 @@ nav:
      - Maintenance: sys/index.md
   - Enterprise:
      - Overview: enterprise/index.md
+     - Installation and License: enterprise/installation.md
      - Remote User SSO: enterprise/remote_user_sso.md
      - LDAP Login: enterprise/ldap_login.md
      - OIDC Login: enterprise/oidc_login.md

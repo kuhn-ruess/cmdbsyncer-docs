@@ -4,6 +4,9 @@ CMDBsyncer follows an **open-core** model. The core product is open source and f
 
 If the enterprise package is not installed — or its license is missing or invalid — CMDBsyncer continues to run as the Community Edition. Enterprise-only hooks silently fall back to no-ops.
 
+!!! tip "Getting started"
+    [Installation and License](installation.md) walks through installing the package, placing the license file, and verifying that it took effect.
+
 ## Enterprise Features
 
 | Feature                   | Details                                                                  |
@@ -21,105 +24,16 @@ If the enterprise package is not installed — or its license is missing or inva
 | Scheduled Backups         | [Scheduled Backups](scheduled_backup.md)                                 |
 | 4-Eyes Approval Workflow  | [4-Eyes Approval Workflow](approval_workflow.md)                         |
 
-## Installation
+A license unlocks exactly the features it lists. **Profile → License** in the web UI shows which ones are active on your installation.
 
-The enterprise package is published on PyPI. Your license file is provided separately by Kuhn & Ruess GmbH.
+## How It Works
 
-Install into the same Python environment that runs CMDBsyncer:
+The core imports the enterprise package inside a guarded import. On a valid license, the package registers each licensed feature with the core's hook registry; core call sites then use that hook instead of their default behaviour. Without the package — or without a matching feature in the license — the hook is simply absent and the core keeps its Community behaviour.
 
-```bash
-pip install cmdbsyncer-enterprise
-```
+That means:
 
+- No enterprise code runs unless the package is installed **and** the license lists the feature.
+- The license is verified locally against a public key shipped with the package. There is no license server and no outbound connection.
+- Removing the package returns the installation to the Community Edition without any data migration.
 
-Restart the application (`docker restart <container>` or reload apache) so the new package is loaded.
-
-To upgrade to a newer release later:
-
-```bash
-pip install --upgrade cmdbsyncer-enterprise
-```
-
-### Offline install
-
-The offline bundler downloads the enterprise wheel alongside the community wheel when called with `--include-enterprise`:
-
-```bash
-./tools/build_offline_bundle.sh --include-syncer --include-enterprise
-```
-
-The bundle installs the enterprise package on top of the core; the license JWT still has to be placed on the target server separately.
-
-## License File
-
-CMDBsyncer looks for `license.jwt` in the **same directory as your `local_config.py`**. That is the path that pip installs already use for runtime configuration, so no extra directory is needed:
-
-```text
-<dir of local_config.py>/license.jwt
-```
-
-To use a different path, set the `CMDBSYNCER_LICENSE` environment variable:
-
-```bash
-export CMDBSYNCER_LICENSE=/srv/cmdbsyncer/license.jwt
-```
-
-The file must be readable by the user that runs the application (the uWSGI user in container deployments).
-
-You can also upload the license through the web UI: open **Profile → License** as a global admin and use the *Upload License* form at the bottom of the page. The signature is verified against the installed enterprise public key before the file is written, so a malformed or wrongly-signed upload never overwrites a working license. Restart the application after a successful upload to load the new license.
-
-The license carries the following metadata:
-
-| Field        | Meaning                                                |
-| :----------- | :----------------------------------------------------- |
-| `license_id` | Unique license identifier issued by Kuhn & Ruess       |
-| `customer`   | Licensee name                                          |
-| `iat`        | Issued-at timestamp                                    |
-| `exp`        | Expiry timestamp (enforced at startup)                 |
-
-
-## Verifying the License
-
-After a restart, open **Profile → License** in the web UI.
-
-- **Enterprise Edition** block with license details → license is active.
-- **Community Edition** → the `cmdbsyncer_enterprise` package is not installed.
-- **Enterprise package installed, but license not active** → the package is there but the license could not be loaded. The `Load status` field on that page shows the exact reason.
-
-At application startup, a single line is written to stderr (visible in `docker logs` or your systemd journal):
-
-```text
-[cmdbsyncer-enterprise] package loaded successfully
-[cmdbsyncer-enterprise] package not installed — running Community Edition
-[cmdbsyncer-enterprise] package installed but failed to activate ...: <reason>
-```
-
-## Troubleshooting
-
-**License page says "Community Edition"**
-
-The package is not installed in the running environment. In Docker, this usually means the package was not installed in the correct container, or the container was rebuilt from an image that doesn't include it. Re-run the install step and restart.
-
-**License page says "Enterprise package installed, but license not active"**
-
-Read the `Load status` field on the page. Typical values:
-
-| Status                                              | Cause                                                                                                       |
-| :-------------------------------------------------- | :---------------------------------------------------------------------------------------------------------- |
-| `failed: Enterprise license not found: [Errno 2]`   | File missing or `CMDBSYNCER_LICENSE` points to a non-existent path                                          |
-| `failed: Enterprise license invalid: expired_token` | License `exp` is in the past — request a renewal                                                            |
-| `failed: Enterprise license invalid: bad_signature` | Public key in the installed package doesn't match the signer — package and license versions are out of sync |
-
-**Version upgrades**
-
-Use `pip install --upgrade cmdbsyncer-enterprise` and restart the application. If pip skips the update, check the installed version with `pip show cmdbsyncer-enterprise` and force a reinstall with `pip install --force-reinstall cmdbsyncer-enterprise`.
-
-## Uninstalling the Enterprise Package
-
-To revert to the Community Edition, uninstall the package:
-
-```bash
-pip uninstall cmdbsyncer-enterprise
-```
-
-Restart the application. The License page will then show the Community Edition notice. The license file itself can stay in place — it has no effect without the package.
+See [Installation and License](installation.md) for setup, verification and troubleshooting.
