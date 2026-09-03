@@ -5,7 +5,7 @@
 | Mode | Backend | When to use |
 | :--- | :------ | :---------- |
 | `local` (default) | Shells out to the local `cmdbsyncer` CLI (`cmdbsyncer ansible inventory <provider> --list`) | Ansible runs on the **same host** as the Syncer (the bundled UI runner uses this). Fastest and credential-free. |
-| `http` | GETs `/api/v1/inventory/ansible/<provider>` | Ansible control node is a **different host** than the Syncer. |
+| `http` | GETs `/api/v1/ansible/inventory/<provider>` | Ansible control node is a **different host** than the Syncer. |
 
 Both transports return identical data because they are backed by the same Syncer-side render function — see [Inventory Providers](inventory_providers.md) for the full picture.
 
@@ -59,10 +59,10 @@ export CMDBSYNCER_APIPASSWORD="apisecret"
 
 …or from the YAML (`username:` / `password:`). Env vars take precedence.
 
-The plugin must reach `https://<syncer>/api/v1/inventory/ansible/<provider>`. Before going live verify with:
+The plugin must reach `https://<syncer>/api/v1/ansible/inventory/<provider>`. Before going live verify with:
 
 ```bash
-curl -H "x-login-user: USER:SECRET" https://your-syncer/api/v1/inventory/ansible/ansible | head
+curl -H "x-login-user: USER:SECRET" https://your-syncer/api/v1/ansible/inventory/ansible | head
 ```
 
 ## Selecting the provider

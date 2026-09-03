@@ -131,7 +131,12 @@ nav:
      - Plugin API: advanced/plugin_api.md
      - Jinja Functions: advanced/jinja_functions.md
      - Notifications: advanced/notifications.md
-     - Rest API: internal_restapi/index.md
+     - Rest API:
+       - Overview and Authentication: internal_restapi/index.md
+       - Objects Endpoints: internal_restapi/objects.md
+       - Syncer Endpoints: internal_restapi/syncer.md
+       - Rules Endpoints: internal_restapi/rules.md
+       - Ansible Endpoints: internal_restapi/ansible.md
      - MCP Server: mcp/index.md
      - Maintenance: sys/index.md
   - Enterprise:
