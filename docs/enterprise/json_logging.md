@@ -99,7 +99,7 @@ must never change the log format of a running installation under its
 operator.
 
 Easiest through the web interface: **Config → Local Config** carries a
-**JSON log stream** preset with all four keys, their defaults and a
+**JSON log stream** preset with all five keys, their defaults and a
 line each on what they do. Saving there writes `local_config.py` for
 you.
 
@@ -135,6 +135,13 @@ config = {
 }
 ```
 
+!!! note
+    Command runs reach the stream from version 4.3 on. Earlier
+    versions built the pipeline only for the web application and its
+    workers and skipped it for every `cmdbsyncer <command>` run, so
+    `JSON_LOGGING_CLI` has no effect there — imports, exports and cron
+    stay plain text whatever it is set to.
+
 **Not when you are watching.** A command whose output goes straight to
 a terminal keeps its plain text, even with the setting on: one JSON
 record can carry an entire stack trace on a single line, and no
@@ -164,7 +171,40 @@ carries a source of its own.
 Third-party chatter (mongoengine, urllib3, …) stays suppressed in
 command runs either way — only the Syncer's own entries are emitted.
 
-## The four keys
+### Writing to a log file instead
+
+Everything above puts the records on a stream, which is what a
+container collector reads. A run started from *outside* the container
+— `docker exec` out of a host cron, for instance — has no such reader:
+its output goes to that exec session and never to the container log
+(see [Troubleshooting](#troubleshooting)). `JSON_LOGGING_FILE` sends
+the records to a file instead:
+
+```python
+config = {
+    'JSON_LOGGING_ENABLED': True,
+    'JSON_LOGGING_CLI': True,
+    'JSON_LOGGING_FILE': '/var/log/syncer/cmdbsyncer.jsonl',
+}
+```
+
+The directory has to exist and be writable for the user the Syncer runs
+as — in a container that means mounting it in. If the path cannot be
+opened the run says so on stderr and keeps writing to the stream, so a
+typo never costs you an import.
+
+A file is not a terminal, so this is the one target that also works
+while you watch a run: the records go to the file, your terminal keeps
+the readable output. Log rotation is supported — the file is reopened
+when it is rotated away, no restart needed.
+
+!!! note
+    Available from version 4.4 on, with the matching Enterprise
+    package. Up to then the records only go to a stream — see the
+    cookbook entry [Host cron calling `docker exec`](#host-cron-calling-docker-exec)
+    for how to catch them in a file from the outside.
+
+## The five keys
 
 Set in `local_config.py`, or through the **JSON log stream** preset
 under **Config → Local Config**. The defaults below apply when a key is
@@ -173,7 +213,8 @@ absent:
 | Key                    | Default   | Purpose                                       |
 | ---------------------- | --------- | --------------------------------------------- |
 | `JSON_LOGGING_ENABLED` | `False`   | The main switch. Nothing is emitted until this is on, whatever the other three say and whatever the license carries |
-| `JSON_LOGGING_CLI`     | `False`   | Adds `cmdbsyncer <command>` runs — imports, exports, cron — to what the web application and its workers already emit. Setting it to `False` turns *those runs* back to plain text, not the stream as a whole; that is `JSON_LOGGING_ENABLED`. Runs printing to a terminal keep their plain text regardless |
+| `JSON_LOGGING_CLI`     | `False`   | Adds `cmdbsyncer <command>` runs — imports, exports, cron — to what the web application and its workers already emit. Setting it to `False` turns *those runs* back to plain text, not the stream as a whole; that is `JSON_LOGGING_ENABLED`. Runs printing to a terminal keep their plain text, unless the records go to `JSON_LOGGING_FILE`. Needs version 4.3 or newer |
+| `JSON_LOGGING_FILE`    | unset     | Write the records into this file instead of the stream — for runs nobody collects the output of, started from outside the container for example. Falls back to the stream when the path cannot be opened |
 | `JSON_LOGGING_STREAM`  | `'stdout'`| `'stdout'` or `'stderr'`                      |
 | `JSON_LOGGING_LEVEL`   | `'INFO'`  | Any standard Python level name                |
 
@@ -227,6 +268,38 @@ services:
         max-file: "5"
 ```
 
+### Host cron calling `docker exec`
+
+A cron job on the host that runs the Syncer inside the container needs
+two things: no TTY, and somewhere for the records to go that outlives
+the container.
+
+```sh
+docker compose exec -T cmdbsyncer \
+    cmdbsyncer checkmk export_hosts prod
+```
+
+`docker compose exec` allocates a TTY by default and a run on a
+terminal keeps its plain text, so `-T` is what turns the output into
+records (plain `docker exec` allocates none). A pipe or a redirect on
+the *host* side does not do it: it sits behind that TTY, and the
+command inside the container still sees a terminal. With `-T` in place
+it works as usual.
+
+For the destination, redirect the run into a file on a mounted path:
+
+```sh
+docker compose exec -T cmdbsyncer \
+    cmdbsyncer checkmk export_hosts prod \
+    >> /var/log/syncer/cmdbsyncer.jsonl 2>> /var/log/syncer/cmdbsyncer.err
+```
+
+From version 4.4 on, `JSON_LOGGING_FILE` does that for you.
+
+Either way the records stay on the host, where they survive the
+container and where Filebeat / Vector / the Elastic Agent already tail
+files, and `mk-job` or whatever wraps the job keeps its own output.
+
 ### Grafana Loki (LogQL)
 
 ```logql
@@ -272,6 +345,10 @@ setting. Cron runs inside the container do reach the container log:
 daemon itself would hand job output to sendmail instead. Everything the
 run reports arrives on stdout as records; stderr keeps whatever escapes
 the pipeline, an interpreter-level traceback for instance.
+
+For runs that come in from the host — a cron job calling `docker exec`
+— point `JSON_LOGGING_FILE` at a mounted path instead of chasing the
+container log; see [Host cron calling `docker exec`](#host-cron-calling-docker-exec).
 
 **Werkzeug request logs are gone**  
 Expected. In production the reverse proxy access log is the right
