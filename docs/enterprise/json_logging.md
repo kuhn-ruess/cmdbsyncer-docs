@@ -206,6 +206,15 @@ set `X-Request-ID` at the reverse proxy.
 Command runs need `JSON_LOGGING_CLI = True` (see above). Without it
 only the web application and its workers write to the JSON stream.
 
+**The JSON is in my terminal but not in `docker logs`**  
+`docker logs` shows the stream of the container's main process only. A
+run started with `docker exec` writes to that exec session, which is
+your terminal — it never reaches the container log, and a collector
+scraping the container never sees it. That is Docker behaviour, not a
+setting. Cron runs inside the container do reach the container log:
+`run_cron.sh` writes to the main process's stdout, because the cron
+daemon itself would hand job output to sendmail instead.
+
 **Werkzeug request logs are gone**  
 Expected. In production the reverse proxy access log is the right
 place for that. Set `JSON_LOGGING_LEVEL = 'DEBUG'` if you want them
