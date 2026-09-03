@@ -85,30 +85,53 @@ row, and the traceback.
 
 ## Enabling it
 
-Install the Enterprise package, ship a license that carries the
-`json_logging` claim (see the [Enterprise Edition](index.md) page),
-then restart the application.
+Two steps, in this order.
 
-A single marker line appears on startup, confirming the pipeline is
-live:
+### 1. Install the package and the license
+
+Install the Enterprise package and ship a license that carries the
+`json_logging` claim — see the [Enterprise Edition](index.md) page.
+
+### 2. Switch the stream on
+
+The stream is **off until you ask for it**, licence or not: an upgrade
+must never change the log format of a running installation under its
+operator.
+
+Easiest through the web interface: **Config → Local Config** carries a
+**JSON log stream** preset with all four keys, their defaults and a
+line each on what they do. Saving there writes `local_config.py` for
+you.
+
+By hand it is one key:
+
+```python
+config = {
+    'JSON_LOGGING_ENABLED': True,
+}
+```
+
+Restart the application. A single marker line appears on startup,
+confirming the pipeline is live:
 
 ```json
 {"@timestamp":"2026-04-23T09:05:11.000Z","log":{"level":"info","logger":"debug"},"message":"ECS JSON logging active","service":{"name":"cmdbsyncer"}}
 ```
 
-No extra config is required for the web application — defaults
-(stdout, `INFO`) match what every cloud collector expects.
+That covers the web application and its workers. The remaining
+defaults — stdout, `INFO` — match what every cloud collector expects.
 
-### Command runs (imports, exports, cron)
+### Adding command runs (imports, exports, cron)
 
-`cmdbsyncer <command>` runs keep their plain, human-readable output by
-default. Imports, exports and cron runs are command runs too, though,
-and they are usually the events the log pipeline is actually after.
-Opt them in:
+`JSON_LOGGING_ENABLED` covers the web application. Command runs stay
+plain on top of that — but imports, exports and cron runs *are* command
+runs, and they are usually the events the pipeline is actually after.
+A second key adds them:
 
 ```python
 config = {
-    'JSON_LOGGING_CLI': True,
+    'JSON_LOGGING_ENABLED': True,    # step 2 above
+    'JSON_LOGGING_CLI': True,        # plus imports, exports, cron
 }
 ```
 
@@ -141,30 +164,15 @@ carries a source of its own.
 Third-party chatter (mongoengine, urllib3, …) stays suppressed in
 command runs either way — only the Syncer's own entries are emitted.
 
-## Turning it on and off
+## The four keys
 
-Every setting lives in `local_config.py`. You do not have to edit the
-file by hand: **Config → Local Config** in the web interface carries a
-**JSON log stream** preset with all four keys, their defaults and a
-line on what each one does. Saving there writes `local_config.py` for
-you; restart the application afterwards.
-
-By hand it looks like this:
-
-```python
-config = {
-    'JSON_LOGGING_ENABLED': True,    # the main switch
-    'JSON_LOGGING_CLI': True,        # add command runs — imports, exports, cron
-}
-```
-
-### The four keys
-
-All optional — the defaults below apply when the key is absent:
+Set in `local_config.py`, or through the **JSON log stream** preset
+under **Config → Local Config**. The defaults below apply when a key is
+absent:
 
 | Key                    | Default   | Purpose                                       |
 | ---------------------- | --------- | --------------------------------------------- |
-| `JSON_LOGGING_ENABLED` | `True`    | The main switch. `False` keeps plain text everywhere — web, workers and command runs alike — even when the license has `json_logging` |
+| `JSON_LOGGING_ENABLED` | `False`   | The main switch. Nothing is emitted until this is on, whatever the other three say and whatever the license carries |
 | `JSON_LOGGING_CLI`     | `False`   | Adds `cmdbsyncer <command>` runs — imports, exports, cron — to what the web application and its workers already emit. Setting it to `False` turns *those runs* back to plain text, not the stream as a whole; that is `JSON_LOGGING_ENABLED`. Runs printing to a terminal keep their plain text regardless |
 | `JSON_LOGGING_STREAM`  | `'stdout'`| `'stdout'` or `'stderr'`                      |
 | `JSON_LOGGING_LEVEL`   | `'INFO'`  | Any standard Python level name                |
