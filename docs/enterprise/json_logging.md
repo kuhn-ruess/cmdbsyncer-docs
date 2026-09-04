@@ -98,12 +98,20 @@ The stream is **off until you ask for it**, licence or not: an upgrade
 must never change the log format of a running installation under its
 operator.
 
+There is one switch per thing that logs, and they are independent —
+set the one whose output you want in the collector:
+
+| Switch                 | What it puts on the stream                |
+| ---------------------- | ----------------------------------------- |
+| `JSON_LOGGING_ENABLED` | The web application and its workers       |
+| `JSON_LOGGING_CLI`     | Command runs — imports, exports, cron     |
+
 Easiest through the web interface: **Config → Local Config** carries a
 **JSON log stream** preset with all five keys, their defaults and a
 line each on what they do. Saving there writes `local_config.py` for
 you.
 
-By hand it is one key:
+By hand, for the web application:
 
 ```python
 config = {
@@ -121,26 +129,28 @@ confirming the pipeline is live:
 That covers the web application and its workers. The remaining
 defaults — stdout, `INFO` — match what every cloud collector expects.
 
-### Adding command runs (imports, exports, cron)
+### Command runs (imports, exports, cron)
 
-`JSON_LOGGING_ENABLED` covers the web application. Command runs stay
-plain on top of that — but imports, exports and cron runs *are* command
-runs, and they are usually the events the pipeline is actually after.
-A second key adds them:
+Imports, exports and cron runs are usually the events the pipeline is
+actually after, and they have a switch of their own:
 
 ```python
 config = {
-    'JSON_LOGGING_ENABLED': True,    # step 2 above
-    'JSON_LOGGING_CLI': True,        # plus imports, exports, cron
+    'JSON_LOGGING_CLI': True,        # imports, exports, cron
 }
 ```
+
+It does not need `JSON_LOGGING_ENABLED` beside it — wanting the
+imports in your collector says nothing about wanting the web log there
+too. Set both where you want both.
 
 !!! note
     Command runs reach the stream from version 4.3 on. Earlier
     versions built the pipeline only for the web application and its
     workers and skipped it for every `cmdbsyncer <command>` run, so
     `JSON_LOGGING_CLI` has no effect there — imports, exports and cron
-    stay plain text whatever it is set to.
+    stay plain text whatever it is set to. In 4.3.0 and 4.3.1 it also
+    still needed `JSON_LOGGING_ENABLED` next to it.
 
 **Not when you are watching.** A command whose output goes straight to
 a terminal keeps its plain text, even with the setting on: one JSON
@@ -199,9 +209,9 @@ the readable output. Log rotation is supported — the file is reopened
 when it is rotated away, no restart needed.
 
 !!! note
-    Available from version 4.4 on, with the matching Enterprise
-    package. Up to then the records only go to a stream — see the
-    cookbook entry [Host cron calling `docker exec`](#host-cron-calling-docker-exec)
+    Available in the current 4.3 release line, with the matching
+    Enterprise package. Before that the records only go to a stream —
+    see the cookbook entry [Host cron calling `docker exec`](#host-cron-calling-docker-exec)
     for how to catch them in a file from the outside.
 
 ## The five keys
@@ -212,8 +222,8 @@ absent:
 
 | Key                    | Default   | Purpose                                       |
 | ---------------------- | --------- | --------------------------------------------- |
-| `JSON_LOGGING_ENABLED` | `False`   | The main switch. Nothing is emitted until this is on, whatever the other three say and whatever the license carries |
-| `JSON_LOGGING_CLI`     | `False`   | Adds `cmdbsyncer <command>` runs — imports, exports, cron — to what the web application and its workers already emit. Setting it to `False` turns *those runs* back to plain text, not the stream as a whole; that is `JSON_LOGGING_ENABLED`. Runs printing to a terminal keep their plain text, unless the records go to `JSON_LOGGING_FILE`. Needs version 4.3 or newer |
+| `JSON_LOGGING_ENABLED` | `False`   | The web application and its workers write records. Independent of the key below |
+| `JSON_LOGGING_CLI`     | `False`   | `cmdbsyncer <command>` runs — imports, exports, cron — write records. Stands on its own; the key above is not needed for it. Runs printing to a terminal keep their plain text, unless the records go to `JSON_LOGGING_FILE`. Needs version 4.3 or newer |
 | `JSON_LOGGING_FILE`    | unset     | Write the records into this file instead of the stream — for runs nobody collects the output of, started from outside the container for example. Falls back to the stream when the path cannot be opened |
 | `JSON_LOGGING_STREAM`  | `'stdout'`| `'stdout'` or `'stderr'`                      |
 | `JSON_LOGGING_LEVEL`   | `'INFO'`  | Any standard Python level name                |
@@ -294,7 +304,7 @@ docker compose exec -T cmdbsyncer \
     >> /var/log/syncer/cmdbsyncer.jsonl 2>> /var/log/syncer/cmdbsyncer.err
 ```
 
-From version 4.4 on, `JSON_LOGGING_FILE` does that for you.
+`JSON_LOGGING_FILE` does that for you from the current 4.3 release on.
 
 Either way the records stay on the host, where they survive the
 container and where Filebeat / Vector / the Elastic Agent already tail
@@ -328,7 +338,11 @@ set `X-Request-ID` at the reverse proxy.
 
 **An import or export produces no JSON at all**  
 Command runs need `JSON_LOGGING_CLI = True` (see above). Without it
-only the web application and its workers write to the JSON stream.
+only the web application and its workers write to the JSON stream. On
+4.3.0 and 4.3.1 the key also needed `JSON_LOGGING_ENABLED` beside it.
+Check as well that the Enterprise package is really installed in the
+container you are running in — without it none of these keys do
+anything.
 
 **I set `JSON_LOGGING_CLI` and still see plain text**  
 You are running the command on a terminal, where it stays readable on
