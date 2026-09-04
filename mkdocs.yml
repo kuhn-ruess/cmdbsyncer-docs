@@ -82,6 +82,7 @@ nav:
       - Folder Pools: checkmk/folder_pools.md
       - Site Pools: checkmk/site_pools.md
       - Inventorize Checkmk: checkmk/inventorize.md
+      - Data Quality Check: checkmk/data_quality.md
       - Local Config Variables: checkmk/config_vars.md
       - Checkmk Attributes and Host Tags: checkmk/cmk_attributes.md
       - Howtos:
