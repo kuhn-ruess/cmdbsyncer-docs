@@ -32,7 +32,7 @@ Create the two rule types you want (HTTP check and certificate check) in Checkmk
 
 ## Step 3: Create the Syncer Rules
 
-Go to: _Modules → Checkmk → Create Checkmk Setup Rules_
+Go to: _Modules → Checkmk → Manage Checkmk Setup Rules_
 
 Create one rule per IP column. Each rule needs:
 

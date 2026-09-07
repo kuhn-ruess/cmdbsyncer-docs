@@ -8,7 +8,7 @@ This guide shows the principle. For the full step-by-step workflow including how
 
 1. Create one example rule in Checkmk of the type you want
 2. Copy the ruleset name and API value (see [recipe_contact_groups.md](recipe_contact_groups.md))
-3. Create a new Syncer rule in _Modules → Checkmk → Create Checkmk Setup Rules_
+3. Create a new Syncer rule in _Modules → Checkmk → Manage Checkmk Setup Rules_
 4. Set conditions for which hosts should get the rule
 5. Paste the API value into the **Value Template** field
 6. Replace host-specific parts with `{{HOSTNAME}}` or other attribute placeholders

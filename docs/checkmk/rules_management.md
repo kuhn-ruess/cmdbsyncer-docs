@@ -2,33 +2,106 @@
 
 The Syncer can create, update, and delete Checkmk setup rules automatically — for example threshold rules, active check configurations, or contact group assignments. Rules are created for specific hosts based on their attributes, and deleted again when the conditions no longer apply.
 
-Go to: _Modules → Checkmk → Create Checkmk Setup Rules_
+Go to: _Modules → Checkmk → Manage Checkmk Setup Rules_
 
-## Configuration Options
+## Rule Settings
 
-| Option                   | Description                                                                           |
-| :----------------------- | :------------------------------------------------------------------------------------ |
-| Ruleset                  | Checkmk ruleset ID (autocompletes from the known 2.4/2.5 rulesets — see below)        |
-| Folder                   | Target folder in Checkmk (Jinja supported)                                            |
-| Folder Index             | Position of the rule within the folder                                                |
-| Comment                  | Rule comment                                                                          |
-| Value Template           | Jinja template for the rule value (check Checkmk Swagger API for the expected format) |
-| Keep manual Value        | Write the Value only once (on rule creation) and never overwrite it afterwards, so it can be adjusted in Checkmk. A hint is added to the rule description and comment. |
-| Enforce exact Value      | Compare the Value exactly, so entries removed from the Value Template are applied too (see below) |
-| Condition Label Template | Syntax: `label:value`. Jinja supported. `{{HOSTNAME}}` available.                     |
-| Condition Host           | Comma-separated list of hostnames. Jinja supported including `{{HOSTNAME}}`.          |
+These apply to the whole rule and decide *for which hosts* it is calculated.
+
+| Option        | Description                                                                                 |
+| :------------ | :------------------------------------------------------------------------------------------ |
+| Name          | Name of the Syncer rule. It ends up in the description of every Checkmk rule it creates (see below) |
+| Documentation | Free text for your own notes                                                                |
+| Project       | Optional. Assign the rule to a [Project](../basics/projects.md), which limits it to the accounts the project allows (empty account filter = all accounts) |
+| Enabled       | Only enabled rules are exported                                                             |
+| Last Match    | Stop evaluating further rules for a host once this one matched                              |
+| Static Rule   | Host-independent rule: render once and always create it, ignoring the match conditions (see below) |
+| Conditions    | Which hosts the rule applies to — see [Conditions](../basics/conditions.md)                  |
+
+## Outcomes: the Checkmk Rule
+
+Each outcome creates one entry in a Checkmk ruleset. All fields support Jinja
+and see the host's attributes, `{{ HOSTNAME }}` included.
+
+| Option                          | Description                                                                           |
+| :------------------------------ | :------------------------------------------------------------------------------------ |
+| Ruleset                         | Checkmk ruleset ID (searchable picker over the known 2.4/2.5 rulesets — see below)   |
+| Folder                          | Target folder in Checkmk                                                              |
+| Folder Index                    | Position of the rule within the folder                                                |
+| Comment                         | Rule comment                                                                          |
+| Value Template                  | Jinja template for the rule value (check Checkmk Swagger API for the expected format) |
+| Keep manual Value               | Write the Value only once (on rule creation) and never overwrite it afterwards, so it can be adjusted in Checkmk. A hint is added to the rule description and comment. |
+| Enforce exact Value             | Compare the Value exactly, so entries removed from the Value Template are applied too (see below) |
+| Loop over List (Attribute or Jinja) | Create one Checkmk rule per list entry instead of a single one (see below). Empty = one rule |
+| Condition — Host name           | Only apply to these hosts. Comma-separated = any of them matches (OR)                 |
+| Condition — Host label          | Only apply to hosts carrying this label. One `key:value` label only                    |
+| Condition — Service name        | For service rulesets only: apply to these services. Comma-separated = OR              |
+| Condition — Service label       | For service rulesets only: apply to services carrying these labels. `key:value`, comma-separated = all must match (AND) |
+
+A condition left empty means no restriction on that dimension. Note the
+difference between the two comma rules: for names a comma means OR, for
+service labels it means AND.
 
 If a syncer-owned rule is found in a folder other than the one configured
 here, the export moves it to the configured folder on the next run instead
 of leaving the misplaced copy behind.
 
 !!! tip
-    A rule using **Condition Host** with `{{HOSTNAME}}` ends up as one Checkmk
+    A rule using **Condition — Host name** with `{{ HOSTNAME }}` ends up as one Checkmk
     rule listing every matching host — on a large installation that means
     hundreds of hostnames in one condition.
     [Rule Optimization](rule_optimization.md) finds those rules and the host
     label that covers exactly the same hosts, and can switch them over for you.
     It is linked above the rule list.
+
+## One rule per list entry (Loop over List)
+
+**Loop over List** turns a single outcome into one Checkmk rule per entry of a
+list. Leave it empty and the outcome creates exactly one rule.
+
+The field takes two spellings, decided by whether it contains a brace:
+
+- **A plain Host Attribute name** — the attribute holding the list, e.g.
+  `services`. A comma separated string is split into entries as well.
+- **A Jinja expression** — anything that renders to a list or a comma
+  separated string, with all host attributes and filters available, e.g.
+
+  ```jinja
+  {{ get_list(services)|reject("equalto", "web")|join(",") }}
+  ```
+
+  so the entries can be built, filtered or combined instead of having to exist
+  as an attribute of their own.
+
+Inside every template of that outcome — Value, Folder, conditions — the current
+entry is available as `{{ loop }}` and its 0-based position as `{{ loop_idx }}`.
+
+An entry that cannot be rendered is reported and the outcome is skipped for
+that host, instead of aborting the export.
+
+## Conditions Checkmk does not support
+
+Not every ruleset accepts every condition. Checkmk's REST API answers such a
+rule with a success, but **stores it without the condition** — a host ruleset
+(for example `active_checks:*` or `host_contactgroups`) drops service
+conditions and service labels, a ruleset that assigns labels cannot match on
+those labels.
+
+The Syncer knows which conditions a ruleset keeps and leaves the others out of
+the exported rule, so what it sends is what Checkmk stores. Without that, every
+run would compare its own rule against a stored copy that never matches and
+delete and recreate it each time.
+
+You are told once per ruleset and condition:
+
+```text
+Checkmk ignores the 'service_description' condition in ruleset
+'active_checks:http', so it is left out of the exported rule.
+Remove it from the Setup Rule.
+```
+
+The rule itself is exported normally — the message only says the condition has
+no effect, so remove it from the Setup Rule to keep it honest.
 
 ## Which Syncer rule created a Checkmk rule
 
@@ -124,8 +197,8 @@ never overwritten.
 
 ## Rule Order
 
-The Syncer applies your configured `Folder Index` (and the rule's
-`Sort Field`) to the order rules appear in Checkmk. After every
+The Syncer applies the `Folder Index` you configured on each outcome to
+the order rules appear in Checkmk. After every
 `checkmk export_rules` run the syncer-owned rules in each ruleset are
 re-anchored: the first syncer rule keeps its current position
 relative to user-created rules around it, and every subsequent rule
@@ -139,8 +212,8 @@ position relative to the syncer block can shift, because the syncer
 rules cluster together once sorted.
 
 If you need a specific top-to-bottom order in a ruleset, just set
-the `Folder Index` on each `RuleMngmtOutcome` (lower index = higher
-in the list) and re-run `checkmk export_rules`.
+the `Folder Index` on each outcome (lower index = higher in the list)
+and re-run `checkmk export_rules`.
 
 Every move is one Checkmk write plus a pending change, so the export only
 moves the rules that are actually out of place. A ruleset that already has
@@ -166,7 +239,7 @@ value, folder and conditions contain no host attributes and resolve to
 exactly the same Checkmk rule for every host — that per-host pass is
 pure overhead.
 
-Enable **Static** on such a rule. The Syncer then renders it **once**
+Enable **Static Rule** on such a rule. The Syncer then renders it **once**
 against an empty context and always creates it, skipping the per-host
 calculation entirely. On large inventories this noticeably speeds up
 `checkmk export_rules`.
@@ -176,10 +249,10 @@ Notes:
 - The rule's match conditions (`Condition Type` / conditions) are
   **ignored** for static rules — a static rule is always emitted once.
 - Only use it when the templates reference no host attributes. A
-  hardcoded `Condition Host`, a fixed `Value Template`, or a
+  hardcoded **Condition — Host name**, a fixed `Value Template`, or a
   `{% for %}` loop over a literal list are fine; anything reading
   `{{HOSTNAME}}` or other host labels is not.
-- `Loop over list` is not supported on static rules (it iterates a host
+- **Loop over List** is not supported on static rules (it iterates a host
   attribute list) and is skipped with a log entry.
 
 ## Ruleset Autocomplete

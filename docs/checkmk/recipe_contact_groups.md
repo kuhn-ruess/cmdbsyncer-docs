@@ -58,7 +58,7 @@ Then use the Checkmk API to get the value format. Open the API documentation and
 
 ## Step 4: Create the Assignment Rule
 
-Go to: _Modules → Checkmk → Create Checkmk Setup Rules_
+Go to: _Modules → Checkmk → Manage Checkmk Setup Rules_
 
 Create a rule that assigns hosts to the contact group. Use `{{ location }}` to reference the host attribute as the condition label value:
 

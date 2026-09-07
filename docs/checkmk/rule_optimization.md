@@ -18,7 +18,7 @@ condition, and the rule stops moving when the host set changes.
 
 ## In the web interface
 
-Go to: _Modules → Checkmk → Create Checkmk Setup Rules_ and click
+Go to: _Modules → Checkmk → Manage Checkmk Setup Rules_ and click
 **Rule Optimization** above the list.
 
 Pick a scope and press **Run analysis**. The analysis renders every rule for
