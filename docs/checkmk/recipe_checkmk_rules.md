@@ -15,7 +15,7 @@ This guide shows the principle. For the full step-by-step workflow including how
 
 ## Value Template
 
-The value template supports full Jinja. Any host attribute can be used as a placeholder. The **Condition Host** field also supports Jinja and comma-separated lists.
+The value template supports full Jinja. Any host attribute can be used as a placeholder. The **Condition — Host name** field also supports Jinja and comma-separated lists.
 
 ## Example: Active Certificate Check
 

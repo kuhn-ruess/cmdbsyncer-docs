@@ -1,7 +1,7 @@
 # Rule Optimization
 <span class="since">Since 4.3</span>
 
-When a Setup Rule outcome matches on **Condition Host** with `{{HOSTNAME}}` and
+When a Setup Rule outcome matches on **Condition — Host name** with `{{ HOSTNAME }}` and
 nothing else, the rule says "this applies to this host". The Syncer merges every
 matching host into **one** Checkmk rule whose condition lists every hostname.
 
@@ -129,8 +129,8 @@ The `hash` filter is available in every Jinja template, see
 
 For each applied finding:
 
-1. the Setup Rule outcome gets the attribute as its **Condition Label Template**,
-2. its **Condition Host** is cleared,
+1. the Setup Rule outcome gets the attribute as its **Condition — Host label**,
+2. its **Condition — Host name** is cleared,
 3. the attribute is whitelisted in a filter rule if it did not pass the filter,
 4. a Rewrite rule is created if the label is a hash,
 5. and the cached export data of every host is dropped, exactly as a rule edit in
