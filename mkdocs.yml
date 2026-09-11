@@ -73,6 +73,7 @@ nav:
       - Limit Host Export to Folders: checkmk/limit_host_export_folders.md
       - Host Tags: checkmk/create_hosttags.md
       - Checkmk Users: checkmk/users.md
+      - Generate Checkmk Users: checkmk/user_generation.md
       - Downtimes: checkmk/create_downtimes.md
       - Notification Rules: checkmk/notification_rules.md
       - DCD Rules: checkmk/dcd_rules.md
