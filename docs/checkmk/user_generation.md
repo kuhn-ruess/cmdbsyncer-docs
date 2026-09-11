@@ -63,8 +63,8 @@ rules that look into different parts of the directory.
 | Full Name            | Jinja. What Checkmk shows in its user list                                                                               |
 | Mail Address         | Jinja, usually `{{mail}}`                                                                                                |
 | Pager Address        | Jinja, for a second contact route                                                                                        |
-| Checkmk Roles        | Roles every generated user is given                                                                                      |
-| Contact Groups       | Contact groups every generated user is put into                                                                          |
+| Checkmk Roles        | Jinja per entry. Roles every generated user is given                                                                     |
+| Contact Groups       | Jinja per entry. Contact groups every generated user is put into                                                         |
 | No Login             | Generated users are notification contacts, not people logging in                                                         |
 
 Every Jinja field sees the same variables: `{{name}}` for the group name as it was
@@ -95,6 +95,35 @@ those groups has a shared mailbox in its `mail` attribute.
 
 This creates the Checkmk users `grp-dba` and `grp-linux`, each with the mail address
 of its group.
+
+## Roles and Contact Groups from the Group itself
+
+Both list fields are Jinja, one template per entry. A plain name stays what it is, so
+existing rules keep working; a template lets the group decide:
+
+- `cg_{{name}}` names the contact group after the group.
+- `{{cmk_contactgroups}}` takes whatever that attribute of the group holds — a comma
+  separated value becomes several contact groups.
+- An entry that renders to nothing is dropped instead of writing an empty name.
+
+## Preview what a Run would do
+
+Go to: _Modules → Checkmk → Preview Generated Users_
+
+The page runs the real generation with the writing left out: the same host attributes,
+the same directory lookup, the same Jinja. For every group it shows
+
+- the value the host carried and the name it was searched under,
+- whether the directory returned it and how many attributes it has,
+- the Checkmk user ID and every field it would get,
+- whether that user would be created, updated (with the changing fields marked),
+  left alone, or skipped and why.
+
+Open the details behind a row to see the variables the group carries — those are
+exactly the `{{mail}}`, `{{description}}` and so on available in the Jinja fields.
+A search filter can be tried out for the preview only, without touching the rules.
+
+Nothing is created, updated or deleted by the page.
 
 ## Command Line
 
