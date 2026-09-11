@@ -17,11 +17,29 @@ stays the same command as for a user you typed in by hand.
 
 1. The rule collects the group names out of your host attributes, for example
    `ldap_group: grp-dba`.
-2. It searches those groups in the directory, below the base DN and with the filter
+2. **Rewrite Group Name** may shape that value first, for hosts that carry the name
+   differently than the directory does.
+3. It searches those groups in the directory, below the base DN and with the filter
    the rule configures — all names of a rule go into **one** query.
-3. Every attribute of the found group object becomes a Jinja variable.
-4. User ID, full name, mail address and pager are rendered from those variables and
+4. Every attribute of the found group object becomes a Jinja variable.
+5. User ID, full name, mail address and pager are rendered from those variables and
    written into the Checkmk user list.
+
+## Rewriting the Group Name
+
+Hosts do not always carry the group the way the directory spells it. **Rewrite Group
+Name** runs before the search and `{{name}}` is the value the attribute delivered:
+
+| Hosts carry       | Rewrite                         | Searched for |
+| :---------------- | :------------------------------ | :----------- |
+| `grp-dba`         | `{{name\|replace("grp-", "")}}` | `dba`        |
+| `dba@example.com` | `{{name.split("@")[0]}}`        | `dba`        |
+| `dba`             | `CN-{{name}}`                   | `CN-dba`     |
+
+A rewrite that renders to nothing skips that value: no group is searched and no user
+is created for it. That is the way to drop values an attribute carries that are not
+groups at all — an empty name would otherwise be searched as whatever the group filter
+alone matches. `--debug` names every value that was dropped this way.
 
 The LDAP account contributes the address and the credentials, nothing else. Where the
 groups are and how they are read belongs to the rule, so one account can serve several
@@ -33,6 +51,7 @@ rules that look into different parts of the directory.
 | :------------------- | :--------------------------------------------------------------------------------------------------------------- |
 | Foreach Type         | Where the group names sit: by attribute name, by attribute value, or split out of a comma separated list         |
 | Foreach              | Name of that attribute. Use `*` at the end as a wildcard (e.g. `ldap_group*`)                                    |
+| Rewrite Group Name   | Jinja, optional. Shapes the value into the name the directory uses. Empty result skips that value                |
 | LDAP Account         | The account used to reach the directory. It supplies address and credentials only                                |
 | Group Base DN        | Subtree the groups live in, e.g. `ou=groups,dc=example,dc=com`. Empty falls back to the account's base DN        |
 | Group Search Filter  | Filter picking the group objects, e.g. `(objectClass=group)`. The account's own search filter is never used here |
