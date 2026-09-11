@@ -108,16 +108,19 @@ existing rules keep working; a template lets the group decide:
 
 ## Preview what a Run would do
 
-Go to: _Modules → Checkmk → Preview Generated Users_
+Go to: _Modules → Checkmk → Preview Generated Users_, or the button above the rule
+list.
 
 The page runs the real generation with the writing left out: the same host attributes,
 the same directory lookup, the same Jinja. For every group it shows
 
 - the value the host carried and the name it was searched under,
-- whether the directory returned it and how many attributes it has,
-- the Checkmk user ID and every field it would get,
-- whether that user would be created, updated (with the changing fields marked),
-  left alone, or skipped and why.
+- whether the directory returned that group and how many attributes it has,
+- the Checkmk user ID and every field it would get — mail address and pager
+  included when their template produces nothing, so an empty field is visible
+  instead of silently missing,
+- whether that user is new in Checkmk, would be updated (with the changing fields
+  marked), is already correct, or is skipped and why.
 
 Open the details behind a row to see the variables the group carries — those are
 exactly the `{{mail}}`, `{{description}}` and so on available in the Jinja fields.
