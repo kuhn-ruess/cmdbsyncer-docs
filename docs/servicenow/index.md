@@ -38,6 +38,7 @@ works — you can point it at `cmdb_ci_linux_server`, `cmdb_ci_win_server`,
 | `inventorize_host_label` | Host label holding the ServiceNow name, used to find the host a record references (default `name`). Empty matches the hostname directly |
 | `inventorize_rewrite_parent` | Optional Jinja template that adapts the server name a child record references, the way `rewrite_hostname` adapts an imported one |
 | `custom_headers` | Extra headers for every request, as `Name: value` pairs separated by a pipe — an API key or tenant header a gateway in front of the instance wants, see [Accounts](../basics/accounts.md#custom-request-headers) |
+| `http_proxy` | Proxy for every request, as a URL like `http://proxy.example.com:3128`, for an instance reachable only through the corporate proxy, see [Accounts](../basics/accounts.md#http-proxy) |
 
 The plugin pages through each table with `sysparm_offset` / `sysparm_limit`,
 so tables of any size are imported completely. Every record becomes a host

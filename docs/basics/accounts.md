@@ -145,6 +145,31 @@ Authorization: Bearer {{ACCOUNT:gateway-key:password}}
 
 Headers whose name looks like a credential (`Authorization`, `X-API-Key`, `X-Auth-Token`, `Cookie`, …) are masked in the debug log.
 
+## HTTP Proxy
+
+A target system outside the own network — a ServiceNow instance, a cloud API — is often
+only reachable through the corporate proxy, while the systems inside the network must be
+talked to directly. Every account carries an `http_proxy` custom field for that, whatever
+its type, and every HTTP request made through the account goes through it.
+
+| Field        | Description                                                                                                                                                                         |
+| :----------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `http_proxy` | Proxy for all requests of this account, as a URL (`http://proxy.example.com:3128`). Used for http and https alike. `direct` sends this account past a proxy set in the environment. |
+
+Without the field, the proxy stays what the environment of the process says
+(`http_proxy` / `https_proxy` / `no_proxy`). The value `direct` sends a single account
+past such a global proxy.
+
+A proxy that wants a login is written as part of the URL. The password must not stand
+here in clear text: reference an account that keeps it encrypted instead, with the
+[account macro](#reference-fields).
+
+```text
+http://proxyuser:{{ACCOUNT:proxy-login:password}}@proxy.example.com:3128
+```
+
+Proxy credentials are masked in the debug log, the host and port stay readable.
+
 ## Extra Plugin Options
 
 In addition to the global account fields, each account can hold plugin-specific options. These allow you to configure behavior that applies only when the account is used for a particular action — even if the same account is reused across multiple operations.

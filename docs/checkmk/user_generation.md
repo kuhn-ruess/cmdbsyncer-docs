@@ -80,6 +80,38 @@ of its group.
 The first command fills the user list, the second ships it to Checkmk. As a cron job
 the two steps are _Checkmk: Generate Users_ and _Checkmk: Export Users_.
 
+## When no Group is found
+
+`--debug` prints what the lookup really asked the directory — base DN, group search
+filter, name attribute, the finished LDAP filter and the attributes requested — and
+afterwards the group names the directory did not return.
+
+```bash
+./cmdbsyncer checkmk generate_users --debug
+```
+
+`--search-filter` overwrites the group search filter of every rule for that one run,
+so a filter can be tried out before it goes into a rule.
+
+```bash
+./cmdbsyncer checkmk generate_users --debug --search-filter '(objectClass=posixGroup)'
+```
+
+!!! warning "The run still writes"
+    Both options only change the lookup, they do not stop the generation. A filter
+    matching the wrong objects writes the wrong user data.
+
+The usual reasons a group is not found:
+
+- The **Group Name Attribute** does not hold what the host attribute delivers. It is
+  `cn` in most directories and `sAMAccountName` in some Active Directories.
+- The **Group Base DN** points at the host subtree instead of the group subtree.
+- The **Group Search Filter** names a class the groups do not have. Active Directory
+  uses `(objectClass=group)`, OpenLDAP usually `(objectClass=posixGroup)` or
+  `(objectClass=groupOfNames)`.
+- The group really is spelled differently in the directory. _Modules → LDAP → Search
+  Directory_ with the mode **Group by name** shows how it is stored.
+
 ## What a Group carries
 
 To find out which attributes you can use, go to _Modules → LDAP → Search Directory_,
