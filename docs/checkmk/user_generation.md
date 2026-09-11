@@ -37,9 +37,11 @@ Name** runs before the search and `{{name}}` is the value the attribute delivere
 | `dba`             | `CN-{{name}}`                   | `CN-dba`     |
 
 A rewrite that renders to nothing skips that value: no group is searched and no user
-is created for it. That is the way to drop values an attribute carries that are not
-groups at all — an empty name would otherwise be searched as whatever the group filter
-alone matches. `--debug` names every value that was dropped this way.
+is created for it. That counts for everything the template cannot produce — a variable
+the hosts do not carry, a filter chain ending in nothing, an expression that fails on
+that one value. It is the way to drop entries an attribute carries that are not groups
+at all; an empty name would otherwise be searched as whatever the group filter alone
+matches. `--debug` names every value dropped this way.
 
 The LDAP account contributes the address and the credentials, nothing else. Where the
 groups are and how they are read belongs to the rule, so one account can serve several
@@ -47,31 +49,36 @@ rules that look into different parts of the directory.
 
 ## Rule Parameters
 
-| Option               | Description                                                                                                      |
-| :------------------- | :--------------------------------------------------------------------------------------------------------------- |
-| Foreach Type         | Where the group names sit: by attribute name, by attribute value, or split out of a comma separated list         |
-| Foreach              | Name of that attribute. Use `*` at the end as a wildcard (e.g. `ldap_group*`)                                    |
-| Rewrite Group Name   | Jinja, optional. Shapes the value into the name the directory uses. Empty result skips that value                |
-| LDAP Account         | The account used to reach the directory. It supplies address and credentials only                                |
-| Group Base DN        | Subtree the groups live in, e.g. `ou=groups,dc=example,dc=com`. Empty falls back to the account's base DN        |
-| Group Search Filter  | Filter picking the group objects, e.g. `(objectClass=group)`. The account's own search filter is never used here |
-| Group Name Attribute | Attribute the host attribute values are matched against. `cn` in most directories                                |
-| Attributes to Read   | Comma separated. Empty reads every attribute the group has                                                       |
-| Checkmk User ID      | Jinja. `{{name}}` is the group name                                                                              |
-| Full Name            | Jinja. What Checkmk shows in its user list                                                                       |
-| Mail Address         | Jinja, usually `{{mail}}`                                                                                        |
-| Pager Address        | Jinja, for a second contact route                                                                                |
-| Checkmk Roles        | Roles every generated user is given                                                                              |
-| Contact Groups       | Contact groups every generated user is put into                                                                  |
-| No Login             | Generated users are notification contacts, not people logging in                                                 |
+| Option               | Description                                                                                                              |
+| :------------------- | :----------------------------------------------------------------------------------------------------------------------- |
+| Foreach Type         | Where the group names sit: by attribute name, by attribute value, or split out of a comma separated list or list literal |
+| Foreach              | Name of that attribute. Use `*` at the end as a wildcard (e.g. `ldap_group*`), with every Foreach Type                   |
+| Rewrite Group Name   | Jinja, optional. Shapes the value into the name the directory uses. Empty result skips that value                        |
+| LDAP Account         | The account used to reach the directory. It supplies address and credentials only                                        |
+| Group Base DN        | Subtree the groups live in, e.g. `ou=groups,dc=example,dc=com`. Empty falls back to the account's base DN                |
+| Group Search Filter  | Filter picking the group objects, e.g. `(objectClass=group)`. The account's own search filter is never used here         |
+| Group Name Attribute | Attribute the host attribute values are matched against. `cn` in most directories                                        |
+| Attributes to Read   | Comma separated. Empty reads every attribute the group has                                                               |
+| Checkmk User ID      | Jinja. `{{name}}` is the group name                                                                                      |
+| Full Name            | Jinja. What Checkmk shows in its user list                                                                               |
+| Mail Address         | Jinja, usually `{{mail}}`                                                                                                |
+| Pager Address        | Jinja, for a second contact route                                                                                        |
+| Checkmk Roles        | Roles every generated user is given                                                                                      |
+| Contact Groups       | Contact groups every generated user is put into                                                                          |
+| No Login             | Generated users are notification contacts, not people logging in                                                         |
 
-Every Jinja field sees the same variables: `{{name}}` for the group name, plus every
-attribute the group carries — `{{mail}}`, `{{description}}`, `{{dn}}` and so on.
+Every Jinja field sees the same variables: `{{name}}` for the group name as it was
+searched, `{{original_name}}` for the value the host carried before the rewrite, plus
+every attribute the group carries — `{{mail}}`, `{{description}}`, `{{dn}}` and so on.
 They support all custom [Syncer Jinja Functions](../advanced/jinja_functions.md).
 
-!!! note "The group name wins"
-    If a group happens to carry an attribute called `name`, `{{name}}` still resolves
-    to the group name the host attribute delivered, not to that attribute.
+Without a rewrite the two names are the same value. With one, `{{name}}` is what the
+directory was asked for and `{{original_name}}` what your hosts say — useful when the
+Checkmk user should keep the spelling the hosts use.
+
+!!! note "The two names win"
+    If a group happens to carry an attribute called `name` or `original_name`, those
+    variables still resolve to the group names, not to the attribute.
 
 ## Example
 
