@@ -29,6 +29,15 @@ All Rewrite fields support custom [Syncer Jinja Functions](../advanced/jinja_fun
 !!! important
     The `cmk_cleanup_tag_id()` Jinja function is applied automatically to the Rewrite ID field. If you reference this tag ID elsewhere — for example in export rules — make sure to apply the same function to ensure the IDs match.
 
+!!! note
+    Titles have to be unique inside a tag group. Checkmk recognizes a renamed tag by its
+    title, so two tags sharing one title look like a rename of a tag which is in use, and
+    Checkmk then refuses the update of the whole group. If your Rewrite Title produces the
+    same title for two different tag IDs, the Syncer appends the tag ID to the second one
+    to keep them apart. Should Checkmk still ask for permission to update the objects using
+    a group, set `CMK_TAG_REPAIR` in [local_config.py](../basics/lcl_config.md) — see
+    [Config Variables](config_vars.md).
+
 ## Group Multiply by List
 
 In this mode, the Syncer creates multiple tag groups based on a list, without applying Rewrite templates. Use `{{name}}` as the placeholder in the Topic Name and Title fields.
