@@ -29,14 +29,29 @@ All Rewrite fields support custom [Syncer Jinja Functions](../advanced/jinja_fun
 !!! important
     The `cmk_cleanup_tag_id()` Jinja function is applied automatically to the Rewrite ID field. If you reference this tag ID elsewhere — for example in export rules — make sure to apply the same function to ensure the IDs match.
 
-!!! note
-    Titles have to be unique inside a tag group. Checkmk recognizes a renamed tag by its
-    title, so two tags sharing one title look like a rename of a tag which is in use, and
-    Checkmk then refuses the update of the whole group. If your Rewrite Title produces the
-    same title for two different tag IDs, the Syncer appends the tag ID to the second one
-    to keep them apart. Should Checkmk still ask for permission to update the objects using
-    a group, set `CMK_TAG_REPAIR` in [local_config.py](../basics/lcl_config.md) — see
-    [Config Variables](config_vars.md).
+## Unique Titles
+
+Titles have to be unique inside a tag group. Checkmk recognizes a renamed tag by its **title**, not by its ID. Two tags sharing one title therefore look like the rename of a tag that is in use, and Checkmk refuses the update of the whole group with:
+
+```text
+Updating this host tag group requires additional authorization.
+The host tag group you intend to edit is used by other instances.
+You must authorize Checkmk to update the relevant instances using the repair parameter
+```
+
+The group then keeps its old state, new tag values are never created, and every host export that needs one of them fails with `Invalid value for tag-group`.
+
+The Syncer prevents this: if your Rewrite Title produces the same title for two different tag IDs, it appends the tag ID to **each** of them, so Checkmk no longer finds the old title anywhere and recognizes neither a rename nor a removal. Nothing else has to be done.
+
+A common cause is a source value with a trailing blank: the tag ID is built from the raw value while the title is trimmed, which yields two IDs with one title. Add `| trim` at the start of your Rewrite ID to avoid it.
+
+!!! warning
+    `CMK_TAG_REPAIR` gives Checkmk permission to modify the objects that use a tag group, and how it repairs them depends on the change:
+
+    * A **renamed** tag is uncritical. The condition of every rule using it is rewritten to the new tag ID, negations included.
+    * A **removed** tag is not. Checkmk deletes the condition from every rule that uses it. The rule itself stays, but without that condition it matches **more** hosts than before — silently.
+
+    With `CMK_DONT_DELETE_TAGS = True` (the default) the Syncer never removes a tag value, so only the harmless case can occur. The dangerous combination is `CMK_TAG_REPAIR = True` together with `CMK_DONT_DELETE_TAGS = False`: every value that disappears from your source can then widen a rule. Leave `CMK_TAG_REPAIR` off unless Checkmk explicitly asks for it, and check your rules afterwards.
 
 ## Group Multiply by List
 
