@@ -130,11 +130,10 @@ user in container deployments).
 Instead of copying the file by hand, a global admin can use the *Upload
 License* form at the bottom of the License page.
 
-!!! note "Where the menu entry is"
-    The **Settings → License** entry only appears once a license file is in
-    place — otherwise it would be an empty page in the menu of every
-    Community Edition install. For the very first upload, open the page
-    directly at `/admin/license/`. From then on the menu entry is there.
+The page lives under **Settings → License** and is open to global admins.
+Before a license is in place it already tells you the path it expects and why
+nothing is active yet, so it is also the place to check an upload that did not
+take.
 
 The form verifies the signature against the installed public key **before**
 the file is written, and the write is atomic — a malformed or wrongly signed
