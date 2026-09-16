@@ -38,24 +38,24 @@ pip install cmdbsyncer-enterprise
 
 ### Docker / container
 
-Install into the running container, then restart it:
+The published images already carry the package — every release image contains
+the `cmdbsyncer-enterprise` version that was tested with it, so there is
+nothing to install. This step is done for you; continue with
+[placing the license file](#place-the-license-file).
 
-```bash
-docker exec -it <container_name> pip3 install cmdbsyncer-enterprise
-docker restart <container_name>
-```
+Until a license file is there the package never activates, which is why a
+Community Edition install of the same image shows no trace of it.
 
-!!! warning "Rebuilds drop the package"
-    An install made with `docker exec` lives in the container's writable
-    layer only. As soon as the image is rebuilt (`docker compose up --build`,
-    an update, a new release) the package is gone. For a permanent setup, add
-    it to your image instead:
+!!! info "Only when you build the image yourself"
+    An image built from the repository's `Dockerfile` installs the package the
+    same way. If you use a `Dockerfile` of your own, add it there:
 
     ```dockerfile
     RUN pip3 install --no-cache-dir cmdbsyncer-enterprise
     ```
 
-    The license file stays outside the image — mount it, as described below.
+    Do not install it with `docker exec` for anything permanent — that lives
+    in the container's writable layer and is gone with the next update.
 
 ### Offline / air-gapped
 
@@ -99,26 +99,44 @@ It always wins over the default location:
 export CMDBSYNCER_LICENSE=/srv/cmdbsyncer/license.jwt
 ```
 
-In a container, mount the file in and point the variable at it, so it
-survives image rebuilds:
+In a container, put the file in the mounted directory that already holds
+`local_config.py` — the `config` volume of `docker-compose.registry.yml`:
+
+```bash
+docker compose -f docker-compose.registry.yml cp \
+    license.jwt api:/srv/etc/license.jwt
+docker compose -f docker-compose.registry.yml restart api
+```
+
+Or mount it in separately and point the variable at it:
 
 ```yaml
 services:
-  cmdbsyncer:
+  api:
     environment:
       CMDBSYNCER_LICENSE: /etc/cmdbsyncer/license.jwt
     volumes:
       - ./license.jwt:/etc/cmdbsyncer/license.jwt:ro
 ```
 
+Either way it has to live outside the image itself, which is replaced with
+every update.
+
 The file must be readable by the user that runs the application (the uWSGI
 user in container deployments).
 
 ### Upload through the web UI
 
-Instead of copying the file by hand, a global admin can open
-**Profile → License** and use the *Upload License* form at the bottom of the
-page. The signature is verified against the installed public key **before**
+Instead of copying the file by hand, a global admin can use the *Upload
+License* form at the bottom of the License page.
+
+!!! note "Where the menu entry is"
+    The **Settings → License** entry only appears once a license file is in
+    place — otherwise it would be an empty page in the menu of every
+    Community Edition install. For the very first upload, open the page
+    directly at `/admin/license/`. From then on the menu entry is there.
+
+The form verifies the signature against the installed public key **before**
 the file is written, and the write is atomic — a malformed or wrongly signed
 upload never overwrites a working license. The page shows the exact
 destination path it will write to.
@@ -136,7 +154,7 @@ docker restart <container_name>       # container
 systemctl restart cmdbsyncer          # systemd / uWSGI
 ```
 
-Open **Profile → License** in the web UI:
+Open **Settings → License** in the web UI:
 
 | What you see                                          | Meaning                                                              |
 | :---------------------------------------------------- | :------------------------------------------------------------------- |

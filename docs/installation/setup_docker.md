@@ -1,49 +1,105 @@
 # Installation with Docker
 
-Running CMDBsyncer with Docker is the recommended approach for most deployments. The repository includes a `docker-compose.yml` that starts CMDBsyncer together with its MongoDB dependency.
+Running CMDBsyncer with Docker is the recommended approach for most deployments. Every release is published as a ready-made image, so there is nothing to build.
 
 ## Requirements
 
 - Docker and Docker Compose installed
-- Git to check out the repository
 
 ## Setup
+
+Fetch the compose file and start the stack:
+
+```bash
+curl -O https://raw.githubusercontent.com/kuhn-ruess/cmdbsyncer/main/docker-compose.registry.yml
+docker compose -f docker-compose.registry.yml up -d
+```
+
+That starts CMDBsyncer together with its MongoDB and makes it available on port **8080**.
+
+### Choosing a version
+
+The compose file above tracks `latest`. Replace the tag in it with the version you want to stay on:
+
+```yaml
+api:
+  image: ghcr.io/kuhn-ruess/cmdbsyncer:4.4.0
+```
+
+| Tag      | Moves                         | Use it for                                  |
+| -------- | ----------------------------- | ------------------------------------------- |
+| `4.4.0`  | never                         | a deployment that must not shift on its own |
+| `4.4`    | with every patch of that line | staying on one minor version                |
+| `latest` | with every new release        | test systems that should follow along       |
+
+The images are built for `linux/amd64` and `linux/arm64`, so the same tag works on an ARM server. Full versioning policy: [RELEASE.md on GitHub](https://github.com/kuhn-ruess/cmdbsyncer/blob/main/RELEASE.md).
+
+### Building the image yourself
+
+The repository also builds an image from source — useful for a fork, a custom base image or a preinstalled plugin:
 
 ```bash
 git clone https://github.com/kuhn-ruess/cmdbsyncer
 cd cmdbsyncer
 git checkout lts/3.12
-```
-
-!!! tip "Choose a version"
-    The Docker image is built from the repo source, so the version you run is determined by the branch or tag that is checked out **before** the image is built.
-
-    - **`lts/3.12`** branch — long-term-support line. Receives only security fixes and general bugfixes, no new features. Recommended for production.
-    - **Tag `vX.Y.Z`** — pin to a specific release: `git checkout v3.12.13`.
-    - **`main`** — rolling development with new features, not recommended for production.
-
-    Full versioning policy: [RELEASE.md on GitHub](https://github.com/kuhn-ruess/cmdbsyncer/blob/main/RELEASE.md).
-
-Start the stack:
-
-```bash
 docker compose up -d
 ```
 
-The application will be available on port **5000** by default.
+Here the version you run is decided by the branch or tag that is checked out **before** the image is built:
+
+- **`lts/3.12`** branch — long-term-support line. Receives only security fixes and general bugfixes, no new features.
+- **Tag `vX.Y.Z`** — pin to a specific release: `git checkout v3.12.13`.
+- **`main`** — rolling development with new features, not recommended for production.
 
 ## Configuration
 
-CMDBsyncer requires a `local_config.py` in the project root. It is created automatically on first start via `./cmdbsyncer sys self_configure` (which runs with every update). This file contains your `SECRET_KEY` and `CRYPTOGRAPHY_KEY`.
+CMDBsyncer keeps its `SECRET_KEY` and `CRYPTOGRAPHY_KEY` in a `local_config.py`, created automatically on first start by `./cmdbsyncer sys self_configure` (which also runs with every update).
 
-!!! warning "Keep local_config.py safe"
-    Do **not** place `local_config.py` inside the container image. Mount it as a volume instead. If you lose this file, all stored passwords become unrecoverable since the `CRYPTOGRAPHY_KEY` is needed to decrypt them.
+!!! danger "That file has to outlive the container"
+    Every stored account password is encrypted with the `CRYPTOGRAPHY_KEY` in it. Written inside the container, it is thrown away the moment the container is replaced — which is exactly what an update does — and a new key is generated. None of the stored passwords can be read after that.
+
+    Set `CMDBSYNCER_CONFIG_DIR` to a mounted directory and CMDBsyncer keeps the file there instead. `docker-compose.registry.yml` already does this with a named volume:
+
+    ```yaml
+    api:
+      environment:
+        CMDBSYNCER_CONFIG_DIR: /srv/etc
+      volumes:
+        - config:/srv/etc
+    ```
+
+    Back that volume up together with the database.
+
+!!! tip "Coming from an older Docker setup"
+    A deployment that has been running without `CMDBSYNCER_CONFIG_DIR` has its
+    `local_config.py` inside the container. Copy it into the new location
+    **before** the first start with the variable set, otherwise a fresh key is
+    generated and the stored passwords are lost:
+
+    ```bash
+    docker cp <old_container>:/srv/local_config.py ./local_config.py
+    docker compose -f docker-compose.registry.yml up -d
+    docker compose -f docker-compose.registry.yml cp \
+        local_config.py api:/srv/etc/local_config.py
+    docker compose -f docker-compose.registry.yml restart api
+    ```
 
 Run this after every update to apply any new default settings:
 
 ```bash
 docker exec -it <container_name> ./cmdbsyncer sys self_configure
 ```
+
+## Updating
+
+Change the tag in the compose file (or, on a moving tag, pull the new image) and bring the stack up again:
+
+```bash
+docker compose -f docker-compose.registry.yml pull
+docker compose -f docker-compose.registry.yml up -d
+```
+
+The container runs `sys self_configure` on start, so any new default settings are applied on the way up.
 
 ## Create the First User
 

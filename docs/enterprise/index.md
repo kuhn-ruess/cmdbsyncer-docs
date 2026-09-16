@@ -24,7 +24,7 @@ If the enterprise package is not installed — or its license is missing or inva
 | Scheduled Backups         | [Scheduled Backups](scheduled_backup.md)                                 |
 | 4-Eyes Approval Workflow  | [4-Eyes Approval Workflow](approval_workflow.md)                         |
 
-A license unlocks exactly the features it lists. **Profile → License** in the web UI shows which ones are active on your installation.
+A license unlocks exactly the features it lists. **Settings → License** in the web UI shows which ones are active on your installation.
 
 ## How It Works
 
