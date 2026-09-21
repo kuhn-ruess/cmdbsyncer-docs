@@ -125,3 +125,4 @@ The Python `datetime` module is available directly in Jinja templates.
 ```
 
 Useful for adding timestamps to attributes or for date-based conditions.
+See [Custom Attributes](../basics/custom_attributes.md) for an example that flags hosts which have not been seen by an import for a given number of days.
