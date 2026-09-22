@@ -24,6 +24,9 @@ under the hood.
 | `l.env:prod` / `i.cpu:8`          | Short forms of `labels.env:` / `inventory.cpu:`                  |
 | `h:/^web[0-9]+$/`                 | Value between slashes is used as a regular expression            |
 | `hostname:"web 01"`               | Quoted value preserves spaces and disables wildcards             |
+| `created:today`                   | Hosts created today (also `created:yesterday`)                    |
+| `created:2026-09-22`              | Hosts created on that day                                         |
+| `created:>=2026-09-01`            | Hosts created on or after that day (`>`, `<=`, `<` work too)      |
 
 ## Operators
 
@@ -99,6 +102,42 @@ an error instead of falling back to a literal match — an explicit regex
 with a typo should not silently return the wrong hosts. A term that only
 happens to contain a slash (`srv/data`) stays an ordinary term; the
 regex form needs the value to both start and end with a slash.
+
+## Creation date
+
+`created:` is the one field that is not matched as a pattern — it takes a
+date and returns the hosts (or objects) that were created on that day:
+
+```text
+created:today                              created today
+created:yesterday                          created the day before
+created:2026-09-22                         created on that day
+created:>=2026-09-01                       created on or after that day
+created:>=2026-09-01 created:<=2026-09-07  created within that week
+h:web* created:today                       combines with every other term
+```
+
+The date is written as `YYYY-MM-DD` and may be prefixed with `>=`, `>`,
+`<=` or `<`. Two terms combine into a range, like every other pair of
+terms. `create_time:` and `created_at:` are accepted spellings of the
+same field. Anything that is not a date (`created:tomorrow`,
+`created:web*`) is reported as an error rather than silently returning
+nothing.
+
+Dates are read in **UTC**, the timezone the syncer stores all of its
+timestamps in. If your server runs in a different timezone, a host
+created shortly after midnight local time can fall on the previous day.
+
+!!! note "Hosts without a creation timestamp"
+
+    The syncer writes a creation time when an import creates a host.
+    Hosts created directly in the GUI, clones, and every host that
+    already existed before the syncer recorded that timestamp do not
+    carry one. For those the search falls back to the moment their
+    database entry was written, which is the same event — so the search
+    answers for the whole database, but for such a host the date is the
+    day the syncer first stored it, not a date it learned from a source
+    system.
 
 ## Errors
 
