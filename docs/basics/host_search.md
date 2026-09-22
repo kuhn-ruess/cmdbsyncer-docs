@@ -24,7 +24,7 @@ under the hood.
 | `l.env:prod` / `i.cpu:8`          | Short forms of `labels.env:` / `inventory.cpu:`                  |
 | `h:/^web[0-9]+$/`                 | Value between slashes is used as a regular expression            |
 | `hostname:"web 01"`               | Quoted value preserves spaces and disables wildcards             |
-| `created:today`                   | Hosts created today (also `created:yesterday`)                    |
+| `created:today`                   | Hosts created today, on your own clock (also `created:yesterday`) |
 | `created:2026-09-22`              | Hosts created on that day                                         |
 | `created:>=2026-09-01`            | Hosts created on or after that day (`>`, `<=`, `<` work too)      |
 
@@ -124,20 +124,28 @@ same field. Anything that is not a date (`created:tomorrow`,
 `created:web*`) is reported as an error rather than silently returning
 nothing.
 
-Dates are read in **UTC**, the timezone the syncer stores all of its
-timestamps in. If your server runs in a different timezone, a host
-created shortly after midnight local time can fall on the previous day.
+The day is the one on **your own clock**: the browser tells the syncer
+which timezone it is in, and `created:today` means today where you are,
+not in UTC. The timestamps themselves stay stored in UTC — that is what
+keeps the cleanup jobs and two servers in different countries agreeing
+with each other — so the day boundaries are converted for the query.
+Daylight saving time is included: a date in January is read with
+January's offset.
 
-!!! note "Hosts without a creation timestamp"
+The very first page a browser loads still counts in UTC, because that is
+the page that tells the server the timezone. Everything after it uses
+your own.
 
-    The syncer writes a creation time when an import creates a host.
-    Hosts created directly in the GUI, clones, and every host that
-    already existed before the syncer recorded that timestamp do not
-    carry one. For those the search falls back to the moment their
-    database entry was written, which is the same event — so the search
-    answers for the whole database, but for such a host the date is the
-    day the syncer first stored it, not a date it learned from a source
-    system.
+!!! note "Hosts that were created before this existed"
+
+    Every host the syncer creates records its creation time — an
+    import, the host form, a copy, the CSV import and the API alike.
+    Hosts that were already in the database before the syncer wrote
+    that timestamp carry none. For those the search falls back to the
+    moment their database entry was written, which is the same event —
+    so the search answers for the whole database, but for such a host
+    the date is the day the syncer first stored it, not a date it
+    learned from a source system.
 
 ## Errors
 
