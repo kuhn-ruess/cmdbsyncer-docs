@@ -6,7 +6,7 @@ Access all Checkmk commands with `./cmdbsyncer checkmk <command> <account>`.
 | :--------------------- | :----------------------------------------------------------------------------- |
 | export_hosts           | Export hosts to the Checkmk instance                                           |
 | export_groups          | Create Checkmk groups based on your rules                                      |
-| export_rules           | Export Checkmk setup rules to the instance                                     |
+| export_rules           | Export Checkmk setup rules to the instance (supports `--dry-run`, see below)   |
 | export_tags            | Export host tag group configuration to Checkmk                                 |
 | export_users           | Create, update, or disable users in Checkmk                                    |
 | export_downtimes       | Export scheduled downtimes to Checkmk                                          |
@@ -60,8 +60,41 @@ It reads the hosts of the given Checkmk folder and assigns the named CMDB templa
 each host that exists in the Syncer. Use `--dry-run` to preview which hosts would be
 changed without writing anything.
 
+## Try the rule export out before it runs
+<span class="since">Since 4.3.5</span>
+
+`export_rules` takes `--dry-run`. The run still reads Checkmk and still
+calculates every rule, but nothing is sent to the site — no rule is created,
+updated, deleted or moved:
+
+```bash
+./cmdbsyncer checkmk export_rules <account> --dry-run
+```
+
+Every change the run decided on is printed with the ruleset and, for a rule
+Checkmk already has, its rule id:
+
+* a **create** with the folder, the condition and the value it would write,
+* an **update** with the value and the difference behind it (a changed value,
+  a changed host list or a rewritten description),
+* a **delete** with the reason it is no longer needed,
+
+followed by a summary line such as
+`3 change(s) pending: 1x CREATE, 1x DELETE, 1x UPDATE`. The same lines are
+written to the run log under _Settings → Log_, each marked `[dry-run]`.
+
+Use it to read a changed Value Template before it reaches the site, and to see
+what a disabled rule or a new `remove_orphaned_rules` setting would delete.
+
+!!! note "Rule order is not part of a dry run"
+    The reorder step is skipped. It builds its move chain from the ids Checkmk
+    returns for the rules created in the run, and a dry run creates none — so
+    there is nothing it could truthfully report.
+
 ## Debugging
 
 Add `--debug` to any command to raise exceptions and enable verbose logging. Add `--debug-rules=hostname` to inspect rule outcomes for a specific host. See [Debugging](../basics/debug_rules.md) for details.
+
+On `export_rules`, `--debug` also prints the difference behind every rule the run deletes.
 
 Add `--dry-run` to simulate an export without making any changes. Add `--save-requests` to write all planned API requests to a file for review.

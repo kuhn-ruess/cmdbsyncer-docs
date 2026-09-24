@@ -4,6 +4,12 @@ The Syncer can create, update, and delete Checkmk setup rules automatically — 
 
 Go to: _Modules → Checkmk → Manage Checkmk Setup Rules_
 
+!!! tip "Read a run before you make it"
+    `checkmk export_rules <account> --dry-run` calculates everything and
+    prints every rule it would create, update and delete — values included —
+    without sending anything to Checkmk. See
+    [Commandline Parameters](commandline.md#try-the-rule-export-out-before-it-runs).
+
 ## Rule Settings
 
 These apply to the whole rule and decide *for which hosts* it is calculated.
