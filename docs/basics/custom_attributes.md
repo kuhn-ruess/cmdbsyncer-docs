@@ -37,7 +37,7 @@ outcome:
 - **Attribute Value**:
 
 ```jinja
-{% if syncer_last_seen is defined %}{{ 'disabled' if (datetime.datetime.now() - syncer_last_seen).days > 14 else 'active' }}{% else %}active{% endif %}
+{% if syncer_last_seen is defined %}{{ 'disabled' if (datetime.datetime.utcnow() - syncer_last_seen).days > 14 else 'active' }}{% else %}active{% endif %}
 ```
 
 Pick the number of days to suit your environment; 14 is only an example.
@@ -49,7 +49,7 @@ If you prefer a flag over a word, emit `True` / `False` instead of
 `disabled` / `active`:
 
 ```jinja
-{% if syncer_last_seen is defined %}{{ 'True' if (datetime.datetime.now() - syncer_last_seen).days > 14 else 'False' }}{% else %}False{% endif %}
+{% if syncer_last_seen is defined %}{{ 'True' if (datetime.datetime.utcnow() - syncer_last_seen).days > 14 else 'False' }}{% else %}False{% endif %}
 ```
 
 Note that a Jinja-rendered outcome is always a string. Only a value typed
@@ -59,9 +59,9 @@ Jinja) is stored as a real boolean. Either way, a later condition matching on
 
 ### Things to Watch Out For
 
-- `syncer_last_seen` is written in **local time** (the server's own clock),
-  not UTC. Compare it against `datetime.datetime.now()`, as shown above — a
-  comparison against `utcnow()` shifts the deadline by your UTC offset.
+- `syncer_last_seen` is written in **UTC**, like every timestamp the Syncer
+  stores. Compare it against `datetime.datetime.utcnow()`, as shown above — a
+  comparison against `now()` shifts the deadline by your UTC offset.
 - The timestamp only moves forward when an import actually touches the host.
   That is exactly the point here: a host that disappeared from its source
   keeps ageing and eventually crosses the threshold.
