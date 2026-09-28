@@ -111,7 +111,7 @@ Keep the secret on an Account and pull it in with `{{ACCOUNT:<account>:password}
 !!! note
     The stored-password variant needs the password to exist in the target site — export it with `checkmk export_passwords` first. Checkmk 2.4 rejects an unknown store id, 2.5 accepts it and fails later.
 
-Unlike the parameters of a built-in plug-in, these belong to the Syncer: change them here and the next run rewrites the rule in Checkmk.
+These parameters are only used when the Syncer creates a rule. Afterwards they belong to Checkmk, like those of a built-in plug-in: switch the rule to another parameter set in Checkmk and it stays there, and a change to this field does not touch rules that already exist. To push new parameters to an existing rule, delete it in Checkmk and let the next run create it again.
 
 ### One Rule per List Entry / List to Loop Over
 
