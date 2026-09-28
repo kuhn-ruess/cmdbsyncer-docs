@@ -27,9 +27,25 @@ All string-based conditions are case-insensitive, except `regex`.
 | `ewith`          | Attribute ends with the given string                                                | No             |
 | `regex`          | Attribute matches the given regular expression                                      | Yes            |
 | `bool`           | Attribute matches a boolean True/False value                                        | —              |
+| `older_than`     | Attribute value is a timestamp older than the given age (`2d`, `12h`, `30m`, `1w`, plain number = days). Value match only | — |
+| `newer_than`     | Attribute value is a timestamp not older than the given age (same notation). Value match only | — |
 | `ignore`         | Always matches (negate to check that attribute does not exist)                      | —              |
 
 Every condition can be **negated** with the corresponding negate checkbox, which inverts the match result.
+
+### Older Than / Newer Than
+
+Since version 4.4, two condition types compare an attribute holding a date against the clock instead of against your text. They are offered under _Value Match_ only: a hostname and an attribute name are never a date, so _Hostname Match_ and _Tag Match_ do not list them.
+
+- The value field holds an age: a number followed by `m` (minutes), `h` (hours), `d` (days) or `w` (weeks). A number on its own counts days, so `2` is the same as `2d`.
+- An age the Syncer cannot read (e.g. `two days`) raises an error that names the accepted notation, just like a broken regex.
+- The Syncer stores its own timestamps in UTC and compares in UTC. A date imported from elsewhere may be an ISO string; one carrying a timezone offset is converted to UTC first.
+- An attribute that is not a date never matches, in **either** direction. A host without the attribute falls through both an `Older Than` and a `Newer Than` rule.
+
+!!! warning "Careful with negate"
+    A negated `Older Than 2d` ("not older than two days") also matches every host that has no date at all. If you mean "seen within the last two days", use `Newer Than 2d` instead.
+
+A rule that uses one of these conditions, or that renders `syncer_last_seen` / `syncer_last_sync` into a Jinja value, can change its answer while nothing about the host changes. Such a rule set is therefore never answered from the export cache; every other rule set stays cached as before.
 
 ## Built-in Attributes
 
@@ -38,6 +54,8 @@ Besides the host's labels, inventory and custom attributes, every rule can match
 | Attribute        | Description                                                                     |
 | :--------------- | :------------------------------------------------------------------------------ |
 | `SOURCE_ACCOUNT` | Name of the account the host was imported from (empty for manually created hosts) |
+| `syncer_last_seen` | When an import last saw the host (UTC). Missing on hosts no import has seen yet |
+| `syncer_last_sync` | When an import last changed the host (UTC). Missing on hosts no import has changed yet |
 
 They are also available in Jinja values, e.g. `{{SOURCE_ACCOUNT}}`.
 
@@ -51,6 +69,23 @@ If you import from several accounts (e.g. one per object type) and need differen
 - Set _Value Match_ to `String Equal` and the value to the account name, e.g. `jira-prod-vms`
 
 This works in every rule type, including export rules, so an export can be restricted to the hosts of a single import account without relying on hostname patterns.
+
+### Match hosts that were not seen for a while
+
+Since version 4.4 no Jinja is needed for this. Switch a host off once an import has not seen it for two days, and on again as soon as it is back, with two rules — for example in the Checkmk rule _Set Folder and Attributes of Host_:
+
+_Rule "switch off":_
+
+- Match by attribute, _Tag Match_ `Exact Match`, _Tag_ `syncer_last_seen`
+- _Value Match_ `Older Than`, value `2d`
+- Outcome: e.g. Criticality `offline`
+
+_Rule "switch on again":_
+
+- Same condition, but _Value Match_ `Newer Than`, value `2d`
+- Outcome: e.g. Criticality `prod`
+
+Leave both negate checkboxes empty. Hosts without a `syncer_last_seen` match neither rule.
 
 ### Match if an attribute does NOT exist on a host
 

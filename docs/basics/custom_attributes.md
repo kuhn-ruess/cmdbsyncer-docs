@@ -30,6 +30,15 @@ attribute set every rule sees. Combined with the [`datetime`](../advanced/jinja_
 helper this is enough to derive a `disabled` flag purely in Jinja — no plugin
 and no code change needed.
 
+!!! tip "Since version 4.4: no Jinja needed"
+    The conditions [`Older Than` / `Newer Than`](conditions.md#older-than-newer-than)
+    match on the age of `syncer_last_seen` directly. A rule with the condition
+    _Tag_ `syncer_last_seen`, _Value Match_ `Older Than`, value `14d` and the
+    fixed outcome `disabled` covers the first half of the expression below; a
+    second rule with `Newer Than` and `active` covers the other. Both are
+    easier to read in the rule list than the expression. See
+    [Match hosts that were not seen for a while](conditions.md#match-hosts-that-were-not-seen-for-a-while).
+
 Create a Custom Attribute rule with a condition of your choice and this
 outcome:
 
@@ -65,6 +74,11 @@ Jinja) is stored as a real boolean. Either way, a later condition matching on
 - The timestamp only moves forward when an import actually touches the host.
   That is exactly the point here: a host that disappeared from its source
   keeps ageing and eventually crosses the threshold.
+- Such a rule answers differently tomorrow without anything about the host
+  changing. From version 4.4 on, a rule set that uses `syncer_last_seen` or
+  `syncer_last_sync` is therefore not answered from the export cache, so a
+  host that comes back is switched on again with its next export. In older
+  versions the cached value could stay in place until the host's data changed.
 - A host that has never been imported has no `syncer_last_seen` at all. Without
   the `{% if syncer_last_seen is defined %}` guard the outcome renders to an
   empty value instead of `active`. Alternatively, restrict the rule via its
