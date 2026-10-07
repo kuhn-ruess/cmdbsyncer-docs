@@ -28,6 +28,20 @@ Example: every server record of a site (`SITE7-SRV01`) should also bring the rou
 
 This creates `SITE7-SRV01`, `SITE7-RTR01` and `SITE7-SW01`. All three carry the same attributes, so give the devices their own settings (the IP address, for example) with a hostname condition in your rules, such as hostname ends with `RTR01`.
 
+Example: every server should also get a host for its management board (iLO, iDRAC), named after the server with a prefix:
+
+```jinja
+{{ [HOSTNAME, 'ilo-' ~ HOSTNAME] }}
+```
+
+This turns `srvlx1` into `srvlx1` and `ilo-srvlx1`. To do this only for some records, return a plain name for the others:
+
+```jinja
+{{ [HOSTNAME, 'ilo-' ~ HOSTNAME] if HOSTNAME.startswith('srv') else HOSTNAME }}
+```
+
+Set the address of the management board with a rule on hostname starts with `ilo-`.
+
 The rendered result counts as a list only when it is a list literal: square brackets around quoted entries, which is what Jinja writes for a list. A loop works too:
 
 ```jinja
