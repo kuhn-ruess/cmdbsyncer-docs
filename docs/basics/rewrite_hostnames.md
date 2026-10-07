@@ -20,13 +20,13 @@ If a host has an attribute `dns`, a rewrite that appends the DNS suffix would lo
 
 A template that renders a **list** imports one host per entry. Each of them gets all attributes of the record, belongs to the importing account and is marked as seen on every run, so an entry that disappears from the list ages out through the normal [maintenance](maintenance.md) like any host that is no longer imported.
 
-Example: every store server record (`S0815-HVL01`) should also bring the router and the switch of that store:
+Example: every server record of a site (`SITE7-SRV01`) should also bring the router and the switch of that site:
 
 ```jinja
-{{ [HOSTNAME, HOSTNAME | replace('HVL01', 'RTR01'), HOSTNAME | replace('HVL01', 'SW01')] }}
+{{ [HOSTNAME, HOSTNAME | replace('SRV01', 'RTR01'), HOSTNAME | replace('SRV01', 'SW01')] }}
 ```
 
-This creates `S0815-HVL01`, `S0815-RTR01` and `S0815-SW01`. All three carry the same attributes, so give the devices their own settings (the IP address, for example) with a hostname condition in your rules, such as hostname ends with `RTR01`.
+This creates `SITE7-SRV01`, `SITE7-RTR01` and `SITE7-SW01`. All three carry the same attributes, so give the devices their own settings (the IP address, for example) with a hostname condition in your rules, such as hostname ends with `RTR01`.
 
 The rendered result counts as a list only when it is a list literal: square brackets around quoted entries, which is what Jinja writes for a list. A loop works too:
 
