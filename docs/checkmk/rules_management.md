@@ -22,6 +22,7 @@ These apply to the whole rule and decide *for which hosts* it is calculated.
 | Enabled       | Only enabled rules are exported                                                             |
 | Last Match    | Stop evaluating further rules for a host once this one matched                              |
 | Static Rule   | Host-independent rule: render once and always create it, ignoring the match conditions (see below) |
+| Rule source   | **Per host** (default): the outcomes are rendered for every host matching the conditions. **From a pasted list**: they are rendered once per row of a list, see [Rules from a pasted list](#rules-from-a-pasted-list) |
 | Conditions    | Which hosts the rule applies to — see [Conditions](../basics/conditions.md)                  |
 
 ## Outcomes: the Checkmk Rule
@@ -260,6 +261,104 @@ Notes:
   `{{HOSTNAME}}` or other host labels is not.
 - **Loop over List** is not supported on static rules (it iterates a host
   attribute list) and is skipped with a log entry.
+
+## Rules from a pasted list
+
+Some rules are not about hosts at all but about a long list of services,
+each with its own setting: a service level per service, a contact group
+label, a notification period, a number of check attempts. Writing one Setup
+Rule per line does not scale, and a host-based rule would have to be
+calculated for every host only to produce the same rules again.
+
+Set **Rule source** of the Setup Rule to **From a pasted list** instead.
+The form then swaps the host **Conditions** for a **Pasted List** step and
+hides **Static Rule**: a list rule is always host-independent, the hosts
+play no part in it. Switching back to **Per host** keeps the pasted text
+but no longer uses it.
+
+Paste the list into the **List Source** field. The rule then works through
+the list, not through the hosts:
+
+- The **first line names the columns**. Every column becomes a Jinja
+  variable: the header is lower cased and everything that is not a letter,
+  digit or underscore becomes `_`, so `Service Level` is
+  `{{ service_level }}`. The whole row is also available as `{{ row }}`
+  (for example `{{ row.service_level }}`) and its 0-based position as
+  `{{ row_idx }}`.
+- The separator is detected from the first line: tab (what a block copied
+  out of a spreadsheet arrives as), semicolon, comma or `|`. Cells in double
+  quotes may contain the separator and line breaks.
+- Empty lines are skipped. A header cell left empty drops its column, so a
+  trailing separator does no harm. A line with more cells than the header
+  is an error.
+- While you paste or type, the form shows below the field:
+  - the number of rows and the detected separator,
+  - the **column variables** exactly as you write them, e.g.
+    `{{ service_name }}` and `{{ level }}`. Click into an outcome field
+    (Value, a condition, ...) and then on a variable to insert it there,
+  - a table of the first 20 rows under those variable names,
+  - every problem, with its line and cell, e.g. a line with a cell more
+    than the header has columns (usually a wrong separator or a cell that
+    needs quotes),
+  - every outcome field reading a variable that is no column of the list,
+    e.g. a typo like `{{ levl }}`: it would render empty, so those rows would
+    create no rule.
+
+  A list with a problem cannot be saved; an unknown variable is only a
+  warning.
+
+Every outcome of the rule is rendered **once per row**. All outcome fields
+(Value, Folder, conditions, Loop over List) see the columns of that row.
+
+- A row whose **Value**, **Condition: Service name** or **Condition: Host
+  name** renders empty creates **no** rule for that outcome. Without the
+  condition the rule would apply to every service or host, without a Value
+  it would be no rule at all. So a column that is only filled for some
+  services simply leaves the other rows out.
+- Rows that render to the **same rule except for the service name** are
+  joined into one Checkmk rule matching all of their services. A list of a
+  hundred services in three service levels creates three rules, not a
+  hundred. The joined rule keeps the position of its first row.
+- **Loop over List** works on list rules: give a column name (or Jinja) and
+  a cell holding several entries, e.g. `ops,db`, creates one rule per entry,
+  with `{{ loop }}` next to the columns of the row.
+- Put the hosts into **Condition: Host name** of the outcome if the rules
+  should only apply to some hosts, either fixed or from a column.
+
+Checkmk compares service names as regular expressions that match the
+beginning of the name. Add `$` to match a name exactly, e.g. `{{ service }}$`,
+and escape characters like `(` or `.` in the list if a name contains them.
+
+Changing the list works like changing any other rule: the next
+`checkmk export_rules` creates the rules of new rows, updates changed ones
+and removes the rules this Setup Rule created for rows that are gone. Rules
+the Syncer did not create are never touched. Run
+`checkmk export_rules <account> --dry-run` first to see exactly what would
+change, values included.
+
+### Example
+
+One Setup Rule per ruleset, each with Rule source **From a pasted list** and the same list:
+
+```
+service;level;team;max_attempts
+Disk C:;20;ops;
+CPU load;10;ops;5
+Memory;10;db;5
+Interface 1;;ops;
+```
+
+| Ruleset | Value | Condition: Service name | other |
+| :------ | :---- | :---------------------- | :---- |
+| `extra_service_conf:_ec_sl` | `{{ level }}` | `{{ service }}$` | |
+| `extra_service_conf:max_check_attempts` | `{{ max_attempts }}` | `{{ service }}$` | |
+| `service_label_rules` | `{'team': '{{ team }}'}` | `{{ service }}$` | |
+| `service_contactgroups` | `'{{ team }}'` | | Condition: Service label `team:{{ team }}` |
+
+This creates two service level rules (`Disk C:` with level 20, `CPU load`
+and `Memory` together with level 10; `Interface 1` has no level), one check
+attempts rule for `CPU load` and `Memory`, one label rule per team, and one
+contact group rule per team that matches the services by their label.
 
 ## Ruleset Autocomplete
 
