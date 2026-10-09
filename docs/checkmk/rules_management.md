@@ -329,6 +329,12 @@ Checkmk compares service names as regular expressions that match the
 beginning of the name. Add `$` to match a name exactly, e.g. `{{ service }}$`,
 and escape characters like `(` or `.` in the list if a name contains them.
 
+To see what a list rule produces, open its debug page: the bug icon of the
+rule in the Setup Rules list, or the **Debug this rule** link in the help of
+the saved rule. It shows every row with the number of rules it created and
+the Checkmk rules the export would send, without contacting Checkmk (see
+[Debugging a Checkmk Setup Rule](../basics/debug_rules.md#debugging-a-checkmk-setup-rule)).
+
 Changing the list works like changing any other rule: the next
 `checkmk export_rules` creates the rules of new rows, updates changed ones
 and removes the rules this Setup Rule created for rows that are gone. Rules

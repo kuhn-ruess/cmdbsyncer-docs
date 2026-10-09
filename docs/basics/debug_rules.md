@@ -50,6 +50,31 @@ The page shows:
 - **Total outcome** — shown below every rule group: the combined result of all its matching rules, which is what the export actually uses
 - **Full Attribute List** — all raw host labels before filtering
 
+### Debugging objects
+
+CMDB objects (applications, contacts, networks, …) are debugged the same
+way: the bug icon in the **Objects** list opens the debug page for that
+object, with its attributes, the matching rules and the outcome per target
+system.
+
+The target **Netbox Objects** evaluates the Netbox rules that are written
+for objects rather than devices: IP addresses, prefixes, interfaces,
+virtual interfaces, contacts and dataflow. Each of them is its own rule
+group on the page, so you see which of those rules match the object and
+what they produce. It works for hosts as well.
+
+### Debugging a Checkmk Setup Rule
+
+Every Checkmk Setup Rule has a bug icon in the Setup Rules list:
+
+- A rule built **from a pasted list** opens its own debug page: every row
+  of the list with the number of Checkmk rules it produced (0 when its
+  Value or a service or host name condition rendered empty) and the Checkmk
+  rules the export would send after joining rows. Nothing is sent to
+  Checkmk. The edit form of such a rule links the page as well.
+- A rule built **per host** opens the host debug page with that rule
+  preselected as preview, since its result depends on the host you pick.
+
 ## Inspecting Without Exporting
 
 Some modules provide read-only commands to inspect what would be exported — without making any changes to the target system:
