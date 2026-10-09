@@ -127,6 +127,28 @@ If you have your Linux Server prepared for Kerberos, you can use it with the Syn
 
 ![](img/ansible_kerberos.png)
 
+### Hosts without domain in their name
+If your hosts are stored in the Syncer with their short name (`srv01` instead of `srv01.corp.example.com`), the WinRM connection with Kerberos fails and Ansible reports the host as unreachable:
+
+```
+kerberos: authGSSClientStep() failed: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('Server not found in Kerberos database', -1765328377))
+```
+
+Kerberos requests a ticket for the service principal `HTTP/<hostname>`. Active Directory only knows the server by its fully qualified name, and Kerberos does not append the DNS search domain, so `HTTP/srv01` is not found.
+
+**Workaround:** create a rule in **Rules → Ansible → Ansible Attributes** that sets the custom variable `ansible_host` to the FQDN. The hostname is available as `{{ HOSTNAME }}`:
+
+| Variable | Value |
+| :--------|:------|
+| ansible_host | `{{ HOSTNAME }}.corp.example.com` |
+
+The inventory hostname stays short, while Ansible connects to the FQDN and builds the Kerberos principal from it. Limit the rule with a condition to your Windows hosts. Check the result on the **Debug** page of the host (target Ansible) or with `./cmdbsyncer ansible debug_host srv01`.
+
+**Alternatives:**
+
+- Set `ansible_winrm_kerberos_hostname_override` to the same value instead. This only changes the Kerberos principal and keeps the connection target as it is.
+- Set `dns_canonicalize_hostname = true` in the `[libdefaults]` section of `/etc/krb5.conf` on the Syncer server. This depends on clean forward and reverse DNS entries for all hosts.
+
 
 # Known Problems
 
