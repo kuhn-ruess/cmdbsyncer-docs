@@ -37,6 +37,7 @@ The following Variables exist in the `cmk_host_agent` Ansible Role. You learn be
 | cmk_secret | — | The Automation Secret for the User |
 | cmk_main_server | — | Master site's address (without `https://` or path) |
 | cmk_main_site | — | Master site name |
+| cmk_agent_host_name | inventory name | Host name reported to Checkmk (agent download, registration, host creation, discovery, downtime). See [Checkmk host name differs from the inventory name](#checkmk-host-name-differs-from-the-inventory-name) |
 | cmk_server | — | Local, site-specific address for Registrations (Distributed Monitoring) |
 | cmk_site | — | Local site name (best rewritten from the inventory: `cmk__label_site` → `cmk_site`) |
 | cmk_create_host | False | Create the Host in Checkmk |
@@ -149,6 +150,32 @@ The inventory hostname stays short, while Ansible connects to the FQDN and build
 - Set `ansible_winrm_kerberos_hostname_override` to the same value instead. This only changes the Kerberos principal and keeps the connection target as it is.
 - Set `dns_canonicalize_hostname = true` in the `[libdefaults]` section of `/etc/krb5.conf` on the Syncer server. This depends on clean forward and reverse DNS entries for all hosts.
 
+
+### Checkmk host name differs from the inventory name
+The roles tell Checkmk the host name in several places: the agent download, the TLS and Bakery registration, the host creation, the service discovery and the downtime of the server update. They use the variable `cmk_agent_host_name` for that. It defaults to the inventory name, the name of the host in the Syncer, so nothing changes as long as both names are the same.
+
+`ansible_host` only decides where Ansible connects to. `cmk_agent_host_name` only decides which name Checkmk sees. Set them independently with a rule in **Rules → Ansible → Ansible Attributes**, limited by a condition to the hosts concerned:
+
+**Short name in the Syncer and in Checkmk, FQDN needed for the connection** (the Kerberos case above): set only `ansible_host`. The host stays `srv01` in Checkmk.
+
+| Variable | Value |
+| :--------|:------|
+| ansible_host | `{{ HOSTNAME }}.corp.example.com` |
+
+**Short name in the Syncer, FQDN in Checkmk**: set `cmk_agent_host_name` as well, so the agent is downloaded and registered for `srv01.corp.example.com`.
+
+| Variable | Value |
+| :--------|:------|
+| ansible_host | `{{ HOSTNAME }}.corp.example.com` |
+| cmk_agent_host_name | `{{ HOSTNAME }}.corp.example.com` |
+
+**FQDN in the Syncer, short name in Checkmk**: Ansible already connects to the FQDN, only the name for Checkmk is cut down to its first label.
+
+| Variable | Value |
+| :--------|:------|
+| cmk_agent_host_name | `{{ HOSTNAME.split('.')[0] }}` |
+
+Use the `.split('.')[0]` spelling: the Syncer renders the value itself, and its Jinja has no `split` filter, so `{{ HOSTNAME | split('.') | first }}` comes out empty. Check the rendered values on the **Debug** page of the host (target Ansible) or with `./cmdbsyncer ansible debug_host srv01`.
 
 # Known Problems
 
