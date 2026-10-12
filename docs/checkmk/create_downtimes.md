@@ -19,7 +19,7 @@ Go to: _Modules → Checkmk → Manage Downtimes_
 | End Time H         | End hour (Jinja, 24h format)                                                                 |
 | End Time M         | End minutes (Jinja)                                                                          |
 | Downtime Comment   | Comment for the downtime (Jinja supported)                                                   |
-| Duration           | Start a flexible downtime with this duration (Jinja)                                         |
+| Duration           | Start a flexible downtime with this duration in minutes (Jinja)                              |
 
 ## One-Time Downtime for Today
 
