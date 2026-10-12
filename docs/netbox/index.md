@@ -19,3 +19,12 @@ Refer to [here](../basics/list_mode.md) to learn more.
 
 ## Decommission Data
 Hosts and Virtual Machines are automatically Decommissioned in case they are not longer part of the Syncer Database, but have been created by it.
+
+## From a pasted list
+
+The rules for devices, virtual machines, clusters, prefixes, contacts and
+Dataflow fields can take a pasted list as their input instead of the hosts:
+set **Rule source** to **From a pasted list**. Every row creates one object;
+a device or virtual machine is named by the row's `hostname` (or `name`)
+column. See [Rules from a Pasted List](../basics/list_source.md) for the
+list itself.

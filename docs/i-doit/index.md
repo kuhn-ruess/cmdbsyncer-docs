@@ -19,5 +19,10 @@ TBD
 
 ### Define Attributes to use as Objects Description
 
+## From a pasted list
 
-
+An i-doit custom attributes rule can take a pasted list as its input instead
+of the hosts: set **Rule source** to **From a pasted list**. Every row
+creates one i-doit object, titled with its `hostname` (or `name`) column,
+with the outcomes rendered with the columns of the row. See [Rules from a Pasted List](../basics/list_source.md) for the
+list itself.

@@ -68,6 +68,14 @@ Missing Jira objects are created on the fly — the hostname is filled
 into the `Name` attribute.  If you want certain hosts to be left alone
 entirely, add a **Filter** rule (see below).
 
+#### From a pasted list
+
+An export rule can take a pasted list as its input instead of the hosts:
+set **Rule source** to **From a pasted list**. Every row creates or updates
+one Jira object, found by and named with its `hostname` (or `name`) column,
+with the field mapping rendered with the columns of the row. See
+[Rules from a Pasted List](../basics/list_source.md) for the list itself.
+
 ### Filter (exclude hosts)
 
 **Modules → Jira Cloud → Filter** uses the standard Filter rule format:

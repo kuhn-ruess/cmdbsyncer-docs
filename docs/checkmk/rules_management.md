@@ -271,6 +271,9 @@ Rule per line does not scale, and a host-based rule would have to be
 calculated for every host only to produce the same rules again.
 
 Set **Rule source** of the Setup Rule to **From a pasted list** instead.
+The list works the same for every rule type that offers it, see
+[Rules from a Pasted List](../basics/list_source.md); this section adds what
+is special about Setup Rules.
 The form then swaps the host **Conditions** for a **Pasted List** step and
 hides **Static Rule**: a list rule is always host-independent, the hosts
 play no part in it. Switching back to **Per host** keeps the pasted text

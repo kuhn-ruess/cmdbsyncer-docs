@@ -36,6 +36,7 @@ nav:
     - Host Search Syntax: basics/host_search.md
     - Conditions: basics/conditions.md
     - Outcomes List Mode: basics/list_mode.md
+    - Rules from a Pasted List: basics/list_source.md
     - Custom Attributes: basics/custom_attributes.md
     - Rewrite Attributes: basics/rewrite_attributes.md
     - Rewrite Hostnames: basics/rewrite_hostnames.md

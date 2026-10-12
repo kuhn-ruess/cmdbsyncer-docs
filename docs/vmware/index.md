@@ -66,3 +66,11 @@ reports for every custom attribute whether it is written or skipped and why
 (its value differs from the one on the VM, or it is not set yet). Which VMs are
 processed is governed by the `inventory_filter` account setting (see above) for
 every command.
+
+## From a pasted list
+
+A custom attributes rule can take a pasted list as its input instead of the
+hosts: set **Rule source** to **From a pasted list**. Every row writes the
+outcomes, rendered with its columns, to the virtual machine named in its
+`hostname` (or `name`) column. See [Rules from a Pasted List](../basics/list_source.md) for the
+list itself.

@@ -56,6 +56,14 @@ The _List to Loop Over_ field takes any Jinja that renders to a list. Use the `g
 
 An empty list produces no rule for that host. Rules that several hosts render identically still collapse into one, as everywhere else.
 
+## From a pasted list
+
+A notification rule can take a pasted list as its input instead of the
+hosts: set **Rule source** to **From a pasted list**, and every row renders
+the outcomes once, with the columns as variables. Identical rules are
+created once, like for hosts. See [Rules from a Pasted List](../basics/list_source.md) for the
+list itself.
+
 ## Rule Parameters
 
 Top-level conditions on the rule itself filter which hosts the outcomes are evaluated for — same `FullCondition` mechanism as in Setup Rules.

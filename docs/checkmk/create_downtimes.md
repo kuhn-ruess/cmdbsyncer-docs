@@ -42,6 +42,14 @@ config = {
 }
 ```
 
+## From a pasted list
+
+A downtime rule can take a pasted list as its input instead of the hosts:
+set **Rule source** to **From a pasted list**. Every row sets the downtimes
+of the outcomes on the Checkmk host named in its `hostname` (or `name`)
+column, with the columns as variables for the template fields. See [Rules from a Pasted List](../basics/list_source.md) for the
+list itself.
+
 ## Command Line
 
 ```bash

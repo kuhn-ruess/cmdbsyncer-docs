@@ -97,6 +97,14 @@ Example response:
 
 Add this to the rule template and replace the variable parts with Jinja.
 
+## From a pasted list
+
+A BI rule or aggregation can take a pasted list as its input instead of the
+hosts: set **Rule source** to **From a pasted list**, and every row renders
+the templates of the outcomes once, with the columns as variables. The same
+ID is created once. See [Rules from a Pasted List](../basics/list_source.md) for the
+list itself.
+
 ## Command Line
 
 ```bash

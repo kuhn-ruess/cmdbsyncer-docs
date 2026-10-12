@@ -49,9 +49,8 @@ as variables: `{{ id }}`, `{{ title }}`, `{{ site }}`. `{{ cmk_site }}` and
 created once. A list rule is always host-independent: the host conditions
 and the static flag do not apply.
 
-The list works exactly like the one of the Setup Rules: column names,
-separators, the preview while you paste and the checks on save are
-described in [Rules from a pasted list](rules_management.md#rules-from-a-pasted-list).
+Column names, separators, the preview while you paste and the checks on
+save are described in [Rules from a Pasted List](../basics/list_source.md).
 
 ## Targeting the right site — `{{ cmk_site }}`
 
