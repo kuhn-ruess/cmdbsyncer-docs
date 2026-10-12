@@ -29,6 +29,30 @@ attributes.
 
 This mirrors the *static* flag on [Setup Rules](rules_management.md).
 
+## Connections from a pasted list
+
+Many DCD connections that only differ in a few values (an ID, a title, a
+site) do not need one rule each. Set **Rule source** of the DCD rule to
+**From a pasted list** and paste a table whose first line names the
+columns, for example:
+
+```text
+id;title;site
+piggyback_dc1;Datacenter 1;site_a
+piggyback_dc2;Datacenter 2;site_b
+```
+
+Every row creates the connections of the rule's outcomes, with the columns
+as variables: `{{ id }}`, `{{ title }}`, `{{ site }}`. `{{ cmk_site }}` and
+`{{ account.<field> }}` are available in every row as well. A row whose
+**DCD ID** renders empty creates no connection, identical connections are
+created once. A list rule is always host-independent: the host conditions
+and the static flag do not apply.
+
+The list works exactly like the one of the Setup Rules: column names,
+separators, the preview while you paste and the checks on save are
+described in [Rules from a pasted list](rules_management.md#rules-from-a-pasted-list).
+
 ## Targeting the right site — `{{ cmk_site }}`
 
 A DCD connection is bound to a Checkmk **site**. When you deploy the same rule to
