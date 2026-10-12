@@ -14,6 +14,15 @@ Dedup is enforced by looking at [Run History](run_from_ui.md#run-history): if th
 
 > **Important**: fire-rule evaluation is intentionally kept out of the inventory hot path. Read-only `ansible-inventory --list` calls and `cmdbsyncer ansible inventory <provider> --list` will **not** start playbook runs. Firing happens only from the dedicated CLI/cron command, which keeps inventory queries cheap and side-effect-free.
 
+## From a pasted list
+
+Instead of the hosts, a rule can take a pasted list as its input: set
+**Rule source** to **From a pasted list**. Every row fires the playbooks of
+the outcomes against the host its `hostname` (or `name`) column names, once,
+with the same dedup as for a host. The host has to be known to the inventory
+the playbook runs with, for example as a row of the Ansible Custom Variables.
+See [Rules from a Pasted List](../basics/list_source.md) for the list itself.
+
 ## CLI
 
 ```bash

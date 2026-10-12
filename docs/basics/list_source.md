@@ -49,7 +49,8 @@ not apply, and other rules do not add to it. A list that cannot be read
 creates nothing at all, the export names the rule and the reason.
 
 Where a row stands for **one object** (an i-doit object, a Jira object, a
-Netbox device, an inventory host, the host of a downtime), its `hostname`
+Netbox device, the device or virtual machine of Netbox interfaces, an
+inventory host, the host of a downtime or of a playbook run), its `hostname`
 column names it, or its `name` column when there is no `hostname` column.
 That name is also `{{ HOSTNAME }}` in the outcomes. A row without a name
 creates no such object and is reported by the export.
@@ -64,9 +65,12 @@ creates no such object and is reported by the export.
 | [i-doit Custom Attributes](../i-doit/index.md) | one i-doit object, titled with the row's name |
 | [Jira Export Rules](../jira/index.md) | one Jira object, found by and named with the row's name |
 | [Netbox](../netbox/index.md) Devices, Virtual Machines | one device or virtual machine, named by the row |
+| Netbox Interfaces (devices and virtual machines) | the interfaces of its outcomes, on the device or virtual machine the row names; a new interface gets the Netbox ID of that device or virtual machine when the outcomes give none |
+| Netbox IP Addresses | the addresses of its outcomes; Assigned Object ID is the Netbox ID of the interface or its name, then on the device the row names |
 | Netbox Clusters, Prefixes, Contacts, Dataflow Fields | one object, found by its outcomes like for a host |
 | [VMware Custom Attributes](../vmware/index.md) | the custom attributes of the virtual machine the row names |
 | Ansible Custom Variables | one more host in the inventory, with the columns and the outcomes as its variables |
+| [Ansible Playbook Fire Rules](../ansible/fire_rules.md) | one run per playbook against the host the row names, once, like for a host |
 
 ## Rule types without a list
 
@@ -75,9 +79,7 @@ creates no such object and is reported by the export.
 - **Checkmk Export Rules** (folders, attributes, labels of hosts) turn the
   Syncer's hosts into Checkmk hosts. To bring hosts from a list into the
   Syncer, import the list (for example with the [CSV import](../csv/index.md)).
-- **Checkmk Groups, User Generation and Host Tags** have no conditions;
-  they already read their values from the attributes, the objects of an
-  account or a list of their own.
-- **Ansible Playbook Fire Rules** pick the hosts of a playbook run.
-- **Netbox Interfaces and IP Addresses** belong to the device of a host and
-  write its Netbox IDs back into the host's inventory.
+- **Checkmk Groups, User Generation and Host Tags** are no rules with
+  conditions and outcomes: they collect group, user or tag names out of the
+  attributes of all hosts or the objects of an account, so there are no
+  outcomes a row could be rendered into.
