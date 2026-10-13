@@ -23,6 +23,7 @@ Create an account under **Accounts** with the type **Event Driven Ansible**.
 | Username / Password | With a username, the request uses Basic Auth. Without a username, the password is the token. |
 | auth_header | Header the token is sent in, default `Authorization` |
 | auth_prefix | Put in front of the token, default `Bearer` (what `ansible.eda.webhook` with `token:` expects). Empty sends the bare token, for an event stream credential that compares the header with the token as is. |
+| repeat_threshold | From this many sends on, an event whose host still matches counts as repeating, see [Repeated Events](#repeated-events). Default `3`, `0` switches it off. |
 | verify_cert, ca_cert_chain, ca_root_cert | TLS settings as for every account |
 
 ## Event Rules
@@ -48,6 +49,24 @@ An event looks like this:
 ```
 
 Extra Vars that are no valid YAML mapping are not sent: the event shows up as failure in the Event History with the reason.
+
+## Repeated Events
+
+An event should make its condition go away: after the registration the agent no longer reports that it is not registered, the host no longer matches, nothing is sent anymore. When that does not happen, the event goes out again after every resend interval (or, while the event stream does not accept it, on every cron run) and nothing changes.
+
+That is what **Modules → Event Driven Ansible → Repeated Events** shows. Every event of a rule on a host has a streak per account:
+
+| State | Meaning |
+| :---- | :------ |
+| Pending | The event was sent, the host still matches, fewer sends than the threshold so far |
+| Repeating | The host still matches after `repeat_threshold` sends (account field, default 3): the event goes out without effect |
+| Resolved | A run of "EDA: Send Events" no longer gave the host this event: the rule no longer matches (or was disabled, or the host is gone) |
+
+**Sends** counts every send of the streak, successful or not, **Failed sends** the ones the event stream refused. A resolved streak starts over at 0 when the host matches again. Resolved streaks are removed after the retention of the Event History (`EDA_EVENT_LOG_RETENTION_DAYS`, 90 days).
+
+With the default resend interval of 24 hours and the threshold 3, a host shows up as repeating on the third day its event went out without effect. A dry run changes nothing.
+
+The same numbers are available over the REST API for monitoring, for example with the Checkmk check of the Syncer: `GET /api/v1/syncer/eda`, see [Syncer Endpoints](../internal_restapi/syncer.md).
 
 ## CLI
 
