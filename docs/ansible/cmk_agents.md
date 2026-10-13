@@ -179,6 +179,20 @@ Use the `.split('.')[0]` spelling: the Syncer renders the value itself, and its 
 
 # Known Problems
 
+## Windows: Missing required argument: _raw_params
+The Windows tasks need the Ansible collection `ansible.windows` in version 1.11 or newer. An older one stops the TLS and Bakery registration with:
+
+```text
+Get-AnsibleParam: Missing required argument: _raw_params
+```
+
+The Syncer image and the pip installation bring a current version. The old one usually comes from a copy in `~/.ansible/collections` or `/usr/share/ansible/collections`, which Ansible prefers. Check which version is used and update it:
+
+```bash
+ansible-galaxy collection list ansible.windows
+ansible-galaxy collection install 'ansible.windows>=1.11' --upgrade
+```
+
 ## Distributed Bakery not supported yet in API
 The Checkmk API currently can't reflect a Distributed Setup. Therefore Ansible fails to Download Agents from a remote site.  As Workarround you can set an Apache Reverseproxy Rule, to Forward only the Bakery API Requests to the Main Site.
 
