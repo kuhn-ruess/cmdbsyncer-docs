@@ -11,6 +11,60 @@ A rule consists of a [Condition](conditions.md) and an outcome:
 - **Attribute Name** — the name of the new or existing attribute to set
 - **Attribute Value** — the value to assign
 
+## The Rule List: Grouped by Attribute
+
+Since version 4.5 the list of Global Custom Attributes groups the rules by the
+attribute they set: all rules that set `site` stand under the heading `site`,
+all rules that set `owner` under `owner`. A rule that sets several attributes
+forms a group of that combination: a rule that sets `site` and `owner` stands
+under the heading `owner + site`, together with every other rule that sets
+exactly these two attributes (in whatever order the rule lists them). Every
+rule appears exactly once, a rule without an attribute under _No new
+attribute_.
+
+The grouping is only a view. The rules still run in the order of their
+**Sort Field**, and when several rules set the same attribute, the last one
+that matches wins. So that this order stays visible:
+
+- every rule shows its place in the order the rules run, for example `#3`
+- a group whose rules are interleaved with rules of other groups says so in
+  its heading, and a dashed line above a rule marks that rules of other groups
+  run between it and the rule above it
+- an `=` next to the place marks rules with the same sort value: their order
+  among each other is not fixed
+
+The grouping applies to the default order. Clicking a column header to sort by
+it, or _Show as plain list_, shows the normal table. When the rules do not fit
+on one page, the list is not grouped either.
+
+A click on a group heading (or Enter or Space while it has the focus) folds
+the group to its heading, which still shows the name and the number of rules.
+_Expand all_ and _Collapse all_ in the menu bar fold or unfold every group.
+The browser remembers which groups are folded, by the attributes of the group. A rule
+moved with the arrow keys into a folded group unfolds that group.
+
+### Changing the Order by Drag and Drop
+
+Drag a rule by its handle (☰) to another place. The rule is put directly
+behind the rule above its new place in the group (or in front of the rule
+below it, when it lands at the top of a group). Only the moved rule gets a new
+sort value; the rules behind it are shifted only when there is no free value
+left between its new neighbours.
+
+Without a mouse: focus the handle with the Tab key and move the rule with the
+arrow keys up and down.
+
+Dropping a rule into **another group** changes what the rule does: after a
+confirmation it sets the attribute of that group instead of its own, with the
+same value. This works only between groups of a single attribute. A rule with
+several attributes can not be dropped into another group, and no rule can be
+dropped into the group of a combination: such a move is refused and nothing
+changes. To change the attributes of such a rule, edit the rule. Within its
+own group it can be moved as any other rule. Rules without an attribute can
+not change their group either.
+
+Read-only users see the grouped list without the handles.
+
 ## Jinja Support in Outcome Values
 
 Since version 3.12.1, the outcome value field supports Jinja templating. You can reference any host attribute and the `{{HOSTNAME}}` placeholder:
