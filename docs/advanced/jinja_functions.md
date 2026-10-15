@@ -3,6 +3,8 @@
 The Syncer extends Jinja with the following custom functions and helpers.
 They are available in every Jinja-enabled field throughout the UI (rewrite rules, export rules, conditions, etc.).
 
+In the forms of Custom Attributes and Rewrite Attributes, the **Jinja help** button below a template field lists these functions, the variables of the rule and your [Lookup Tables](../basics/lookup_tables.md). A click on an entry inserts it at the cursor.
+
 ---
 
 ## `{{ACCOUNT:name:attribute}}` Placeholder
@@ -16,6 +18,19 @@ Use it to reference any field from a configured account without hardcoding crede
 ```
 
 Syntax: `ACCOUNT:ACCOUNTNAME:FIELDNAME`
+
+---
+
+## `lookup(table, key, column=None, default='')`
+
+Reads a value from a [Lookup Table](../basics/lookup_tables.md): the line whose first column is `key`, and of it the second column, or the column named by `column`.
+
+```jinja
+{{ lookup('datacenters', location) }}
+{{ lookup('datacenters', location, 'owner', default='unknown') }}
+```
+
+An unknown table, key or column, or an empty cell, gives `default`.
 
 ---
 
