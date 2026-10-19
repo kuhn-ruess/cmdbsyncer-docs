@@ -1,8 +1,16 @@
-# Password Store
+# Password Store (now Secret Store)
+
+!!! note "Renamed in 4.5: Password Store is now the Secret Store"
+    The Checkmk Password Store (_Modules → Checkmk → Manage Password Store_) has
+    become the [Secret Store](../basics/secret_store.md) under **Modules > Secret
+    Store**. It serves every module, holds passwords, tokens and certificates, and
+    an entry can be bound to a host. Your existing entries are the same entries:
+    same names, same values, same Checkmk ident `cmdbsyncer_<id>`, nothing to
+    migrate. This page describes what the store does on the Checkmk side.
 
 The Syncer can create and update entries in the Checkmk Password Manager. This is useful when passwords — such as SNMP communities or service account credentials — are managed in your CMDB and need to be kept in sync with Checkmk.
 
-Go to: _Modules → Checkmk → Manage Password Store_
+Go to: _Modules > Secret Store_
 
 ## How Passwords Are Stored
 
@@ -12,9 +20,11 @@ The Syncer decrypts the password internally before sending it to Checkmk — Che
 
 ## Setup
 
-Configure one entry per password. The fields correspond directly to what you would configure in the Checkmk Password Manager. Jinja templating is not yet supported in this module.
+Configure one entry per password. The fields of the section **Export to Checkmk** correspond directly to what you would configure in the Checkmk Password Manager. Jinja templating is not supported in this module.
 
 Each entry has a unique **Name**. In Checkmk the entry is stored under the stable ident `cmdbsyncer_<id>`, which is the same on every Checkmk instance you export it to.
+
+Only entries with **Enabled** and **Export to Checkmk** ticked are written to Checkmk. Entries of the kind **Certificate** are not exported (Checkmk cannot create them over its REST API), they can be shown in the Secret Store for copying instead.
 
 ## Referencing a password from a Setup Rule
 
@@ -24,13 +34,13 @@ A [Checkmk Setup Rule](rules_management.md) can reference a stored password inst
 {{ cmk_password("name") }}
 ```
 
-This resolves to the entry's Checkmk ident (`cmdbsyncer_<id>`) when the rule is exported. Use it wherever Checkmk expects a *stored* password, e.g. a special agent's `stored_password` value.
+This resolves to the entry's Checkmk ident (`cmdbsyncer_<id>`) when the rule is exported. Use it wherever Checkmk expects a *stored* password, e.g. a special agent's `stored_password` value. `cmk_password()` only resolves **global** entries; for an entry bound to a host use `{{ secret('key') }}`, which gives the ident of the entry of the host the rule is rendered for (see [Secret Store](../basics/secret_store.md#using-entries-in-rules)).
 
 The macro only resolves on a Checkmk whose password store already holds the entry, so run `export_passwords` for that account before (or after) exporting the rules — the rule export does **not** push passwords for you. This reference is what lets rules imported from one Checkmk deploy to another without exposing the secret. See [Passwords in Setup Rules](passwords_in_rules.md) for the full workflow and [How To: Use a Stored Password in a Rule Body](recipe_rule_passwords.md) for a step-by-step example.
 
 ## Command Line
 
 ```bash
-# Export every enabled password to an account's password store
+# Export every enabled entry marked for Checkmk to an account's password store
 ./cmdbsyncer checkmk export_passwords ACCOUNTNAME
 ```

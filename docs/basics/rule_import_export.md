@@ -61,7 +61,7 @@ Since version 4.3, everything you configure in the web interface is part of the 
     - `host_objects` — hosts and objects stored in the shared Host collection. Enable with `--include-hosts`.
     - `accounts` — account definitions (including encrypted credentials). Enable with `--include-accounts`.
     - `users` — user accounts including hashed passwords and roles. Enable with `--include-users`, and treat the resulting file as secret.
-    - `cmk_passwords` — the Checkmk password store. The entries stay encrypted with the key of the Syncer that wrote them, so they can only be read back by an instance using the same `CRYPTOGRAPHY_KEY`. Enable with `--include-passwords`, and treat the resulting file as secret.
+    - `cmk_passwords`: the [Secret Store](secret_store.md) (formerly the Checkmk password store). The entries stay encrypted with the key of the Syncer that wrote them, so they can only be read back by an instance using the same `CRYPTOGRAPHY_KEY`. Enable with `--include-passwords`, and treat the resulting file as secret. Users restricted to accounts or templates can neither export nor import this type.
 
     ```bash
     ./cmdbsyncer rules export_all_rules --include-hosts --include-accounts

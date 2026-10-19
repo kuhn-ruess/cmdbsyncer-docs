@@ -33,7 +33,7 @@ and see the host's attributes, `{{ HOSTNAME }}` included.
 | Option                          | Description                                                                           |
 | :------------------------------ | :------------------------------------------------------------------------------------ |
 | Ruleset                         | Checkmk ruleset ID (searchable picker over the known 2.4/2.5 rulesets — see below)   |
-| Folder                          | Target folder in Checkmk                                                              |
+| Folder                          | Target folder in Checkmk. `{{ HOST_FOLDER }}` is the folder the host itself lands in (see below) |
 | Folder Index                    | Position of the rule within the folder                                                |
 | Comment                         | Rule comment                                                                          |
 | Value Template                  | Jinja template for the rule value (check Checkmk Swagger API for the expected format) |
@@ -41,9 +41,9 @@ and see the host's attributes, `{{ HOSTNAME }}` included.
 | Enforce exact Value             | Compare the Value exactly, so entries removed from the Value Template are applied too (see below) |
 | Loop over List (Attribute or Jinja) | Create one Checkmk rule per list entry instead of a single one (see below). Empty = one rule |
 | Condition — Host name           | Only apply to these hosts. Comma-separated = any of them matches (OR)                 |
-| Condition — Host label          | Only apply to hosts carrying this label. One `key:value` label only                    |
+| Condition — Host label          | Only apply to hosts carrying this label. Entered as key and value, one label only (see below) |
 | Condition — Service name        | For service rulesets only: apply to these services. Comma-separated = OR              |
-| Condition — Service label       | For service rulesets only: apply to services carrying these labels. `key:value`, comma-separated = all must match (AND) |
+| Condition — Service label       | For service rulesets only: apply to services carrying these labels. One key and value per row, all must match (AND) |
 
 A condition left empty means no restriction on that dimension. Note the
 difference between the two comma rules: for names a comma means OR, for
@@ -60,6 +60,62 @@ of leaving the misplaced copy behind.
     [Rule Optimization](rule_optimization.md) finds those rules and the host
     label that covers exactly the same hosts, and can switch them over for you.
     It is linked above the rule list.
+
+### Jinja help
+<span class="since">Since 4.5</span>
+
+Below the **Value Template** and the **Folder** the **Jinja help** button opens
+a list of what these fields can use: the variables of a Setup Rule
+(`{{ HOSTNAME }}`, `{{ HOST_FOLDER }}`, `{{ loop }}` and every host attribute),
+the [Syncer functions and filters](../advanced/jinja_functions.md), the Jinja
+basics and your [Lookup Tables](../basics/lookup_tables.md). A click inserts the
+entry at the cursor. In a rule from a pasted list the columns are the variables,
+`HOSTNAME` and `HOST_FOLDER` are not set there.
+
+### The folder of the host: `HOST_FOLDER`
+<span class="since">Since 4.5</span>
+
+`{{ HOST_FOLDER }}` is the Checkmk folder the host export puts the host in: the
+**Move to Folder** outcome of the [Export Rules](export_rules.md), or the
+[Folder Pool](folder_pools.md) folder the host is locked to, else `/`. Put it into
+the **Folder** of an outcome and the Checkmk rule is created next to its host
+and follows it when the host moves:
+
+```jinja
+{{ HOST_FOLDER }}
+```
+
+It works in every outcome field, not only in the Folder.
+
+- The folder rules only run for hosts whose outcomes use `HOST_FOLDER`, the
+  other hosts cost nothing.
+- It is read only: a host that is not locked into a pool folder yet is not
+  given one (no pool seat is taken or freed), the next host export picks it.
+  Until then such a host gets the folder of its other rules, or `/`.
+- It needs a host. Saving a **Static Rule** or a rule **From a pasted list**
+  that uses `HOST_FOLDER` is refused with a message; switch the rule to
+  **Per host** or enter the folder.
+- The [rule preview for a host](../basics/debug_rules.md#debugging-a-checkmk-setup-rule)
+  renders it as the export would.
+
+### Label conditions
+<span class="since">Since 4.5</span>
+
+**Condition — Host label** and **Condition — Service label** are entered as a
+**key** and a **value** input instead of a `key:value` text:
+
+- Host label: one key and value (Checkmk supports one host label here).
+- Service label: one row per label, **Add label** adds a row, all labels must
+  match.
+- Both inputs suggest what exists: keys and values of the label conditions
+  your Setup Rules already use, for host labels also the attributes of your
+  hosts and their values. Jinja works in both inputs.
+- **Edit as text** switches to the plain `key:value` text field at any time. A
+  stored value that cannot be split into key and value opens as text.
+
+What is stored did not change: the same `key:value` text as before
+(comma-separated for several service labels), so existing rules keep working
+unchanged.
 
 ## One rule per list entry (Loop over List)
 

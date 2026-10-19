@@ -7,7 +7,7 @@ The Checkmk module automates host management, folder creation, group configurati
 - Sync hosts to Checkmk, assign them to folders, and set attributes
 - Create and manage Contact-, Host-, and Service-Groups based on host attributes
 - Manage Checkmk setup rules (thresholds, active checks, contact group assignments)
-- Manage host tags, users, downtimes, DCD rules, and the password store
+- Manage host tags, users, downtimes, DCD rules, and the Checkmk password store (fed from the [Secret Store](../basics/secret_store.md))
 - Import Checkmk site objects and labels back into the Syncer
 - Run agent baking and change activation from the command line or cron
 

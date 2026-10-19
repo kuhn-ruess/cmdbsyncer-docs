@@ -36,18 +36,140 @@ Thats default enabled with Syncer Version 3.12.4.
 
 Hosts created this way are treated as CMDB-managed entries inside the syncer.
 
-### Bulk add and CSV import
-<span class="since">Since 4.3</span>
+### Import CSV / YAML and Manual add
+<span class="since">Since 4.3</span>, extended in 4.5
 
 In CMDB mode the host list has two more buttons next to *Export CSV*:
 
-- **Bulk add hosts** — paste a plain list of hostnames (one per line) or a CSV, optionally
-  pick a template, and create them all at once.
-- **Import CSV** — upload or paste a CSV. A preview lets you choose **which column holds the
-  hostname** (any header works, not just `hostname`), toggle *first row has no header* if you
-  forgot it, assign an optional template, and review the parsed rows before anything is
-  created. Every column other than `hostname` / `folder` / `lifecycle_state` and
-  `inventory_<name>` becomes a host label.
+- **Add hosts manually** (until 4.4 called **Bulk add hosts**): paste hosts
+  into a text field.
+- **Import CSV / YAML** (until 4.4 **Import CSV**): upload files.
+
+Both open the same [import preview](#the-import-preview) before anything is
+created.
+
+!!! note "Renamed in 4.5: Bulk add is now Manual add"
+    The *Bulk add hosts* button is now **Add hosts manually**, its dialog is
+    called **Manual add**. It does what Bulk add did and understands more
+    formats.
+
+#### Import CSV / YAML
+
+Upload either **one CSV file** or **one or more YAML files** (`.yml`, `.yaml`)
+at once. A CSV holds one host per row and needs a header row. Mixing CSV and
+YAML, or several CSV files, is refused.
+
+A YAML file can hold one or several hosts:
+
+- a mapping of `key: value` pairs is one host,
+- a list of such mappings is one host per entry,
+- several documents separated by `---` are one host (or list of hosts) each.
+
+Every key becomes a column. Nested values (lists, mappings) are kept as JSON
+text.
+
+```yaml
+hostname: srv01.example.com
+location: dc1
+api: https://api.example.com:6443
+---
+hostname: srv02.example.com
+location: dc2
+api: https://api2.example.com:6443
+```
+
+YAML that is not strictly valid is read once more by a tolerant parser for flat
+`key: value` files, which is the usual case for files carrying certificates: in a
+`key: |` block every following line belongs to the block, whatever its
+indentation, up to the next `key:` line at the start of a line. A PEM chain whose
+lines start at column 0 therefore comes out clean:
+
+```yaml
+hostname: srv03.example.com
+ca_certificate: |
+  -----BEGIN CERTIFICATE-----
+MIIBszCCAVmgAwIBAgIUexample
+  -----END CERTIFICATE-----
+```
+
+If neither works, the error names the file and the first line that is not a
+`key: value` line.
+
+#### Manual add
+
+Paste the hosts into **Hostnames, CSV, YAML or key/value list**, optionally pick
+a template for all of them, and choose the **Format**:
+
+| Format | Content |
+| :----- | :------ |
+| Auto detect | Default. Text starting like YAML (`key: value`, `---` or `- key: value`) is read as YAML, text that looks like CSV as CSV, anything else as a host list |
+| Host list | One hostname per line |
+| CSV | CSV with a header row |
+| YAML | As in the file import, hosts separated by `---` |
+| Key/value list | One `key: value` per line, see below |
+
+A **key/value list** is meant for data copied out of a mail, a ticket or a
+spreadsheet:
+
+- a line is `key: value`, `key=value` or `key<TAB>value`,
+- it is split at the **first** separator, so `api: https://api.example.com:6443`
+  keeps its port,
+- an empty line or `---` starts the next host,
+- `key: |` starts a block that runs to the next `key:` line; inside a block a
+  line ending in `=` stays part of the value, so base64 certificate lines are
+  kept.
+
+```text
+hostname: srv01.example.com
+api: https://api.example.com:6443
+api_token=0123456789abcdef
+
+hostname: srv02.example.com
+api: https://api2.example.com:6443
+api_token=fedcba9876543210
+```
+
+Auto detect never picks the key/value list, choose it explicitly.
+
+#### The import preview
+
+Every import and every manual add opens the preview first. It shows:
+
+- **First row contains column names**: for a CSV, untick it if the header is
+  missing, the columns are numbered then.
+- **Hostname column**: which column holds the hostname (any header works, not
+  just `hostname`). It is marked in the table.
+- **Columns for the Secret Store** (with the Secret Store role only): ticked
+  columns do not become labels, their values are stored in the
+  [Secret Store](../basics/secret_store.md), bound to the imported host, and
+  rules reach them with `{{ secret('column') }}`. Columns whose name contains
+  `token`, `password`, `secret`, `certificate` or `cert` are ticked for you.
+- **Account**: the account every host of this import (and with it its secrets)
+  belongs to. Users [restricted to accounts](../installation/authentication.md#restricting-a-user-to-accounts)
+  are only offered, and only allowed, their own accounts.
+- **Assign template**: optional, for every host without its own.
+
+Up to 500 hosts the table is **editable**: change any value, add a column with
+**Add column**, and give single hosts their own template in the **Template**
+column (`(as above)` keeps the one picked above). Multi-line values such as
+certificates get a text area. A bigger import shows the first rows read only.
+
+Every column other than the hostname, `folder`, `lifecycle_state`,
+`inventory_<name>` and the Secret Store columns becomes a host label (a
+`label_<name>` prefix is stripped for the Export CSV round-trip);
+`inventory_<name>` columns go to the inventory.
+
+**Start import** creates or updates the hosts. The result names how many hosts
+were created and updated and how many secrets were stored. A restricted user
+cannot overwrite or take over an existing host outside their scope, and only
+assigns templates they are allowed to.
+
+#### Secrets on the host overview
+
+The overview of a host has a **Secrets** row with the Secret Store entries bound
+to it: key, kind, the reference for rules (e.g. `{{ secret('api_token') }}`), the
+value masked as `******` and links to the entry and, with the role to show
+values, to the value itself. See [Secret Store](../basics/secret_store.md).
 
 ## Create objects
 

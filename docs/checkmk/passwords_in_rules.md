@@ -19,17 +19,19 @@ to another Checkmk as-is, you would overwrite its password with `******`. This i
 why rules [imported from a Checkmk folder](../basics/projects.md#import-rules-from-a-checkmk-folder)
 can't simply be re-deployed with their inline password.
 
-## The solution: reference the Syncer password store
+## The solution: reference the Syncer Secret Store
 
 Instead of inlining the secret, a rule references an entry in the Syncer's
-[Password Store](password_store.md) with a Jinja macro:
+[Secret Store](../basics/secret_store.md) (until 4.4 the Checkmk Password Store)
+with a Jinja macro:
 
 ```jinja
 {{ cmk_password("name") }}
 ```
 
-* `name` is the **Name** of a `CheckmkPassword` entry in the Syncer (_Modules →
-  Checkmk → Manage Password Store_) — not its title.
+* `name` is the **Name** of a global entry in the Syncer's Secret Store
+  (_Modules > Secret Store_), not its title. Entries bound to a host are not
+  found by name, see [Per host secrets](#per-host-secrets).
 * On rule export the macro resolves to that entry's Checkmk password-store ident,
   `cmdbsyncer_<id>`, which is **the same on every Checkmk instance** you export
   the password to.
@@ -70,13 +72,14 @@ Populate a target Checkmk's password store with the password export:
 ./cmdbsyncer checkmk export_passwords <account>
 ```
 
-This writes every *enabled* `CheckmkPassword` entry into that account's Checkmk
-password store (creating or updating it).
+This writes every *enabled* Secret Store entry with **Export to Checkmk** ticked
+into that account's Checkmk password store (creating or updating it).
+Certificates are left out.
 
 ## Workflow: test → prod
 
-1. Create a **Checkmk Password** in the Syncer — a unique Name, the real secret,
-   and **Enabled** ticked.
+1. Create a global entry in the Syncer's **Secret Store**: a unique Name, the
+   real secret, **Enabled** and **Export to Checkmk** ticked.
 2. Point the rule at it: make sure the rule's value uses
    `{{ cmk_password("<that name>") }}` (imported rules already carry a macro you
    can rename).
@@ -103,8 +106,26 @@ not need re-exporting.
 
 ## Missing or disabled entries
 
-If a referenced name has no `CheckmkPassword` entry — or the entry exists but is
-**disabled** and was never exported — the macro resolves to a placeholder ident
+If a referenced name has no global Secret Store entry (or the entry exists but is
+**disabled** and was never exported), the macro resolves to a placeholder ident
 that Checkmk rejects. Only that one rule fails to deploy (the failure is logged);
 the rest of the export continues. Fix it by creating or enabling the entry and
 running `export_passwords` for the target.
+
+## Per host secrets
+<span class="since">Since 4.5</span>
+
+When every host has its own secret (an API token per cluster, for example), bind
+the entries to the hosts instead of creating one global entry per host. The
+[host import](../cmdb/index.md#import-csv-yaml-and-manual-add) does that for
+chosen columns. A rule rendered per host then references the entry of its host
+by key:
+
+```python
+'token': ('cmk_postprocessed', 'stored_password', ('{{ secret("api_token") }}', ''))
+```
+
+`secret('api_token')` resolves to the ident of the entry bound to the current
+host under the key `api_token`, or of a global entry named `api_token` when the
+host has none. Host-bound entries are exported by `export_passwords` like the
+global ones. See [Secret Store](../basics/secret_store.md#using-entries-in-rules).

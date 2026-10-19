@@ -23,6 +23,8 @@ permissions. Each permission unlocks the matching part of the UI:
 | Generic Rules | Filter, Rewrite and Custom Attribute rules |
 | Approvals | the critical-label approval queue |
 | Log View, Files, User Management, … | the matching views |
+| Secret Store <span class="since">Since 4.5</span> | the [Secret Store](../basics/secret_store.md): list, create, edit and bind entries (the Checkmk permission opens it as well) |
+| Secret Store: show plaintext values <span class="since">Since 4.5</span> | showing the value of a Secret Store entry, on top of the Secret Store permission |
 | Checkmk / Netbox / Ansible / … | the per-module menus |
 | Checkmk: Data Quality Check <span class="since">Since 4.3</span> | only the Checkmk Data Quality Check page, without the rest of the Checkmk menu |
 
@@ -89,6 +91,14 @@ host form and on the Checkmk Data Quality page. Leave it empty for full access.
 
 Both restrictions can be combined: a user carrying an account *and* a template allowlist only
 reaches hosts that satisfy each of them.
+
+!!! note "Secret Store and host import (since 4.5)"
+    A restricted user, global admins included, only reaches
+    [Secret Store](../basics/secret_store.md#access) entries bound to their own
+    hosts and never global entries. In the
+    [host import preview](../cmdb/index.md#the-import-preview) they are only
+    offered their own accounts and templates and cannot overwrite an existing
+    host outside their scope.
 
 !!! note "Data Quality Check"
     On the Checkmk **Data Quality Check** page a restricted user also sees the hosts no

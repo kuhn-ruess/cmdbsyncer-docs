@@ -39,6 +39,7 @@ nav:
     - Rules from a Pasted List: basics/list_source.md
     - Custom Attributes: basics/custom_attributes.md
     - Lookup Tables: basics/lookup_tables.md
+    - Secret Store: basics/secret_store.md
     - Rewrite Attributes: basics/rewrite_attributes.md
     - Rewrite Hostnames: basics/rewrite_hostnames.md
     - Filter: basics/filter.md
@@ -80,7 +81,7 @@ nav:
       - Downtimes: checkmk/create_downtimes.md
       - Notification Rules: checkmk/notification_rules.md
       - DCD Rules: checkmk/dcd_rules.md
-      - Password Store: checkmk/password_store.md
+      - Password Store (now Secret Store): checkmk/password_store.md
       - Passwords in Setup Rules: checkmk/passwords_in_rules.md
       - Business Intelligence: checkmk/bi.md
       - Folder Pools: checkmk/folder_pools.md

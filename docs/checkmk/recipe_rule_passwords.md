@@ -1,7 +1,8 @@
 # How To: Use a Stored Password in a Rule Body
 
 A concrete example of writing a Setup Rule whose value carries a secret, using a
-reference to the Syncer [Password Store](password_store.md) instead of an inline
+reference to the Syncer [Secret Store](../basics/secret_store.md) (formerly the
+Password Store) instead of an inline
 password — and how to convert a rule body you copied out of Checkmk where the
 password was **explicit**. For the concepts, see
 [Passwords in Setup Rules](passwords_in_rules.md).
@@ -19,7 +20,9 @@ reference to a Syncer password entry:
 ('cmk_postprocessed', 'stored_password', ('{{ cmk_password("NAME") }}', ''))
 ```
 
-* `NAME` is the **Name** of a `CheckmkPassword` entry in the Syncer.
+* `NAME` is the **Name** of a global entry in the Syncer's Secret Store. For an
+  entry bound to the host use `{{ secret("KEY") }}` instead, see
+  [Secret Store](../basics/secret_store.md#using-entries-in-rules).
 * `{{ cmk_password("NAME") }}` resolves, on export, to that entry's Checkmk
   password-store ident (`cmdbsyncer_<id>`) — the same on every Checkmk instance.
 * The second tuple element stays an empty string `''` (a stored password carries
@@ -27,14 +30,17 @@ reference to a Syncer password entry:
 
 ## Step 1 — Create the password in the Syncer
 
-_Modules → Checkmk → Manage Password Store → Create_:
+_Modules > Secret Store > Create_ (leave **Bound to host** empty for a global
+entry):
 
 | Field    | Value                        |
 | :------- | :--------------------------- |
 | Name     | `my-api` (used in the macro) |
 | Title    | `My API user` (label in Checkmk) |
-| Password | the **real** secret          |
+| Kind     | Password                     |
+| Value    | the **real** secret          |
 | Enabled  | ticked                       |
+| Export to Checkmk | ticked              |
 
 ## Step 2 — Write the rule body
 
@@ -106,7 +112,7 @@ store.
 ## Troubleshooting
 
 * **Checkmk reports an unknown password / the rule fails to create** — the macro
-  name has no matching `CheckmkPassword`, or the entry is disabled or was never
+  name has no matching global Secret Store entry, or the entry is disabled or was never
   exported. Only that rule fails; fix the name / enable the entry, run
   `export_passwords`, then `export_rules` again.
 * **The password shows as `******` in Checkmk** — you left the `explicit_password`

@@ -130,10 +130,10 @@ the project list.)
 Checkmk masks an inline (explicit) password in a rule as `******` on every read,
 so a rule imported from your test Checkmk carries **no usable secret**. The import
 therefore rewrites every inline password into a reference to the Syncer's
-[Password Store](../checkmk/password_store.md) — a `{{ cmk_password("name") }}`
-macro — and tells you which entry names it used.
+[Secret Store](secret_store.md) (formerly the Checkmk Password Store), a
+`{{ cmk_password("name") }}` macro, and tells you which entry names it used.
 
-Create a matching Checkmk Password in the Syncer, export it to each target Checkmk
+Create a matching global entry in the Secret Store, export it to each target Checkmk
 (`export_passwords`), then export the rules. The full explanation is in
 [Passwords in Setup Rules](../checkmk/passwords_in_rules.md), with a step-by-step
 example in [How To: Use a Stored Password in a Rule Body](../checkmk/recipe_rule_passwords.md).

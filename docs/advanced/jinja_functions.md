@@ -3,7 +3,7 @@
 The Syncer extends Jinja with the following custom functions and helpers.
 They are available in every Jinja-enabled field throughout the UI (rewrite rules, export rules, conditions, etc.).
 
-In the forms of Custom Attributes and Rewrite Attributes, the **Jinja help** button below a template field lists these functions, the variables of the rule and your [Lookup Tables](../basics/lookup_tables.md). A click on an entry inserts it at the cursor.
+In the forms of Custom Attributes, Rewrite Attributes and (since 4.5) Checkmk Setup Rules, the **Jinja help** button below a template field lists these functions, the variables of the rule and your [Lookup Tables](../basics/lookup_tables.md). A click on an entry inserts it at the cursor. In a Setup Rule it sits below the Value Template and the Folder and also lists `{{ HOST_FOLDER }}` (see [Checkmk Setup Rules](../checkmk/rules_management.md#the-folder-of-the-host-host_folder)).
 
 ---
 
@@ -31,6 +31,21 @@ Reads a value from a [Lookup Table](../basics/lookup_tables.md): the line whose 
 ```
 
 An unknown table, key or column, or an empty cell, gives `default`.
+
+---
+
+## `secret(key)`, `secret_value(key)` and `cmk_password(name)`
+<span class="since">Since 4.5</span>
+
+Read an entry of the [Secret Store](../basics/secret_store.md):
+
+```jinja
+{{ secret('api_token') }}        {# Checkmk ident, e.g. cmdbsyncer_<id> #}
+{{ secret_value('api_token') }}  {# the plaintext value #}
+{{ cmk_password('my-api') }}     {# Checkmk ident of a global entry #}
+```
+
+`secret()` and `secret_value()` take the entry bound to the host the template is rendered for under that key, and fall back to the global entry of that name. `cmk_password()` only resolves global entries. Inside the web interface and the API `secret_value()` shows `******` to users who may not show that entry. Details in [Secret Store](../basics/secret_store.md#using-entries-in-rules).
 
 ---
 

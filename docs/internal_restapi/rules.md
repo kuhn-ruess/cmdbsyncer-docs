@@ -83,7 +83,7 @@ Every rule of every type in one document — the backup format.
 | `include_hosts` | off | Also export the host objects. CMDB templates are always exported as their own type. |
 | `include_accounts` | off | Also export the accounts |
 | `include_users` | off | Also export users — contains password hashes and roles, **treat as secret** |
-| `include_passwords` | off | Also export the Checkmk password store; entries stay encrypted with this instance's key, **treat as secret** |
+| `include_passwords` | off | Also export the [Secret Store](../basics/secret_store.md) (formerly the Checkmk password store); entries stay encrypted with this instance's key, **treat as secret**. Ignored for users restricted to accounts or templates |
 
 ```bash
 curl -u "user:password" \
