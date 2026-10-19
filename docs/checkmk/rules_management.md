@@ -41,13 +41,13 @@ and see the host's attributes, `{{ HOSTNAME }}` included.
 | Enforce exact Value             | Compare the Value exactly, so entries removed from the Value Template are applied too (see below) |
 | Loop over List (Attribute or Jinja) | Create one Checkmk rule per list entry instead of a single one (see below). Empty = one rule |
 | Condition — Host name           | Only apply to these hosts. Comma-separated = any of them matches (OR)                 |
-| Condition — Host label          | Only apply to hosts carrying this label. Entered as key and value, one label only (see below) |
+| Condition — Host label          | Only apply to hosts carrying these labels. Entered as key and value pairs, all must match (AND) (see below) |
 | Condition — Service name        | For service rulesets only: apply to these services. Comma-separated = OR              |
-| Condition — Service label       | For service rulesets only: apply to services carrying these labels. One key and value per row, all must match (AND) |
+| Condition — Service label       | For service rulesets only: apply to services carrying these labels. Entered as key and value pairs, all must match (AND) |
 
 A condition left empty means no restriction on that dimension. Note the
 difference between the two comma rules: for names a comma means OR, for
-service labels it means AND.
+labels it means AND.
 
 If a syncer-owned rule is found in a folder other than the one configured
 here, the export moves it to the configured folder on the next run instead
@@ -101,21 +101,23 @@ It works in every outcome field, not only in the Folder.
 ### Label conditions
 <span class="since">Since 4.5</span>
 
-**Condition — Host label** and **Condition — Service label** are entered as a
-**key** and a **value** input instead of a `key:value` text:
+**Condition — Host label** and **Condition — Service label** are entered as
+**key** and **value** pairs instead of a `key:value` text. Every label is a
+small `key : value` chip in one line:
 
-- Host label: one key and value (Checkmk supports one host label here).
-- Service label: one row per label, **Add label** adds a row, all labels must
-  match.
+- **+** adds a label, the **x** of a chip removes it. Several labels all have
+  to match (AND), for host labels as well as for service labels.
 - Both inputs suggest what exists: keys and values of the label conditions
   your Setup Rules already use, for host labels also the attributes of your
   hosts and their values. Jinja works in both inputs.
-- **Edit as text** switches to the plain `key:value` text field at any time. A
+- The **pencil** switches to the plain `key:value` text field at any time. A
   stored value that cannot be split into key and value opens as text.
 
-What is stored did not change: the same `key:value` text as before
-(comma-separated for several service labels), so existing rules keep working
-unchanged.
+What is stored did not change: the same `key:value` text as before, several
+labels comma separated (`os:linux, dc:dc1`), so existing rules keep working
+unchanged. A single host label is exported exactly as before; several host
+labels become one Checkmk host label group in which all labels must match.
+Importing Checkmk rules keeps all of their host labels.
 
 ## One rule per list entry (Loop over List)
 
