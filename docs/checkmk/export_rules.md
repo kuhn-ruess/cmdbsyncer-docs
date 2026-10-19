@@ -122,3 +122,5 @@ Result folder /shared → contactgroups.groups = ['team_a', 'team_b']
 ```
 
 Scalar options such as `title` or `site` cannot be merged — two hosts cannot pick one title — so the **first** host to reach the folder wins for those. The Syncer is the source of truth for the merged group list: it replaces whatever contact groups are currently set on that folder in Checkmk. If you manage some folders' contact groups by hand in Checkmk, do not also set them via a folder option.
+
+Which folder ends up with which options, and which host and rule gave each value, is shown on [Folders and Folder Options](folders.md).

@@ -71,6 +71,7 @@ nav:
       - Commandline Parameters: checkmk/commandline.md
       - Account Parameters: checkmk/accounts.md
       - Set Folders and Host Attributes: checkmk/export_rules.md
+      - Folders and Folder Options: checkmk/folders.md
       - Host-/ Contact-/ Service-Groups: checkmk/groups_management.md
       - Checkmk Setup Rules: checkmk/rules_management.md
       - Rule Optimization: checkmk/rule_optimization.md
