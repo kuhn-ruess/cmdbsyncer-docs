@@ -223,6 +223,17 @@ To re-apply the matching after you changed a `cmdb_match`, select the template i
 
 A template without a `cmdb_match` is only ever assigned by hand and is skipped by both actions.
 
+### Assign or remove a template on selected hosts
+
+In the **Hosts** list, select the hosts and pick an action from **With selected**:
+
+- **Set Template**: adds the template to every selected host. Templates the host already carries stay.
+- **Remove Template**: takes the template off every selected host. Its other templates stay, and hosts without the template are left alone.
+
+A removed template whose `cmdb_match` still matches the host is added again the next time the host is imported or saved. To keep it off, change the `cmdb_match` or the host's labels.
+
+The page size of the list goes up to 500 hosts, so larger groups can be selected in one go.
+
 ### Archived templates
 
 If you delete a template it is archived (soft-deleted) and stops taking effect: it no longer contributes any field to the hosts that carry it, it is not assigned to new objects/hosts and it cannot be picked in a form. The existing assignments are kept, so restoring the template from **Archive** brings its fields back. In the host list such a template is shown as `(archived)`.
