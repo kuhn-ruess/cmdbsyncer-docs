@@ -58,6 +58,12 @@ the search, prefix the value with `field:`:
 
 Field names may contain letters, digits, `_`, `-` and `.`.
 
+Values stored as numbers or booleans are matched like text: `vlan:5`
+finds a label holding the number `5`, `vlan:/^5/` every value starting
+with `5`, and `monitoring:true` a label holding the boolean `true`. The
+same applies to the **Label Key:Value** and **Inventory Key:Value**
+filters of the list.
+
 ### Short forms
 
 The three common prefixes have a short spelling, so a quick search does
