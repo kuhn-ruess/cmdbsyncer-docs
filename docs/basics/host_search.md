@@ -61,8 +61,7 @@ Field names may contain letters, digits, `_`, `-` and `.`.
 Values stored as numbers or booleans are matched like text: `vlan:5`
 finds a label holding the number `5`, `vlan:/^5/` every value starting
 with `5`, and `monitoring:true` a label holding the boolean `true`. The
-same applies to the **Label Key:Value** and **Inventory Key:Value**
-filters of the list.
+same applies to the Key:Value filters of the list, see below.
 
 ### Short forms
 
@@ -152,6 +151,21 @@ your own.
     so the search answers for the whole database, but for such a host
     the date is the day the syncer first stored it, not a date it
     learned from a source system.
+
+## Key:Value filters
+
+Besides the quick search, the filter menu of the Hosts list offers three
+Key:Value filters. Each takes `key:value`, where the value is a
+case-insensitive regex and numbers or booleans are matched as text;
+`key:none` lists the hosts carrying the key with an empty value.
+
+- **Label Key:Value** — the labels stored on the host
+- **Inventory Key:Value** — the inventory of the host
+- **Checkmk Attribute Key:Value** — the attributes of the host's last
+  Checkmk sync: labels and inventory after the Checkmk rewrite rules,
+  plus what CMDB templates add. These are the green badges in the
+  Labels column. A host edited since its last sync has none of them
+  until the next sync, so it is not found by this filter in between.
 
 ## Errors
 
