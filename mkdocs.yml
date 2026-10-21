@@ -89,6 +89,7 @@ nav:
       - Site Pools: checkmk/site_pools.md
       - Inventorize Checkmk: checkmk/inventorize.md
       - Data Quality Check: checkmk/data_quality.md
+      - Configuration Checks: checkmk/config_checks.md
       - Local Config Variables: checkmk/config_vars.md
       - Checkmk Attributes and Host Tags: checkmk/cmk_attributes.md
       - Howtos:

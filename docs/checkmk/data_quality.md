@@ -11,7 +11,7 @@ Checkmk account, and it shows you a row per host. From the result you can create
 the missing hosts in the Syncer's own CMDB and give the existing ones a CMDB
 template.
 
-Go to: _Modules → Checkmk → Data Quality Check_.
+Go to: _Modules → Checkmk → Data Quality → Data Quality Check_.
 
 !!! note
     Running a check never changes anything in Checkmk. The two actions below the
@@ -110,3 +110,9 @@ already carries it stays untouched.
 
 Templates and what they do are described under
 [Use as CMDB](../cmdb/index.md).
+
+## Configuration Checks
+
+The [Configuration Checks](config_checks.md) next to this page look at the
+setup of a Checkmk site instead of a host list, e.g. for HTTP checks that check
+the same URL twice.
