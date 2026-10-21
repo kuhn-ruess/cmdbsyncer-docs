@@ -93,6 +93,40 @@ wheel.
     ```
     Details and options: [Playbooks via PyPI Install](../ansible/playbooks_pypi.md). For a remote Ansible control node, see the [cmdbsyncer-inventory](../ansible/cmdbsyncer_inventory.md) plugin instead.
 
+## Install from a Built Wheel
+
+To install a version that is not on PyPI, for example the current
+state of a branch, build the package yourself from a checkout of the
+[Git repository](https://github.com/kuhn-ruess/cmdbsyncer):
+
+```bash
+git clone https://github.com/kuhn-ruess/cmdbsyncer.git
+cd cmdbsyncer
+python3.14 -m venv venv
+venv/bin/pip install build
+make build
+```
+
+`make build` empties `dist/` first and then writes two files into it:
+the wheel `cmdbsyncer-<version>-py3-none-any.whl` and the source
+archive `cmdbsyncer-<version>.tar.gz`. The wheel holds the complete
+application including templates, static files and plugin data, so it
+is the one file to copy to the target host. There, install it into the
+venv of the working directory instead of `pip install cmdbsyncer`:
+
+```bash
+cd /opt/cmdbsyncer
+source venv/bin/activate
+pip install ./cmdbsyncer-<version>-py3-none-any.whl
+```
+
+The optional groups work the same way, e.g.
+`pip install './cmdbsyncer-<version>-py3-none-any.whl[extras]'`.
+pip still downloads the dependencies from PyPI. For a host without
+internet access use the [Offline Installation](setup_offline.md)
+bundle instead, its `--syncer-from-git` option packs a wheel built from
+the checkout together with all dependencies.
+
 ## Install MongoDB
 
 The Syncer stores every rule, account, host, label and plugin run in
