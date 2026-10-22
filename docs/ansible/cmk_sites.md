@@ -31,13 +31,28 @@ When you create a rule, you find the following options:
 | Name | Name of config set |
 | Server User | User for Ansible to connect to the Server. Sudo needs to be possibe |
 | CMK Version | Version's String like 2.1.0p19 |
-| CMK Edition | Enterprise or RAW |
+| CMK Edition | The edition as `omd` names it. Up to 2.4: Enterprise, RAW, Cloud or MSP. From 2.5 on: Community, Pro, Ultimate or Ultimate with Multi-Tenancy |
 |CMK Version Filename | Filename like found on the cmk download server, example: check-mk-enterprise-{{CMK_VERSION}}_0.bullseye_amd64.deb |
 | Installation Staging Path | Controller directory the downloaded installer is staged in. Empty = `/tmp`. Set a path outside `/tmp` when the executing user can't reliably use `/tmp` (permission issues, or the private `/tmp` under mod_wsgi). |
 | Inital Password | This password will be set for new sites |
 |Subscription Username/ Password | Your Checkmk Subscription Account |
+| Download Proxy | Optional proxy for the download from checkmk.com, e.g. `http://proxy.example.com:3128`. Credentials can be referenced as `{{ACCOUNT:name:password}}`. Empty = the proxy settings of the Ansible controller's environment |
 
 Note: For the CMK Version Filename, you can use the Placeholders {{CMK_VERSION}} and {{CMK_EDITION}}
+
+#### Fill in from checkmk.com
+
+Below the filename the form offers **Fill in from checkmk.com**. A click loads
+the current version of every Checkmk major release and its installation files
+from checkmk.com. Pick the version and the platform (Ubuntu, Debian, RHEL,
+SLES or the Checkmk Appliance) and **Apply** fills in version, edition and
+filename. The filename keeps `{{CMK_VERSION}}` in place of the version, so it
+stays valid when only the version is changed later. Checkmk 2.5 renamed its
+editions; applying a version switches the edition to the name of its release.
+
+The list is only loaded on that click, by the Syncer, through the *Download
+Proxy* of the saved settings. Without internet access the form just says so,
+and the examples below the button still show the format.
 
 ### CMK Sever Sites
 **Rules →Checkmk →CMK Server Sites** <br>
