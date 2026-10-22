@@ -53,6 +53,14 @@ Without an argument, the Syncer writes to a timestamped file such as `syncer_rul
 
 The output is line-delimited JSON. Each rule type is introduced by a header line `{"rule_type": "..."}`, followed by one JSON object per rule of that type. All known rule types are written into the same file in one pass.
 
+With `--zip` the export is written compressed into a zip archive, for example to send a complete configuration including the hosts for analysis. Without a path the archive is named like `syncer_rules_export_20260413_145521.zip`:
+
+```bash
+./cmdbsyncer rules export_all_rules --zip --include-hosts
+```
+
+`import_rules` reads such an archive directly, there is no need to unpack it.
+
 Since version 4.3, everything you configure in the web interface is part of the export: all rules of every module, plus site and folder pools, Checkmk notification rules, projects, cron groups, notification channels and rules, saved searches and the system config. Restoring such a file into an empty Syncer rebuilds the configuration as it was.
 
 !!! note "Hosts, objects, accounts, users and passwords are skipped by default"
