@@ -22,6 +22,7 @@ These apply to the whole rule and decide *for which hosts* it is calculated.
 | Enabled       | Only enabled rules are exported                                                             |
 | Last Match    | Stop evaluating further rules for a host once this one matched                              |
 | Static Rule   | Host-independent rule: render once and always create it, ignoring the match conditions (see below) |
+| Per Template  | Evaluate the rule once per CMDB template of the host, each time with only that template's labels (see [Rules per CMDB template](#rules-per-cmdb-template)) |
 | Rule source   | **Per host** (default): the outcomes are rendered for every host matching the conditions. **From a pasted list**: they are rendered once per row of a list, see [Rules from a pasted list](#rules-from-a-pasted-list) |
 | Conditions    | Which hosts the rule applies to — see [Conditions](../basics/conditions.md)                  |
 
@@ -319,6 +320,44 @@ Notes:
   `{{HOSTNAME}}` or other host labels is not.
 - **Loop over List** is not supported on static rules (it iterates a host
   attribute list) and is skipped with a log entry.
+
+## Rules per CMDB template
+
+A host can carry several [CMDB templates](../cmdb/index.md#create-and-use-templates-cmdb_match).
+For the export their labels are joined into one set of attributes: per
+attribute the first template wins, an attribute listed as
+[merged](../cmdb/index.md#merged-attributes) collects the values of all of
+them. Values that belong together inside one template get separated that
+way. Take two templates that both set a contact group and the services it is
+responsible for:
+
+| Template | `contact_groups` | `services` |
+| :------- | :--------------- | :--------- |
+| `web`    | `web_admins`     | `nginx`    |
+| `db`     | `dba`            | `postgres` |
+
+A rule assigning `contact_groups` to `services` sees `web_admins,dba` (with
+`contact_groups` merged) and `nginx` (the first template wins), and gives the
+`dba` group the `nginx` service.
+
+Enable **Per Template** on such a rule. The Syncer then evaluates it once per
+template of the host, each time against the host's attributes with only that
+template's labels. The conditions are checked per template as well, so a
+template that misses one of the attributes the rule asks for creates nothing.
+In the example the rule creates `web_admins` for `nginx` and `dba` for
+`postgres`.
+
+Notes:
+
+- The host's own labels, custom attributes and rewrites apply in every pass,
+  only the template labels change. A label set on the host itself still wins
+  over the template.
+- A host without templates gets the rule once, with its own attributes.
+- The host debug page shows these rules in one section per template,
+  **Setup Rules per Template: name**, and the rule preview renders them once
+  per template.
+- It has no effect on a **Static Rule** or a rule **From a pasted list**,
+  they do not depend on a host.
 
 ## Rules from a pasted list
 
