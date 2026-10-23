@@ -122,6 +122,11 @@ The command will tell you all variable outcomes you will have in Ansible.
 
 Please just replace the inventory source if needed.
 
+The playbook only works on hosts with at least one step switched on: `cmk_install_agent`, `cmk_register_tls`, `cmk_register_bakery`, `cmk_register_central_bakery`, `cmk_create_host`, `cmk_discover`, `cmk_delete_manual_files` or `configure_firewall`. Every other host is skipped before Ansible connects to it, so a run over the whole inventory only touches the hosts that need something.
+
+## Errors
+The steps that send the Checkmk credentials run with `no_log`, which hides their whole result. If such a step fails, the next task, named after the step with `failed` appended (e.g. `Register Agent for TLS failed`), prints the error message of Checkmk or of the agent command, with `cmk_secret` replaced by `********`. On Linux the run continues with the next step; on Windows the failed host stops there.
+
 
 ##  Windows Clients and Kerberos
 If you have your Linux Server prepared for Kerberos, you can use it with the Syncer to Update/ Install/ Register Windows Agents. This is the Settings you will need for that:
