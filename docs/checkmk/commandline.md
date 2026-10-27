@@ -2,28 +2,29 @@
 
 Access all Checkmk commands with `./cmdbsyncer checkmk <command> <account>`.
 
-| Command                | Description                                                                    |
-| :--------------------- | :----------------------------------------------------------------------------- |
-| export_hosts           | Export hosts to the Checkmk instance                                           |
-| export_groups          | Create Checkmk groups based on your rules                                      |
-| export_rules           | Export Checkmk setup rules to the instance (supports `--dry-run`, see below)   |
-| export_tags            | Export host tag group configuration to Checkmk                                 |
-| export_users           | Create, update, or disable users in Checkmk                                    |
-| export_downtimes       | Export scheduled downtimes to Checkmk                                          |
-| export_notifications   | Export notification rules to Checkmk (2.4 / 2.5 only)                          |
-| export_dcd_rules       | Export DCD (Dynamic Configuration) rules to Checkmk                            |
-| export_bi_aggregations | Export BI aggregation rules to Checkmk                                         |
-| export_bi_rules        | Export BI rules to Checkmk                                                     |
-| activate_changes       | Activate pending changes on the Checkmk instance                               |
-| bake_and_sign_agents   | Bake agents — requires bakery_key_id and bakery_passphrase in account settings |
-| import_v2              | Import hosts from Checkmk 2.x into the Syncer                                  |
-| import_v1              | Import hosts from Checkmk 1.x into the Syncer                                  |
-| inventorize_hosts      | Run inventory to fetch attributes from Checkmk into the Syncer                 |
-| show_hosts             | Print all hosts that would be exported to Checkmk                              |
-| show_labels            | List all labels that would be set in Checkmk after the sync                    |
-| show_missing_hosts     | Show hosts present in Checkmk but not in the Syncer                            |
-| assign_template        | Assign a CMDB template to every host of a Checkmk folder (see below)           |
-| analyse_rules          | Find Setup Rules whose export lists hundreds of hostnames and suggest a host label (account optional) |
+| Command                 | Description                                                                                           |
+| :---------------------- | :---------------------------------------------------------------------------------------------------- |
+| export_hosts            | Export hosts to the Checkmk instance                                                                  |
+| export_groups           | Create Checkmk groups based on your rules                                                             |
+| export_rules            | Export Checkmk setup rules to the instance (supports `--dry-run`, see below)                          |
+| export_tags             | Export host tag group configuration to Checkmk                                                        |
+| export_users            | Create, update, or disable users in Checkmk                                                           |
+| export_ldap_connections | Create, update or delete the LDAP connections for the Checkmk login                                   |
+| export_downtimes        | Export scheduled downtimes to Checkmk                                                                 |
+| export_notifications    | Export notification rules to Checkmk (2.4 / 2.5 only)                                                 |
+| export_dcd_rules        | Export DCD (Dynamic Configuration) rules to Checkmk                                                   |
+| export_bi_aggregations  | Export BI aggregation rules to Checkmk                                                                |
+| export_bi_rules         | Export BI rules to Checkmk                                                                            |
+| activate_changes        | Activate pending changes on the Checkmk instance                                                      |
+| bake_and_sign_agents    | Bake agents — requires bakery_key_id and bakery_passphrase in account settings                        |
+| import_v2               | Import hosts from Checkmk 2.x into the Syncer                                                         |
+| import_v1               | Import hosts from Checkmk 1.x into the Syncer                                                         |
+| inventorize_hosts       | Run inventory to fetch attributes from Checkmk into the Syncer                                        |
+| show_hosts              | Print all hosts that would be exported to Checkmk                                                     |
+| show_labels             | List all labels that would be set in Checkmk after the sync                                           |
+| show_missing_hosts      | Show hosts present in Checkmk but not in the Syncer                                                   |
+| assign_template         | Assign a CMDB template to every host of a Checkmk folder (see below)                                  |
+| analyse_rules           | Find Setup Rules whose export lists hundreds of hostnames and suggest a host label (account optional) |
 
 ## Improve Setup Rules that name every host individually
 <span class="since">Since 4.3</span>

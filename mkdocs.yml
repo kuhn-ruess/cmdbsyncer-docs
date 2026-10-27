@@ -79,6 +79,7 @@ nav:
       - Host Tags: checkmk/create_hosttags.md
       - Checkmk Users: checkmk/users.md
       - Generate Checkmk Users: checkmk/user_generation.md
+      - LDAP Connections: checkmk/ldap_connections.md
       - Downtimes: checkmk/create_downtimes.md
       - Notification Rules: checkmk/notification_rules.md
       - DCD Rules: checkmk/dcd_rules.md
