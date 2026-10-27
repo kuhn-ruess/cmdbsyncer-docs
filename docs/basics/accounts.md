@@ -13,6 +13,7 @@ You will find the account settings under **Settings → Accounts** in the naviga
 | Name          | Reference name for the account, also used on the command line                    |
 | Type          | Account type — controls which fields and validation apply                        |
 | Is Master     | This account can overwrite data from other accounts on import                    |
+| Shadow Source | Import only next to the existing data of hosts, to test a new source (see below) |
 | Restrict to   | Limit the account to import only or to inventorize only (see below)              |
 | Is Object     | Imported entries are stored as Objects, not Hosts (see below)                    |
 | Object Type   | Classifies the object type for filtering and special behaviors                   |
@@ -46,6 +47,25 @@ Most integrations can be used in two directions: **import** creates and owns hos
 - **Only Inventorize**: the account cannot import hosts of its own. The run stops with an error before the first host is written.
 
 Use it for an account that should only enrich hosts another system owns, or to make sure a cron entry that was pointed at the wrong command cannot quietly create hosts. The setting applies to every plugin and to the CLI, the cron jobs and the API alike.
+
+### Shadow Source: test a new import source
+
+When hosts move to a new source system — for example a new CMDB — the new source can run next to the current one first. Set **Shadow Source** on the account of the new source:
+
+- Its import stores the attributes only as **shadow data** next to the hosts the syncer already has. Owner, attributes, lifecycle and every export stay as the current source left them.
+- Hosts the syncer does not know yet are not created. The import output lists them.
+- An account can not be master and shadow source at once.
+
+Shadow sources are supported by every import that uses the regular host import (CSV, databases, REST, Netbox, i-doit, Jira, ServiceNow and others). Imports that do not support them stop with an error instead of taking hosts over.
+
+To check the new data:
+
+- The host details show the **Shadow Source Labels**: every attribute whose value differs from the current one.
+- **Debug Host** offers a **Data** choice for hosts with shadow data: *Live labels*, *Shadow source* (all rules evaluated with the shadow data) or *Compare live and shadow*. Compare shows both evaluations side by side, a picked **Preview Rule** included, and lists every attribute, outcome and rule match that would change. Evaluating the shadow data never changes the host: no pool folder or site is assigned or freed.
+- An attribute named differently in the new source shows up as missing on one side and new on the other. Such names are not mapped automatically: adjust the rules or the source.
+- The host list filter **Shadow Source Data** finds hosts with or without shadow data — hosts without it are the ones the new source does not deliver.
+
+To switch over, turn **Shadow Source** off and **Is Master** on: from the next import on, the new source owns the hosts. Then remove the shadow data with the **Clear Shadow Source Data** action in the account list (for everything an account delivered) or in the host list (for the selected hosts).
 
 ### Import name checks
 
