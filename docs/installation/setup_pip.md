@@ -5,8 +5,20 @@ pip into a venv, served by Gunicorn behind an Apache reverse proxy, is the
 recommended installation. To run it in containers instead, see
 [Installation with Docker](setup_docker.md).
 
-Requirements: Python **3.14 or newer** and a running MongoDB 8.0, see
-[MongoDB](mongodb.md).
+## Requirements
+
+A running MongoDB 8.0, see [MongoDB](mongodb.md), and Python **3.14 or
+newer** with venv support:
+
+=== "RedHat / Rocky / Alma"
+    ```bash
+    sudo dnf install -y python3.14
+    ```
+
+=== "Ubuntu / Debian"
+    ```bash
+    sudo apt install -y python3.14 python3.14-venv
+    ```
 
 ## Service User and Working Directory
 
@@ -183,16 +195,24 @@ sudo journalctl -u cmdbsyncer -f
 ### TLS Certificate
 
 Provision a certificate and key before configuring the reverse proxy —
-Apache and nginx both refuse to start without one
+Apache refuses to start without one
 (`BIO_new_file() failed`, `SSLCertificateFile: file does not exist`).
-The vhost snippets in the next section expect the cert at
+The vhost in the next section expects the cert at
 `/etc/ssl/certs/cmdb.example.com.pem` and the key at
 `/etc/ssl/private/cmdb.example.com.key`. If you use different paths,
-update both the commands here and the vhost snippets below.
+update both the commands here and the vhost below.
 
 === "Production (Let's Encrypt)"
+    Install certbot (on RedHat it comes from EPEL):
     ```bash
+    # RedHat / Rocky / Alma
+    sudo dnf install -y epel-release
+    sudo dnf install -y certbot
+    # Ubuntu / Debian
     sudo apt install -y certbot
+    ```
+    Request the certificate while port 80 is still free:
+    ```bash
     sudo certbot certonly --standalone -d cmdb.example.com
     ```
     Then point the vhost at the generated paths:
@@ -201,6 +221,7 @@ update both the commands here and the vhost snippets below.
 
 === "Dev / Lab (self-signed)"
     ```bash
+    sudo mkdir -p -m 700 /etc/ssl/private
     sudo openssl req -x509 -nodes -newkey rsa:4096 -days 365 \
         -subj "/CN=cmdb.example.com" \
         -keyout /etc/ssl/private/cmdb.example.com.key \
@@ -210,72 +231,52 @@ update both the commands here and the vhost snippets below.
     Browsers will warn about the untrusted issuer — acceptable for
     internal test hosts, not for production.
 
-### Reverse Proxy
+### Apache Reverse Proxy
 
 Gunicorn speaks plain HTTP and the unit binds it to `127.0.0.1:9090`.
-Put Apache or nginx in front to handle TLS and the public port. If the
-proxy runs on another host, change the bind address to `0.0.0.0:9090`.
+Apache in front handles TLS and the public port. If Apache runs on
+another host, change the bind address to `0.0.0.0:9090`.
 
-=== "Apache (mod_proxy)"
-    Install and enable the required modules:
+The vhost is the same on every distribution:
+
+```apache
+<VirtualHost *:443>
+    ServerName cmdb.example.com
+    SSLEngine on
+    SSLCertificateFile    /etc/ssl/certs/cmdb.example.com.pem
+    SSLCertificateKeyFile /etc/ssl/private/cmdb.example.com.key
+    ProxyPreserveHost On
+    ProxyRequests     Off
+    RequestHeader set X-Forwarded-Proto "https"
+    ProxyPass        /  http://127.0.0.1:9090/
+    ProxyPassReverse /  http://127.0.0.1:9090/
+</VirtualHost>
+<VirtualHost *:80>
+    ServerName cmdb.example.com
+    Redirect permanent / https://cmdb.example.com/
+</VirtualHost>
+```
+
+=== "RedHat / Rocky / Alma"
+    Install Apache with `mod_ssl`, save the vhost as
+    `/etc/httpd/conf.d/cmdbsyncer.conf`, allow Apache to connect to
+    Gunicorn under SELinux and open the firewall:
+    ```bash
+    sudo dnf install -y httpd mod_ssl
+    sudo setsebool -P httpd_can_network_connect 1
+    sudo firewall-cmd --permanent --add-service=http --add-service=https
+    sudo firewall-cmd --reload
+    sudo systemctl enable --now httpd
+    ```
+
+=== "Ubuntu / Debian"
+    Install Apache and enable the modules, save the vhost as
+    `/etc/apache2/sites-available/cmdbsyncer.conf`, then enable it:
     ```bash
     sudo apt install -y apache2
-    sudo a2enmod proxy proxy_http headers ssl rewrite
-    ```
-    Create `/etc/apache2/sites-available/cmdbsyncer.conf`:
-    ```apache
-    <VirtualHost *:443>
-        ServerName cmdb.example.com
-        SSLEngine on
-        SSLCertificateFile    /etc/ssl/certs/cmdb.example.com.pem
-        SSLCertificateKeyFile /etc/ssl/private/cmdb.example.com.key
-        ProxyPreserveHost On
-        ProxyRequests     Off
-        RequestHeader set X-Forwarded-Proto "https"
-        ProxyPass        /  http://127.0.0.1:9090/
-        ProxyPassReverse /  http://127.0.0.1:9090/
-        ErrorLog  ${APACHE_LOG_DIR}/cmdbsyncer_error.log
-        CustomLog ${APACHE_LOG_DIR}/cmdbsyncer_access.log combined
-    </VirtualHost>
-    <VirtualHost *:80>
-        ServerName cmdb.example.com
-        Redirect permanent / https://cmdb.example.com/
-    </VirtualHost>
-    ```
-    Enable and reload:
-    ```bash
+    sudo a2enmod proxy proxy_http headers ssl
     sudo a2ensite cmdbsyncer
     sudo systemctl reload apache2
-    ```
-
-=== "Nginx"
-    Install nginx, then create `/etc/nginx/sites-available/cmdbsyncer`:
-    ```nginx
-    server {
-        listen 80;
-        server_name cmdb.example.com;
-        return 301 https://$host$request_uri;
-    }
-    server {
-        listen 443 ssl http2;
-        server_name cmdb.example.com;
-        ssl_certificate     /etc/ssl/certs/cmdb.example.com.pem;
-        ssl_certificate_key /etc/ssl/private/cmdb.example.com.key;
-        client_max_body_size 32m;
-        location / {
-            proxy_pass         http://127.0.0.1:9090;
-            proxy_set_header   Host              $host;
-            proxy_set_header   X-Real-IP         $remote_addr;
-            proxy_set_header   X-Forwarded-For   $proxy_add_x_forwarded_for;
-            proxy_set_header   X-Forwarded-Proto https;
-            proxy_read_timeout 120s;
-        }
-    }
-    ```
-    Enable and reload:
-    ```bash
-    sudo ln -s /etc/nginx/sites-available/cmdbsyncer /etc/nginx/sites-enabled/
-    sudo nginx -t && sudo systemctl reload nginx
     ```
 
 !!! note
