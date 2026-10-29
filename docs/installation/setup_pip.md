@@ -142,8 +142,8 @@ history, see [Interactive Shell](../basics/syncer_shell.md).
 ## Production Deployment
 
 PyPI installs do not ship a WSGI server. Gunicorn serves the
-`application:app` WSGI callable, systemd keeps it running and a reverse
-proxy terminates TLS.
+`application:app` WSGI callable, systemd keeps it running and Apache
+forwards the requests to it.
 
 ### Gunicorn via systemd
 
@@ -192,170 +192,110 @@ sudo systemctl status cmdbsyncer
 sudo journalctl -u cmdbsyncer -f
 ```
 
-### TLS Certificate
-
-Provision a certificate and key before configuring the reverse proxy —
-Apache refuses to start without one
-(`BIO_new_file() failed`, `SSLCertificateFile: file does not exist`).
-The vhost in the next section expects the cert at
-`/etc/ssl/certs/cmdb.example.com.pem` and the key at
-`/etc/ssl/private/cmdb.example.com.key`. If you use different paths,
-update both the commands here and the vhost below.
-
-On RedHat, open HTTP and HTTPS in firewalld first, certbot and Apache
-both need them:
-
-```bash
-sudo firewall-cmd --permanent --add-service=http --add-service=https
-sudo firewall-cmd --reload
-```
-
-=== "Production (Let's Encrypt)"
-    Install certbot:
-
-    === "RedHat / Rocky / Alma"
-        certbot comes from EPEL:
-        ```bash
-        sudo dnf install -y epel-release
-        sudo dnf install -y certbot
-        ```
-
-    === "Ubuntu / Debian"
-        ```bash
-        sudo apt install -y certbot
-        ```
-
-    Request the certificate while port 80 is still free:
-    ```bash
-    sudo certbot certonly --standalone -d cmdb.example.com
-    ```
-    Then point the vhost at the generated paths:
-    `/etc/letsencrypt/live/cmdb.example.com/fullchain.pem` and
-    `/etc/letsencrypt/live/cmdb.example.com/privkey.pem`.
-
-=== "Dev / Lab (self-signed)"
-    ```bash
-    sudo mkdir -p -m 700 /etc/ssl/private
-    sudo openssl req -x509 -nodes -newkey rsa:4096 -days 365 \
-        -subj "/CN=cmdb.example.com" \
-        -keyout /etc/ssl/private/cmdb.example.com.key \
-        -out    /etc/ssl/certs/cmdb.example.com.pem
-    sudo chmod 600 /etc/ssl/private/cmdb.example.com.key
-    ```
-    Browsers will warn about the untrusted issuer — acceptable for
-    internal test hosts, not for production.
-
 ### Apache Reverse Proxy
 
-Gunicorn speaks plain HTTP and the unit binds it to `127.0.0.1:9090`.
-Apache in front handles TLS and the public port. If Apache runs on
-another host, change the bind address to `0.0.0.0:9090`.
+Gunicorn listens on `127.0.0.1:9090` only. Apache forwards the requests
+to it, either through **its own virtual host** or under the **sub-path
+`/cmdbsyncer`** of an Apache that already serves other sites. Pick one
+of the two. TLS is configured in Apache as for any other site and is
+not covered here.
 
-Install Apache with the TLS and proxy modules:
+Install Apache with the proxy modules, unless it is already running,
+and allow it to connect to Gunicorn:
 
 === "RedHat / Rocky / Alma"
+    SELinux blocks outgoing connections from Apache by default:
     ```bash
-    sudo dnf install -y httpd mod_ssl
+    sudo dnf install -y httpd
+    sudo setsebool -P httpd_can_network_connect 1
     ```
 
 === "Ubuntu / Debian"
     ```bash
     sudo apt install -y apache2
-    sudo a2enmod proxy proxy_http headers ssl
+    sudo a2enmod proxy proxy_http headers
     ```
 
-Save the vhost as `/etc/httpd/conf.d/cmdbsyncer.conf` (RedHat) or
-`/etc/apache2/sites-available/cmdbsyncer.conf` (Ubuntu / Debian):
+In both variants, set `TRUSTED_PROXIES = 1` in `local_config.py`. Only
+then does the Syncer trust the `X-Forwarded-*` headers from Apache and
+recognise HTTPS requests as such; without it, password-based API auth
+stays blocked.
+
+#### Variant 1: Own Virtual Host
+
+The Syncer gets its own host name and is reachable at
+`http://cmdb.example.com/`:
 
 ```apache
-<VirtualHost *:443>
+<VirtualHost *:80>
     ServerName cmdb.example.com
-    SSLEngine on
-    SSLCertificateFile    /etc/ssl/certs/cmdb.example.com.pem
-    SSLCertificateKeyFile /etc/ssl/private/cmdb.example.com.key
     ProxyPreserveHost On
-    ProxyRequests     Off
-    RequestHeader set X-Forwarded-Proto "https"
+    RequestHeader set X-Forwarded-Proto expr=%{REQUEST_SCHEME}
     ProxyPass        /  http://127.0.0.1:9090/
     ProxyPassReverse /  http://127.0.0.1:9090/
 </VirtualHost>
-<VirtualHost *:80>
-    ServerName cmdb.example.com
-    Redirect permanent / https://cmdb.example.com/
-</VirtualHost>
 ```
 
-Then activate it:
-
 === "RedHat / Rocky / Alma"
-    Allow Apache to connect to Gunicorn under SELinux and start it:
+    Save it as `/etc/httpd/conf.d/cmdbsyncer.conf`, then:
     ```bash
-    sudo setsebool -P httpd_can_network_connect 1
+    sudo firewall-cmd --permanent --add-service=http
+    sudo firewall-cmd --reload
     sudo systemctl enable --now httpd
     ```
 
 === "Ubuntu / Debian"
+    Save it as `/etc/apache2/sites-available/cmdbsyncer.conf`, then:
     ```bash
     sudo a2ensite cmdbsyncer
     sudo systemctl reload apache2
     ```
 
-#### Alternative: Sub-Path on an Existing Apache
+#### Variant 2: Sub-Path on an Existing Apache
 
-If Apache already serves other sites with TLS on the host, mount the
-Syncer under `/cmdbsyncer` instead. No own vhost, `ServerName` or
-certificate is needed.
+The Syncer runs next to the existing sites and is reachable at
+`https://<your-host>/cmdbsyncer/`, no own host name or virtual host
+needed. The prefix has to be known in three places.
 
-Tell the Syncer its prefix in `local_config.py`:
+In `local_config.py`:
 
 ```python
 BASE_PREFIX = '/cmdbsyncer/'
 ```
 
-Add the same prefix to the `[Service]` section of the systemd unit,
-Gunicorn strips it from incoming paths and adds it to generated links:
+In the `[Service]` section of the systemd unit, so Gunicorn strips the
+prefix from incoming paths and adds it to generated links:
 
 ```ini
 Environment=SCRIPT_NAME=/cmdbsyncer
 ```
 
-Then hand the path over to Gunicorn:
+In Apache:
 
 ```apache
 <Location /cmdbsyncer>
+    RequestHeader set X-Forwarded-Proto expr=%{REQUEST_SCHEME}
     ProxyPass        http://127.0.0.1:9090/cmdbsyncer
     ProxyPassReverse http://127.0.0.1:9090/cmdbsyncer
-    RequestHeader set X-Forwarded-Proto expr=%{REQUEST_SCHEME}
 </Location>
 ```
 
 === "RedHat / Rocky / Alma"
-    Save it as `/etc/httpd/conf.d/cmdbsyncer.conf`:
+    Save it as `/etc/httpd/conf.d/cmdbsyncer.conf`, then:
     ```bash
-    sudo setsebool -P httpd_can_network_connect 1
     sudo systemctl daemon-reload
     sudo systemctl restart cmdbsyncer
     sudo systemctl reload httpd
     ```
 
 === "Ubuntu / Debian"
-    Save it as `/etc/apache2/conf-available/cmdbsyncer.conf`:
+    Save it as `/etc/apache2/conf-available/cmdbsyncer.conf`, then:
     ```bash
-    sudo a2enmod proxy proxy_http headers
     sudo a2enconf cmdbsyncer
     sudo systemctl daemon-reload
     sudo systemctl restart cmdbsyncer
     sudo systemctl reload apache2
     ```
-
-The Syncer is then reachable at `https://<your-host>/cmdbsyncer/`.
-
-!!! note
-    Set `TRUSTED_PROXIES = 1` in `local_config.py` so the Syncer trusts
-    the `X-Forwarded-Proto` header and recognises the request as
-    HTTPS. Without this flag, password-based API auth stays blocked on
-    what the app sees as a plain-HTTP request even though the browser
-    speaks TLS.
 
 ## Updates
 
