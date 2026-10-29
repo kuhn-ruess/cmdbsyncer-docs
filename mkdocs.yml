@@ -114,6 +114,8 @@ nav:
     - JDisc Basics: jdisc/index.md
   - Jira:
     - Jira Cloud: jira/index.md
+  - OP5 Monitor:
+    - OP5 Basics: op5/index.md
   - YML:
     - Basics: yml/index.md
     - Account: yml/account.md
