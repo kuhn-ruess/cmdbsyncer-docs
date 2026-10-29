@@ -300,6 +300,7 @@ sudo systemctl restart cmdbsyncer
 ProxyPass        /cmdbsyncer  http://127.0.0.1:9090/cmdbsyncer
 ProxyPassReverse /cmdbsyncer  http://127.0.0.1:9090/cmdbsyncer
 <Location /cmdbsyncer>
+    ProxyPreserveHost On
     RequestHeader set X-Forwarded-Proto expr=%{REQUEST_SCHEME}
 </Location>
 ```
