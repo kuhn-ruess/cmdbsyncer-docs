@@ -77,7 +77,7 @@ CMDBsyncer imports hosts and attributes from one or more sources, processes them
 
 ## Getting Started
 
-1. Install CMDBsyncer: [Docker](installation/setup_docker.md) or [Apache/WSGI](installation/install_wsgi.md)
+1. Install CMDBsyncer: [PyPI](installation/setup_pip.md) or [Docker](installation/setup_docker.md)
 2. [Understand how it works](basics/how_it_works.md)
 3. [Create your first Account](basics/accounts.md)
 4. [Set up an Import](basics/import.md)

@@ -3,15 +3,16 @@ nav:
   - Home: index.md
   - Installation:
     - Installation: installation/setup_pip.md
-    - Manual Download: installation/setup_code.md
     - Installation with Docker: installation/setup_docker.md
-    - Installation with Apache: installation/install_wsgi.md
+    - MongoDB: installation/mongodb.md
+    - Manual Download: installation/setup_code.md
     - Offline Installation: installation/setup_offline.md
     - Local Users: installation/authentication.md
     - Install Updates: installation/updates.md
     - Update Notes: updates/update_notes.md
     - ... | glob=changelog/*
     - Archiv:
+      - Apache with mod_wsgi: installation/install_wsgi.md
       - UWSGI and Apache: installation/uwsgi_apache.md
   - Basics:
     - How it Works: basics/how_it_works.md

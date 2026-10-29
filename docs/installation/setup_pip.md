@@ -1,35 +1,19 @@
 # Installation from PyPI
 
-Starting with version 3.12.7 the Syncer is published on the Python Package
-Index. This is the quickest way to install the application into an existing
-Python environment without cloning the repository.
+The Syncer is published on the Python Package Index. Installing it with
+pip into a venv, served by Gunicorn behind an Apache reverse proxy, is the
+recommended installation. To run it in containers instead, see
+[Installation with Docker](setup_docker.md).
 
-## When to Use This Method
-
-Use `pip install` when you want a lightweight (but full functional) install into your own Python
-environment, for example on a bastion host that already runs MongoDB, or
-inside a container image that you build yourself.
-
-For most production setups the Docker Compose or Git-based installation is
-still the better fit because it ships the helper scripts, the Apache/uWSGI
-examples, and the Ansible playbooks.
-
-## Requirements
-
-- Python **3.14 or newer**
-- Running MongoDB instance (see
-  [MongoDB section in the Apache setup guide](install_wsgi.md#mongodb))
-- A writable working directory that holds your `local_config.py`
+Requirements: Python **3.14 or newer** and a running MongoDB 8.0, see
+[MongoDB](mongodb.md).
 
 ## Service User and Working Directory
 
-All examples in this guide use **`/opt/cmdbsyncer`** as the deployment
-directory. Every `cmdbsyncer` command, the systemd unit, and the
-Apache vhost expect to be invoked from this directory — it is where
-`local_config.py`, the `plugins/` folder and log files live.
-
-The Syncer runs as the dedicated system user **`cmdbsyncer`**, which
-owns this directory. Create both up front:
+The Syncer runs as the system user **`cmdbsyncer`** from the working
+directory **`/opt/cmdbsyncer`**, which holds the venv, `local_config.py`,
+the `plugins/` folder and the log files. If you choose another path,
+replace it consistently in the rest of this guide.
 
 ```bash
 sudo useradd --system --home-dir /opt/cmdbsyncer --shell /usr/sbin/nologin cmdbsyncer
@@ -37,48 +21,35 @@ sudo mkdir -p /opt/cmdbsyncer
 sudo chown cmdbsyncer: /opt/cmdbsyncer
 ```
 
-Install, configure and update the Syncer as this user, so that the
-venv, `local_config.py` and the log files belong to the account the
-service later runs under. The user has no login shell, so open one
-explicitly:
+Install, configure and update the Syncer as this user, so every file
+belongs to the account the service runs under. The user has no login
+shell, so open one explicitly:
 
 ```bash
 sudo -u cmdbsyncer -H bash
 cd /opt/cmdbsyncer
 ```
 
-All `cmdbsyncer`, `pip` and `venv` commands in this guide run in this
-shell. Commands prefixed with `sudo` (packages, systemd, web server)
-run from your normal admin account.
-
-Any other path works, but if you choose one you must replace
-`/opt/cmdbsyncer` consistently in the rest of this guide.
+All `python`, `pip` and `cmdbsyncer` commands below run in this shell.
+Commands prefixed with `sudo` run from your admin account.
 
 ## Install the Package
 
-Create a clean virtual environment inside the working directory and
-install from PyPI:
-
 ```bash
-cd /opt/cmdbsyncer
 python3.14 -m venv venv
 source venv/bin/activate
 pip install cmdbsyncer
 ```
 
-After the install, the following commands are on your `PATH`:
+This puts three commands on the `PATH`: `cmdbsyncer` (the application
+CLI), `cmdbsyncer-plugin` (plugin packaging and install helper) and
+`cmdbsyncer-mcp` (Model Context Protocol server, needs the `extras`
+group).
 
-- `cmdbsyncer` — the main application CLI (Flask Click commands, plugin
-  subcommands, shell access)
-- `cmdbsyncer-plugin` — plugin packaging and install helper
-- `cmdbsyncer-mcp` — Model Context Protocol server (only when the
-  `extras` group is installed; see below)
+### Optional Dependency Groups
 
-## Optional Dependency Groups
-
-The platform-heavy groups are not pulled in by the default install because
-they would need system libraries such as libldap, ODBC, Kerberos and the
-vmware SDK. Use the matching pip **extra** to pull them in:
+Groups that need system libraries (libldap, ODBC, Kerberos, the vmware
+SDK) are pip **extras**:
 
 ```bash
 # LDAP, MS-SQL / MySQL, vmware SDK, MCP server
@@ -94,23 +65,21 @@ pip install 'cmdbsyncer[ansible-windows]'
 pip install 'cmdbsyncer[extras,ansible,ansible-windows]'
 ```
 
-The exact version pins are tracked in `requirements-extras.txt`,
+The extras read their pins from `requirements-extras.txt`,
 `requirements-ansible.txt` and `requirements-ansible-windows.txt` in the
-[Git repository](https://github.com/kuhn-ruess/cmdbsyncer); the pip
-extras read directly from those files so they always match the released
-wheel.
+[Git repository](https://github.com/kuhn-ruess/cmdbsyncer).
 
 !!! note "Default playbooks are not part of the PyPI package"
-    The wheel ships only the Python application. Pull the reference playbooks onto your node with one command after install:
+    Pull the reference playbooks onto your node after install:
     ```bash
     cmdbsyncer sys install_playbooks ./ansible
     ```
-    Details and options: [Playbooks via PyPI Install](../ansible/playbooks_pypi.md). For a remote Ansible control node, see the [cmdbsyncer-inventory](../ansible/cmdbsyncer_inventory.md) plugin instead.
+    Details: [Playbooks via PyPI Install](../ansible/playbooks_pypi.md). For a remote Ansible control node, see the [cmdbsyncer-inventory](../ansible/cmdbsyncer_inventory.md) plugin instead.
 
-## Install from a Built Wheel
+### Install from a Built Wheel
 
 To install a version that is not on PyPI, for example the current
-state of a branch, build the package yourself from a checkout of the
+state of a branch, build the wheel from a checkout of the
 [Git repository](https://github.com/kuhn-ruess/cmdbsyncer):
 
 ```bash
@@ -121,135 +90,62 @@ venv/bin/pip install build
 make build
 ```
 
-`make build` empties `dist/` first and then writes two files into it:
-the wheel `cmdbsyncer-<version>-py3-none-any.whl` and the source
-archive `cmdbsyncer-<version>.tar.gz`. The wheel holds the complete
-application including templates, static files and plugin data, so it
-is the one file to copy to the target host. Place it in
-`/opt/cmdbsyncer` so the service user can read it and install it into
-the venv of the working directory instead of `pip install cmdbsyncer`:
+`make build` writes `cmdbsyncer-<version>-py3-none-any.whl` into
+`dist/`. The wheel holds the complete application, so it is the one file
+to copy to `/opt/cmdbsyncer` on the target host. Install it there in
+place of `pip install cmdbsyncer`, extras work the same way:
 
 ```bash
-cd /opt/cmdbsyncer
-source venv/bin/activate
-pip install ./cmdbsyncer-<version>-py3-none-any.whl
+pip install './cmdbsyncer-<version>-py3-none-any.whl[extras]'
 ```
 
-The optional groups work the same way, e.g.
-`pip install './cmdbsyncer-<version>-py3-none-any.whl[extras]'`.
 pip still downloads the dependencies from PyPI. For a host without
 internet access use the [Offline Installation](setup_offline.md)
-bundle instead, its `--syncer-from-git` option packs a wheel built from
-the checkout together with all dependencies.
-
-## Install MongoDB
-
-The Syncer stores every rule, account, host, label and plugin run in
-MongoDB, so a running instance is a hard requirement for both
-`self_configure` and any CLI or web action. For a local install on the
-same host (run from your admin account, not the service-user shell):
-
-=== "RedHat / CentOS"
-    ```bash
-    sudo dnf install -y mongodb-org
-    sudo systemctl enable --now mongod
-    ```
-
-=== "Ubuntu / Debian"
-    Follow the
-    [official MongoDB guide for Ubuntu](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-ubuntu/),
-    then run:
-    ```bash
-    sudo systemctl enable --now mongod
-    ```
-
-For the full repository setup (GPG keys, version pinning, remote
-MongoDB) see the
-[MongoDB section in the Apache guide](install_wsgi.md#mongodb). To
-point the Syncer at a remote server, set `MONGODB_SETTINGS` in
-`local_config.py` or the `CMDBSYNCER_MONGODB_*` environment variables —
-details in [Local Config](../basics/lcl_config.md).
+bundle, its `--syncer-from-git` option packs a wheel built from the
+checkout together with all dependencies.
 
 ## Initialize the Application
 
-With MongoDB running, seed the installation from the working
-directory, in the service-user shell:
+With MongoDB running, seed the installation and create the first login:
 
 ```bash
-cd /opt/cmdbsyncer
-source venv/bin/activate
 cmdbsyncer sys self_configure
+cmdbsyncer sys create_user mail@example.com
 ```
 
-The command creates `local_config.py` if it is missing, generates a random
-`SECRET_KEY` and a Fernet `CRYPTOGRAPHY_KEY`, seeds default values into the
-database and writes the effective config back to disk. Run it again after
-every update so newly added defaults are applied.
+`self_configure` creates `local_config.py` if it is missing, generates a
+random `SECRET_KEY` and a Fernet `CRYPTOGRAPHY_KEY`, seeds default values
+into the database and writes the effective config back to disk. It does
+**not** create a login, hence `create_user`; see
+[Local Users](authentication.md) for its options.
 
 !!! warning
     Treat `local_config.py` like a secret. It contains the Fernet key that
     decrypts every stored credential in the database. Back it up together
     with your MongoDB data or you will lose access to saved credentials.
 
-## Create the First Admin User
-
-`self_configure` seeds the database and config but does **not** create
-a login. Create at least one user before opening the web UI, otherwise
-there is nothing to sign in with:
-
-```bash
-cmdbsyncer sys create_user mail@example.com
-```
-
-See [Local Users](authentication.md) for the full options (admin flag,
-password reset, SSO integration, LDAP login).
-
-## Customize the Configuration
-
-The default MongoDB connection is `127.0.0.1:27017`, database `cmdb-api`.
-To point the Syncer at a different server, either set the
-`CMDBSYNCER_MONGODB_*` environment variables before starting `cmdbsyncer`
-or edit `MONGODB_SETTINGS` in `local_config.py` after the first
-`self_configure` run. The full list of supported keys — including the
-MongoDB overrides — is documented in
-[Local Config](../basics/lcl_config.md).
-
-## Start an Interactive Shell
-
-To open an interactive REPL for Syncer commands with tab completion
-and history:
-
-```bash
-cmdbsyncer cli
-```
-
-See [Interactive Shell](../basics/syncer_shell.md) for useful recipes.
+`cmdbsyncer cli` opens an interactive shell with tab completion and
+history, see [Interactive Shell](../basics/syncer_shell.md).
 
 ## Production Deployment
 
-PyPI installs do not ship a WSGI server. Pick one of the three
-approaches below — all of them serve the `application:app` WSGI
-callable.
+PyPI installs do not ship a WSGI server. Gunicorn serves the
+`application:app` WSGI callable, systemd keeps it running and a reverse
+proxy terminates TLS.
 
-### Option A: Gunicorn via systemd (recommended)
+### Gunicorn via systemd
 
-Gunicorn is the default for the Docker image and a good starting
-point. Install it in the same venv and run a quick foreground check
-first, both in the service-user shell:
+Gunicorn is the default for the Docker image. Install it in the venv
+and run a quick foreground check, still in the service-user shell:
 
 ```bash
 pip install gunicorn
-cd /opt/cmdbsyncer
-/opt/cmdbsyncer/venv/bin/gunicorn --bind 0.0.0.0:9090 --workers 2 --threads 2 application:app
+gunicorn --bind 0.0.0.0:9090 --workers 2 --threads 2 application:app
 ```
 
-For a real deployment, wrap it in a systemd unit so it starts at boot,
-restarts on failure and streams logs to the journal. Leave the
-service-user shell with `exit`; the remaining steps need root.
-
-The unit runs as the `cmdbsyncer` user created at the start of this
-guide; systemd refuses to start it if that user does not exist
-(`status=217/USER`). Create `/etc/systemd/system/cmdbsyncer.service`:
+Stop it with `Ctrl+C` and leave the service-user shell with `exit`.
+Then create `/etc/systemd/system/cmdbsyncer.service`. `WorkingDirectory`
+must be the folder that contains `local_config.py`:
 
 ```ini
 [Unit]
@@ -263,7 +159,7 @@ User=cmdbsyncer
 WorkingDirectory=/opt/cmdbsyncer
 Environment=config=prod
 ExecStart=/opt/cmdbsyncer/venv/bin/gunicorn \
-    --bind 0.0.0.0:9090 \
+    --bind 127.0.0.1:9090 \
     --workers 2 --threads 2 \
     --access-logfile - \
     --error-logfile - \
@@ -283,11 +179,6 @@ sudo systemctl enable --now cmdbsyncer
 sudo systemctl status cmdbsyncer
 sudo journalctl -u cmdbsyncer -f
 ```
-
-!!! note
-    The `WorkingDirectory` **must** point to the folder that contains
-    `local_config.py`. The Syncer reads `local_config.py` and the
-    `plugins/` directory from its current working directory.
 
 ### TLS Certificate
 
@@ -321,10 +212,9 @@ update both the commands here and the vhost snippets below.
 
 ### Reverse Proxy
 
-Gunicorn on `:9090` is plain HTTP and should not be exposed directly.
-Put Apache or nginx in front to handle TLS, compression and the public
-port. Bind Gunicorn to `127.0.0.1:9090` in the unit if the proxy lives
-on the same host (replace `0.0.0.0:9090` with `127.0.0.1:9090`).
+Gunicorn speaks plain HTTP and the unit binds it to `127.0.0.1:9090`.
+Put Apache or nginx in front to handle TLS and the public port. If the
+proxy runs on another host, change the bind address to `0.0.0.0:9090`.
 
 === "Apache (mod_proxy)"
     Install and enable the required modules:
@@ -395,33 +285,10 @@ on the same host (replace `0.0.0.0:9090` with `127.0.0.1:9090`).
     what the app sees as a plain-HTTP request even though the browser
     speaks TLS.
 
-### Option B: Apache with mod_wsgi
-
-If you already run Apache, mod_wsgi serves the application directly —
-no separate Gunicorn process, no reverse proxy hop. The full vhost,
-TLS and SELinux details (including a ready-to-use `app.wsgi` for the
-PyPI install) live in
-[Installation with Apache and mod_wsgi](install_wsgi.md).
-
-!!! warning "Build mod_wsgi from the venv"
-    Do **not** use the distro packages (`python3-mod_wsgi` on RHEL,
-    `libapache2-mod-wsgi-py3` on Debian/Ubuntu) — they are compiled
-    against the system Python (e.g. 3.9 / 3.11), not your 3.14 venv,
-    and Apache will fail to import the `application` package. Run
-    `pip install mod_wsgi && mod_wsgi-express module-config` from
-    inside `/opt/cmdbsyncer/venv` and use the resulting `LoadModule`
-    line. Full instructions: see the linked guide above.
-
-### Option C: Docker Compose
-
-For an all-in-one stack (MongoDB, Gunicorn, reverse proxy) use the
-[Docker Compose setup](setup_docker.md). That path skips the PyPI
-install entirely and builds the image from a published tag instead.
-
 ## Updates
 
-To upgrade to a newer release, run as the service user and restart
-the service afterwards:
+Upgrade as the service user, re-run `self_configure` to seed the
+defaults of the new release, then restart the service:
 
 ```bash
 sudo -u cmdbsyncer -H bash
@@ -432,6 +299,3 @@ cmdbsyncer sys self_configure
 exit
 sudo systemctl restart cmdbsyncer
 ```
-
-The `self_configure` run is important after upgrades because it seeds
-any new default values introduced by the release.

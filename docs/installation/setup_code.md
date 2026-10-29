@@ -80,7 +80,7 @@ pip install -r requirements-extras.txt
 !!! note
     Skip this section if you are using Docker.
 
-Install MongoDB with your package manager. See the [MongoDB section in the Apache setup guide](install_wsgi.md#mongodb) for distribution-specific instructions.
+Install MongoDB with your package manager. See [MongoDB](mongodb.md) for distribution-specific instructions.
 
 Once installed, start and enable the service:
 
@@ -110,9 +110,9 @@ flask run --host 0.0.0.0 --port 8080
 ```
 
 !!! warning
-    The development server is not suitable for production use. Set up Apache with mod_wsgi for production deployments: [Installation with Apache](install_wsgi.md)
+    The development server is not suitable for production use. For production, run Gunicorn behind an Apache reverse proxy: [Production Deployment](setup_pip.md#production-deployment)
 
 ## Next Steps
 
-- Set up Apache for production: [Installation with Apache](install_wsgi.md)
+- Set up production serving: [Production Deployment](setup_pip.md#production-deployment)
 - Get started with the application: [First Steps](../basics/first_steps.md)

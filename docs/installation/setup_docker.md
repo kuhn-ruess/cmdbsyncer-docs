@@ -1,6 +1,6 @@
 # Installation with Docker
 
-Running CMDBsyncer with Docker is the recommended approach for most deployments. Every release is published as a ready-made image, so there is nothing to build.
+Docker is the alternative to the recommended [Installation from PyPI](setup_pip.md). Every release is published as a ready-made image, so there is nothing to build.
 
 ## Requirements
 

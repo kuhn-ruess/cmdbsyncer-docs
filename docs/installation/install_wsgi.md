@@ -1,7 +1,9 @@
 # Installation with Apache and mod_wsgi
 
-The most convenient installation of the Syncer is using Docker, where all dependencies are satisfied automatically.
-For bare-metal or VM deployments, this guide covers installation with Apache and mod_wsgi.
+!!! warning "Deprecated"
+    mod_wsgi is no longer the recommended way to run the Syncer. Use the
+    [Installation from PyPI](setup_pip.md) (Gunicorn behind an Apache
+    reverse proxy) or [Installation with Docker](setup_docker.md).
 
 !!! warning "mod_wsgi must match the venv's Python version"
     The distro packages (`python3-mod_wsgi`, `libapache2-mod-wsgi-py3`)
@@ -36,7 +38,7 @@ The `*-devel` / `*-dev` and build-tool packages are needed once to
 compile `mod_wsgi` against the venv's Python. They can be removed
 afterwards.
 
-Also needed is MongoDB — covered in the [MongoDB section](#mongodb) below.
+Also needed is MongoDB, see [MongoDB](mongodb.md).
 
 ## Install the Syncer
 
@@ -242,34 +244,6 @@ Replace the certificate paths with your actual files (e.g. from Let's Encrypt or
 | `WSGIDaemonProcess` | Runs the app in a separate process with its own Python environment. |
 | `WSGIApplicationGroup %{GLOBAL}` | Ensures C extensions (e.g. in the MongoDB driver) work correctly. |
 
-## MongoDB
-
-=== "RedHat / CentOS"
-    Create `/etc/dnf.repos.d/mongodb.repo`:
-
-    ```ini
-    [mongodb-org-7.0]
-    name=MongoDB Repository
-    baseurl=https://repo.mongodb.org/dnf/redhat/9/mongodb-org/7.0/x86_64/
-    gpgcheck=1
-    enabled=1
-    gpgkey=https://pgp.mongodb.com/server-7.0.asc
-    ```
-
-    Then install and start MongoDB:
-
-    ```bash
-    dnf install -y mongodb-org
-    systemctl enable --now mongod
-    ```
-
-=== "Ubuntu / Debian"
-    Follow the [official MongoDB guide for Ubuntu](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-ubuntu/), then run:
-
-    ```bash
-    systemctl enable --now mongod
-    ```
-
 ## Troubleshooting
 
 **Access Denied in Apache log**
@@ -285,17 +259,3 @@ Replace the certificate paths with your actual files (e.g. from Let's Encrypt or
 
 **mod_wsgi uses wrong Python version**
 : Verify that the installed `mod_wsgi` matches your Python version (`python3.14-mod_wsgi` for Python 3.14). Mismatches cause silent import failures at startup.
-
-**MongoDB fails with "Illegal instruction" or does not start**
-: MongoDB 7.0+ requires AVX CPU instructions. If you are running in a **virtual machine (e.g. Proxmox)**, the default CPU type (`kvm64`) does not expose AVX to the guest even if the host supports it.
-
-    Check whether AVX is available inside the VM:
-    ```bash
-    grep avx /proc/cpuinfo
-    ```
-
-    If the output is empty, configure the VM CPU type in Proxmox to expose AVX. Edit the VM config (e.g. `/etc/pve/qemu-server/<vmid>.conf`) and set a CPU type that includes AVX:
-    ```
-    cpu: x86-64-v2-AES,flags=+avx;+avx2
-    ```
-    Then restart the VM. Afterwards MongoDB should start normally.
