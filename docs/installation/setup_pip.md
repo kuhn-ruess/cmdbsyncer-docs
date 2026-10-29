@@ -255,36 +255,46 @@ The Syncer gets its own host name and is reachable at
 
 The Syncer runs next to the existing sites and is reachable at
 `https://<your-host>/cmdbsyncer/`, no own host name or virtual host
-needed. The prefix has to be known in three places.
+needed. The prefix `/cmdbsyncer` has to be set in three places.
 
-In `local_config.py`:
+**1. Syncer:** add to `/opt/cmdbsyncer/local_config.py`:
 
 ```python
 BASE_PREFIX = '/cmdbsyncer/'
 ```
 
-In the `[Service]` section of the systemd unit, so Gunicorn strips the
-prefix from incoming paths and adds it to generated links:
+**2. Gunicorn:** Gunicorn has to know the prefix too, it strips it from
+incoming paths and adds it to every link it generates. Add it to the
+unit without touching the unit file:
+
+```bash
+sudo systemctl edit cmdbsyncer
+```
+
+Enter these two lines in the editor, save, then restart the service:
 
 ```ini
+[Service]
 Environment=SCRIPT_NAME=/cmdbsyncer
 ```
 
-In Apache:
+```bash
+sudo systemctl restart cmdbsyncer
+```
+
+**3. Apache:** forward `/cmdbsyncer` to Gunicorn, keeping the prefix:
 
 ```apache
+ProxyPass        /cmdbsyncer  http://127.0.0.1:9090/cmdbsyncer
+ProxyPassReverse /cmdbsyncer  http://127.0.0.1:9090/cmdbsyncer
 <Location /cmdbsyncer>
     RequestHeader set X-Forwarded-Proto expr=%{REQUEST_SCHEME}
-    ProxyPass        http://127.0.0.1:9090/cmdbsyncer
-    ProxyPassReverse http://127.0.0.1:9090/cmdbsyncer
 </Location>
 ```
 
 === "RedHat / Rocky / Alma"
     Save it as `/etc/httpd/conf.d/cmdbsyncer.conf`, then:
     ```bash
-    sudo systemctl daemon-reload
-    sudo systemctl restart cmdbsyncer
     sudo systemctl reload httpd
     ```
 
@@ -292,10 +302,12 @@ In Apache:
     Save it as `/etc/apache2/conf-available/cmdbsyncer.conf`, then:
     ```bash
     sudo a2enconf cmdbsyncer
-    sudo systemctl daemon-reload
-    sudo systemctl restart cmdbsyncer
     sudo systemctl reload apache2
     ```
+
+Files in these directories apply to every virtual host. To limit the
+Syncer to one site, put the block into that site's `<VirtualHost>`
+instead.
 
 ## Updates
 
