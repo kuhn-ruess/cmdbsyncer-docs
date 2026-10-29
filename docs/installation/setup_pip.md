@@ -251,7 +251,21 @@ Gunicorn speaks plain HTTP and the unit binds it to `127.0.0.1:9090`.
 Apache in front handles TLS and the public port. If Apache runs on
 another host, change the bind address to `0.0.0.0:9090`.
 
-The vhost is the same on every distribution:
+Install Apache with the TLS and proxy modules:
+
+=== "RedHat / Rocky / Alma"
+    ```bash
+    sudo dnf install -y httpd mod_ssl
+    ```
+
+=== "Ubuntu / Debian"
+    ```bash
+    sudo apt install -y apache2
+    sudo a2enmod proxy proxy_http headers ssl
+    ```
+
+Save the vhost as `/etc/httpd/conf.d/cmdbsyncer.conf` (RedHat) or
+`/etc/apache2/sites-available/cmdbsyncer.conf` (Ubuntu / Debian):
 
 ```apache
 <VirtualHost *:443>
@@ -271,22 +285,17 @@ The vhost is the same on every distribution:
 </VirtualHost>
 ```
 
+Then activate it:
+
 === "RedHat / Rocky / Alma"
-    Install Apache with `mod_ssl`, save the vhost as
-    `/etc/httpd/conf.d/cmdbsyncer.conf` and allow Apache to connect to
-    Gunicorn under SELinux:
+    Allow Apache to connect to Gunicorn under SELinux and start it:
     ```bash
-    sudo dnf install -y httpd mod_ssl
     sudo setsebool -P httpd_can_network_connect 1
     sudo systemctl enable --now httpd
     ```
 
 === "Ubuntu / Debian"
-    Install Apache and enable the modules, save the vhost as
-    `/etc/apache2/sites-available/cmdbsyncer.conf`, then enable it:
     ```bash
-    sudo apt install -y apache2
-    sudo a2enmod proxy proxy_http headers ssl
     sudo a2ensite cmdbsyncer
     sudo systemctl reload apache2
     ```
