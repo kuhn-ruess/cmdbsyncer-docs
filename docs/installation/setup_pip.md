@@ -300,6 +300,56 @@ Then activate it:
     sudo systemctl reload apache2
     ```
 
+#### Alternative: Sub-Path on an Existing Apache
+
+If Apache already serves other sites with TLS on the host, mount the
+Syncer under `/cmdbsyncer` instead. No own vhost, `ServerName` or
+certificate is needed.
+
+Tell the Syncer its prefix in `local_config.py`:
+
+```python
+BASE_PREFIX = '/cmdbsyncer/'
+```
+
+Add the same prefix to the `[Service]` section of the systemd unit,
+Gunicorn strips it from incoming paths and adds it to generated links:
+
+```ini
+Environment=SCRIPT_NAME=/cmdbsyncer
+```
+
+Then hand the path over to Gunicorn:
+
+```apache
+<Location /cmdbsyncer>
+    ProxyPass        http://127.0.0.1:9090/cmdbsyncer
+    ProxyPassReverse http://127.0.0.1:9090/cmdbsyncer
+    RequestHeader set X-Forwarded-Proto expr=%{REQUEST_SCHEME}
+</Location>
+```
+
+=== "RedHat / Rocky / Alma"
+    Save it as `/etc/httpd/conf.d/cmdbsyncer.conf`:
+    ```bash
+    sudo setsebool -P httpd_can_network_connect 1
+    sudo systemctl daemon-reload
+    sudo systemctl restart cmdbsyncer
+    sudo systemctl reload httpd
+    ```
+
+=== "Ubuntu / Debian"
+    Save it as `/etc/apache2/conf-available/cmdbsyncer.conf`:
+    ```bash
+    sudo a2enmod proxy proxy_http headers
+    sudo a2enconf cmdbsyncer
+    sudo systemctl daemon-reload
+    sudo systemctl restart cmdbsyncer
+    sudo systemctl reload apache2
+    ```
+
+The Syncer is then reachable at `https://<your-host>/cmdbsyncer/`.
+
 !!! note
     Set `TRUSTED_PROXIES = 1` in `local_config.py` so the Syncer trusts
     the `X-Forwarded-Proto` header and recognises the request as
