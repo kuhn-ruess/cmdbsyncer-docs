@@ -216,10 +216,19 @@ and allow it to connect to Gunicorn:
     sudo a2enmod proxy proxy_http headers
     ```
 
-In both variants, set `TRUSTED_PROXIES = 1` in `local_config.py`. Only
-then does the Syncer trust the `X-Forwarded-*` headers from Apache and
-recognise HTTPS requests as such; without it, password-based API auth
-stays blocked.
+In both variants, add `TRUSTED_PROXIES` to the existing `config`
+dictionary in `/opt/cmdbsyncer/local_config.py`:
+
+```python
+config = {
+    # ... keys written by self_configure ...
+    'TRUSTED_PROXIES': 1,
+}
+```
+
+Only then does the Syncer trust the `X-Forwarded-*` headers from Apache
+and recognise HTTPS requests as such; without it, password-based API
+auth stays blocked.
 
 #### Variant 1: Own Virtual Host
 
@@ -257,10 +266,15 @@ The Syncer runs next to the existing sites and is reachable at
 `https://<your-host>/cmdbsyncer/`, no own host name or virtual host
 needed. The prefix `/cmdbsyncer` has to be set in three places.
 
-**1. Syncer:** add to `/opt/cmdbsyncer/local_config.py`:
+**1. Syncer:** add `BASE_PREFIX` to the `config` dictionary in
+`/opt/cmdbsyncer/local_config.py`, next to `TRUSTED_PROXIES`:
 
 ```python
-BASE_PREFIX = '/cmdbsyncer/'
+config = {
+    # ... keys written by self_configure ...
+    'TRUSTED_PROXIES': 1,
+    'BASE_PREFIX': '/cmdbsyncer/',
+}
 ```
 
 **2. Gunicorn:** Gunicorn has to know the prefix too, it strips it from
