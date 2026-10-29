@@ -202,15 +202,29 @@ The vhost in the next section expects the cert at
 `/etc/ssl/private/cmdb.example.com.key`. If you use different paths,
 update both the commands here and the vhost below.
 
+On RedHat, open HTTP and HTTPS in firewalld first, certbot and Apache
+both need them:
+
+```bash
+sudo firewall-cmd --permanent --add-service=http --add-service=https
+sudo firewall-cmd --reload
+```
+
 === "Production (Let's Encrypt)"
-    Install certbot (on RedHat it comes from EPEL):
-    ```bash
-    # RedHat / Rocky / Alma
-    sudo dnf install -y epel-release
-    sudo dnf install -y certbot
-    # Ubuntu / Debian
-    sudo apt install -y certbot
-    ```
+    Install certbot:
+
+    === "RedHat / Rocky / Alma"
+        certbot comes from EPEL:
+        ```bash
+        sudo dnf install -y epel-release
+        sudo dnf install -y certbot
+        ```
+
+    === "Ubuntu / Debian"
+        ```bash
+        sudo apt install -y certbot
+        ```
+
     Request the certificate while port 80 is still free:
     ```bash
     sudo certbot certonly --standalone -d cmdb.example.com
@@ -259,13 +273,11 @@ The vhost is the same on every distribution:
 
 === "RedHat / Rocky / Alma"
     Install Apache with `mod_ssl`, save the vhost as
-    `/etc/httpd/conf.d/cmdbsyncer.conf`, allow Apache to connect to
-    Gunicorn under SELinux and open the firewall:
+    `/etc/httpd/conf.d/cmdbsyncer.conf` and allow Apache to connect to
+    Gunicorn under SELinux:
     ```bash
     sudo dnf install -y httpd mod_ssl
     sudo setsebool -P httpd_can_network_connect 1
-    sudo firewall-cmd --permanent --add-service=http --add-service=https
-    sudo firewall-cmd --reload
     sudo systemctl enable --now httpd
     ```
 
