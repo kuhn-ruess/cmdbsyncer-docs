@@ -264,21 +264,19 @@ BASE_PREFIX = '/cmdbsyncer/'
 ```
 
 **2. Gunicorn:** Gunicorn has to know the prefix too, it strips it from
-incoming paths and adds it to every link it generates. Add it to the
-unit without touching the unit file:
-
-```bash
-sudo systemctl edit cmdbsyncer
-```
-
-Enter these two lines in the editor, save, then restart the service:
+incoming paths and adds it to every link it generates. In
+`/etc/systemd/system/cmdbsyncer.service`, add a second `Environment`
+line below the existing one:
 
 ```ini
-[Service]
+Environment=config=prod
 Environment=SCRIPT_NAME=/cmdbsyncer
 ```
 
+Then reload systemd and restart the service:
+
 ```bash
+sudo systemctl daemon-reload
 sudo systemctl restart cmdbsyncer
 ```
 
