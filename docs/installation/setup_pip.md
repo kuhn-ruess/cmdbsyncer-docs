@@ -21,21 +21,35 @@ examples, and the Ansible playbooks.
   [MongoDB section in the Apache setup guide](install_wsgi.md#mongodb))
 - A writable working directory that holds your `local_config.py`
 
-## Working Directory Convention
+## Service User and Working Directory
 
 All examples in this guide use **`/opt/cmdbsyncer`** as the deployment
 directory. Every `cmdbsyncer` command, the systemd unit, and the
 Apache vhost expect to be invoked from this directory — it is where
 `local_config.py`, the `plugins/` folder and log files live.
 
-Create it up front and make it writable for the user that will run
-the Syncer:
+The Syncer runs as the dedicated system user **`cmdbsyncer`**, which
+owns this directory. Create both up front:
 
 ```bash
+sudo useradd --system --home-dir /opt/cmdbsyncer --shell /usr/sbin/nologin cmdbsyncer
 sudo mkdir -p /opt/cmdbsyncer
-sudo chown $USER /opt/cmdbsyncer
+sudo chown cmdbsyncer: /opt/cmdbsyncer
+```
+
+Install, configure and update the Syncer as this user, so that the
+venv, `local_config.py` and the log files belong to the account the
+service later runs under. The user has no login shell, so open one
+explicitly:
+
+```bash
+sudo -u cmdbsyncer -H bash
 cd /opt/cmdbsyncer
 ```
+
+All `cmdbsyncer`, `pip` and `venv` commands in this guide run in this
+shell. Commands prefixed with `sudo` (packages, systemd, web server)
+run from your normal admin account.
 
 Any other path works, but if you choose one you must replace
 `/opt/cmdbsyncer` consistently in the rest of this guide.
@@ -111,8 +125,9 @@ make build
 the wheel `cmdbsyncer-<version>-py3-none-any.whl` and the source
 archive `cmdbsyncer-<version>.tar.gz`. The wheel holds the complete
 application including templates, static files and plugin data, so it
-is the one file to copy to the target host. There, install it into the
-venv of the working directory instead of `pip install cmdbsyncer`:
+is the one file to copy to the target host. Place it in
+`/opt/cmdbsyncer` so the service user can read it and install it into
+the venv of the working directory instead of `pip install cmdbsyncer`:
 
 ```bash
 cd /opt/cmdbsyncer
@@ -132,12 +147,12 @@ the checkout together with all dependencies.
 The Syncer stores every rule, account, host, label and plugin run in
 MongoDB, so a running instance is a hard requirement for both
 `self_configure` and any CLI or web action. For a local install on the
-same host:
+same host (run from your admin account, not the service-user shell):
 
 === "RedHat / CentOS"
     ```bash
-    dnf install -y mongodb-org
-    systemctl enable --now mongod
+    sudo dnf install -y mongodb-org
+    sudo systemctl enable --now mongod
     ```
 
 === "Ubuntu / Debian"
@@ -145,7 +160,7 @@ same host:
     [official MongoDB guide for Ubuntu](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-ubuntu/),
     then run:
     ```bash
-    systemctl enable --now mongod
+    sudo systemctl enable --now mongod
     ```
 
 For the full repository setup (GPG keys, version pinning, remote
@@ -158,7 +173,7 @@ details in [Local Config](../basics/lcl_config.md).
 ## Initialize the Application
 
 With MongoDB running, seed the installation from the working
-directory:
+directory, in the service-user shell:
 
 ```bash
 cd /opt/cmdbsyncer
@@ -220,7 +235,7 @@ callable.
 
 Gunicorn is the default for the Docker image and a good starting
 point. Install it in the same venv and run a quick foreground check
-first:
+first, both in the service-user shell:
 
 ```bash
 pip install gunicorn
@@ -229,18 +244,12 @@ cd /opt/cmdbsyncer
 ```
 
 For a real deployment, wrap it in a systemd unit so it starts at boot,
-restarts on failure and streams logs to the journal.
+restarts on failure and streams logs to the journal. Leave the
+service-user shell with `exit`; the remaining steps need root.
 
-First create a dedicated service user and hand the working directory
-over to it. systemd refuses to start the unit otherwise
-(`status=217/USER`):
-
-```bash
-sudo useradd --system --home-dir /opt/cmdbsyncer --shell /usr/sbin/nologin cmdbsyncer
-sudo chown -R cmdbsyncer: /opt/cmdbsyncer
-```
-
-Then create `/etc/systemd/system/cmdbsyncer.service`:
+The unit runs as the `cmdbsyncer` user created at the start of this
+guide; systemd refuses to start it if that user does not exist
+(`status=217/USER`). Create `/etc/systemd/system/cmdbsyncer.service`:
 
 ```ini
 [Unit]
@@ -411,11 +420,17 @@ install entirely and builds the image from a published tag instead.
 
 ## Updates
 
-To upgrade to a newer release:
+To upgrade to a newer release, run as the service user and restart
+the service afterwards:
 
 ```bash
+sudo -u cmdbsyncer -H bash
+cd /opt/cmdbsyncer
+source venv/bin/activate
 pip install --upgrade cmdbsyncer
 cmdbsyncer sys self_configure
+exit
+sudo systemctl restart cmdbsyncer
 ```
 
 The `self_configure` run is important after upgrades because it seeds
