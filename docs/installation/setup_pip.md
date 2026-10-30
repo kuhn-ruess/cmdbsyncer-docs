@@ -28,18 +28,17 @@ the `plugins/` folder and the log files. If you choose another path,
 replace it consistently in the rest of this guide.
 
 ```bash
-sudo useradd --system --home-dir /opt/cmdbsyncer --shell /usr/sbin/nologin cmdbsyncer
+sudo useradd --system --home-dir /opt/cmdbsyncer --shell /bin/bash cmdbsyncer
 sudo mkdir -p /opt/cmdbsyncer
 sudo chown cmdbsyncer: /opt/cmdbsyncer
 ```
 
-Install, configure and update the Syncer as this user, so every file
-belongs to the account the service runs under. The user has no login
-shell, so open one explicitly:
+Install, configure, update and use the Syncer as this user, so every
+file belongs to the account the service runs under. Open a login shell,
+it starts in `/opt/cmdbsyncer`:
 
 ```bash
-sudo -u cmdbsyncer -H bash
-cd /opt/cmdbsyncer
+sudo -iu cmdbsyncer
 ```
 
 All `python`, `pip` and `cmdbsyncer` commands below run in this shell.
@@ -51,12 +50,16 @@ Commands prefixed with `sudo` run from your admin account.
 python3.14 -m venv venv
 source venv/bin/activate
 pip install cmdbsyncer
+echo 'source /opt/cmdbsyncer/venv/bin/activate' >> ~/.bash_profile
 ```
 
-This puts three commands on the `PATH`: `cmdbsyncer` (the application
-CLI), `cmdbsyncer-plugin` (plugin packaging and install helper) and
-`cmdbsyncer-mcp` (Model Context Protocol server, needs the `extras`
-group).
+The last line activates the venv in every later login of the service
+user, so `sudo -iu cmdbsyncer` is all it takes to work with the Syncer.
+
+The package puts three commands on the `PATH`: `cmdbsyncer` (the
+application CLI), `cmdbsyncer-plugin` (plugin packaging and install
+helper) and `cmdbsyncer-mcp` (Model Context Protocol server, needs the
+`extras` group).
 
 ### Optional Dependency Groups
 
@@ -328,9 +331,7 @@ Upgrade as the service user, re-run `self_configure` to seed the
 defaults of the new release, then restart the service:
 
 ```bash
-sudo -u cmdbsyncer -H bash
-cd /opt/cmdbsyncer
-source venv/bin/activate
+sudo -iu cmdbsyncer
 pip install --upgrade cmdbsyncer
 cmdbsyncer sys self_configure
 exit
