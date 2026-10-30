@@ -75,9 +75,10 @@ For each Site, you can set Ansible Custom Variables if you need special Settings
 ### Run the automation
 With the settings done, you can run Ansible now.
 
-From the web interface, select one or more entries in **Rules → Checkmk →
-CMK Server Settings** and choose **Run Manage OMD Server** in the action
-menu. The playbook then only runs on the servers of the enabled sites that
+From the web interface, click **Run Playbook** in the last column of an
+entry in **Rules → Checkmk → CMK Server Settings**. For several entries at
+once, select them and choose **Run Manage OMD Server** in the action menu.
+The playbook then only runs on the servers of the enabled sites that
 use the selected settings, and the page of the run opens with its log.
 Starting it needs the Ansible right in addition to the Checkmk right.
 
