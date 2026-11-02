@@ -4,6 +4,8 @@ The Syncer can export and import its Syncer Rules. This is useful for backups, f
 
 There are two ways to export rules: from the GUI (per rule type) and from the CLI (single type or all types at once).
 
+To move rules between a test and a production instance on a regular basis, [Rules in Git](rules_in_git.md) pushes selected rule types into a Git repository and pulls them on the other side.
+
 ## GUI Export
 
 Every Syncer Rule list in the web interface supports exporting. To export rules from the GUI:

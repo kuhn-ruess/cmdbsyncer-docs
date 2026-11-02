@@ -46,6 +46,7 @@ nav:
     - Filter: basics/filter.md
     - Autocreate Rules: basics/auto_rules.md
     - Rule Import/Export: basics/rule_import_export.md
+    - Rules in Git: basics/rules_in_git.md
 
   - Ansible:
     - Ansible Basics: ansible/index.md
