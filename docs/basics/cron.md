@@ -8,7 +8,7 @@ Go to: _Settings → Cronjobs → Cronjob Group_
 
 A Cronjob Group defines:
 
-- An **interval** — how often the group should run
+- An **interval** — how often the group should run: every 15 minutes, every hour, once daily, or _Custom interval in minutes_ with the minutes entered in the field below it
 - A **time range** — the window during which the group is allowed to run
 - An ordered list of **jobs** to execute
 
