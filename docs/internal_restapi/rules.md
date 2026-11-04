@@ -11,6 +11,10 @@ so CLI and API always produce the same format.
 Typical uses: keep the rule set of a test and a production instance in sync, or
 put the configuration under version control.
 
+Accounts and users can be read here, but not imported: `POST /api/v1/rules/accounts`
+and `POST /api/v1/rules/users` answer `403`, and `POST /api/v1/rules/import` skips
+them. Use `cmdbsyncer rules import_rules` for that.
+
 ---
 
 ## `GET /api/v1/rules/types`

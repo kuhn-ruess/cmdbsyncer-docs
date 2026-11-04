@@ -185,6 +185,9 @@ or a globally installed copy.
 | `import_rules_bulk(payload, override)` | Replay an export back into the DB. With `override` existing rules are replaced instead of skipped. |
 | `run_autorules(debug)` | Trigger the autorules pass that builds rules from current host data. |
 
+Accounts and users can't be imported over MCP: `create_rule` reports them as `invalid` and
+`import_rules_bulk` skips them. Use `cmdbsyncer rules import_rules` for that.
+
 ### Syncer / cron / logs
 
 | Tool | Description |
