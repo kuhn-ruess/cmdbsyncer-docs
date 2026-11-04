@@ -42,6 +42,8 @@ and see the host's attributes, `{{ HOSTNAME }}` included.
 | Enforce exact Value             | Compare the Value exactly, so entries removed from the Value Template are applied too (see below) |
 | Loop over List (Attribute or Jinja) | Create one Checkmk rule per list entry instead of a single one (see below). Empty = one rule |
 | Condition — Host name           | Only apply to these hosts. Comma-separated = any of them matches (OR)                 |
+| Create missing Hosts            | The export of the rules creates the hosts named in Condition — Host name as CMDB hosts if the Syncer does not know them yet (see below) |
+| Templates of created Hosts      | Shown with Create missing Hosts: the CMDB Templates such a host gets its attributes from |
 | Condition — Host label          | Only apply to hosts carrying these labels. Entered as key and value pairs, all must match (AND) (see below) |
 | Condition — Service name        | For service rulesets only: apply to these services. Comma-separated = OR              |
 | Condition — Service label       | For service rulesets only: apply to services carrying these labels. Entered as key and value pairs, all must match (AND) |
@@ -53,6 +55,17 @@ labels it means AND.
 If a syncer-owned rule is found in a folder other than the one configured
 here, the export moves it to the configured folder on the next run instead
 of leaving the misplaced copy behind.
+
+**Create missing Hosts** makes the export of the rules create the hosts named in
+**Condition — Host name** if the Syncer does not know them yet. They are created as
+CMDB hosts with the CMDB Templates from **Templates of created Hosts** and reach Checkmk
+with the next export of the hosts, if the Export Rules cover them. Hosts that already
+exist stay as they are, also their templates. An import that delivers such a host later
+takes it over. Regular expressions (`~pattern`) are left out and named in the log entry
+of the run, a dry run only lists the hosts it would create. If several rules name the
+same new host, it gets the templates of all of them. If a template no longer exists, the
+host is not created and the log entry of the run says so.
+A rule rendered per host only creates its hosts once at least one host matches the rule.
 
 !!! tip
     A rule using **Condition — Host name** with `{{ HOSTNAME }}` ends up as one Checkmk
