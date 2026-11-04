@@ -64,6 +64,7 @@ To check the new data:
 - **Debug Host** offers a **Data** choice for hosts with shadow data: *Live labels*, *Shadow source* (all rules evaluated with the shadow data) or *Compare live and shadow*. Compare shows both evaluations side by side, a picked **Preview Rule** included, and lists every attribute, outcome and rule match that would change. Evaluating the shadow data never changes the host: no pool folder or site is assigned or freed.
 - An attribute named differently in the new source shows up as missing on one side and new on the other. Such names are not mapped automatically: adjust the rules or the source.
 - The host list filter **Shadow Source Data** finds hosts with or without shadow data — hosts without it are the ones the new source does not deliver.
+- The other way round, hosts only the new source knows are not created. After the import the **Log** has an entry *Shadow source <account>: N host(s) not in Syncer* with the exact number and up to 100 of the names.
 
 To switch over, turn **Shadow Source** off and **Is Master** on: from the next import on, the new source owns the hosts. Then remove the shadow data with the **Clear Shadow Source Data** action in the account list (for everything an account delivered) or in the host list (for the selected hosts).
 
