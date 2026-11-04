@@ -41,6 +41,43 @@ with its line and every outcome field that reads a variable which is no
 column of the list. A list with a problem cannot be saved, an unknown
 variable is only a warning: it renders empty.
 
+## Aggregate rows
+
+A list often has one line per entry while the rule needs one per object, for
+example one line per domain with the hostname repeating. **Aggregate by column**
+names the column to join by: rows with the same value in it become one row. That
+column keeps its value, every other column becomes a list of its cells.
+
+```text
+hostname;domain
+srv01;a.example.com
+srv01;b.example.com
+srv02;c.example.com
+```
+
+With **Aggregate by column** set to `hostname` this gives two rows. For `srv01`,
+`{{ hostname }}` is `srv01` and `{{ domain }}` is the list `a.example.com`,
+`b.example.com`. An outcome reads it with a Jinja loop, here a sketch of the value
+for the Checkmk HTTP web service check (`active_checks:httpv2`), whose exact format
+**Export Rule for API** in Checkmk shows:
+
+```text
+{'endpoints': [{% for name in domain %}{'service_name': {'prefix': 'auto', 'name': '{{ name }}'}, 'url': 'https://{{ name }}'}, {% endfor %}], 'standard_settings': {}}
+```
+
+Together with **Condition — Host name** set to `{{ hostname }}`, every host gets one
+Checkmk rule with all of its domains.
+
+- The lists keep the order of the lines, and they stay aligned: position N of every
+  list comes from the same line, empty cells and repeated values included. To drop
+  empty cells, use `{{ domain | select | list }}`.
+- **Loop over List** takes such a column too, with `{{ other_column[loop_idx] }}` as
+  the value from the same line. It skips empty cells, which shifts the positions, so
+  this only lines up in a column without empty cells.
+- Rows with an empty cell in the aggregate column are joined with each other.
+- Where a row names an object (see below), aggregate by that column: a `hostname`
+  that became a list names no object.
+
 ## What a row does
 
 Every row is rendered on its own, the way one host would be: the outcomes of
