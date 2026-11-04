@@ -33,6 +33,14 @@ permissions. Each permission unlocks the matching part of the UI:
     "Projects" and "Cron" are now their own permissions (Projects used to require the Checkmk
     permission).
 
+!!! note "Limits of User Management"
+    Without being a global admin, a user with this permission can't make anyone a global
+    admin and doesn't see 2FA secrets. They can only grant permissions and API roles they hold
+    themselves; the API role `all` covers every API role. Users with more rights can't be
+    changed or deleted. Restrictions to accounts or templates can't be seen or changed, and a
+    new user inherits the restrictions of the one creating it. Delegating user management
+    therefore means granting the permissions of the users to manage as well.
+
 ## API roles
 
 Separately from the UI permissions, a user has **API roles** that gate the
