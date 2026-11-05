@@ -148,7 +148,10 @@ Both names refer to the same function.
 
 ## `datetime`
 
-The Python `datetime` module is available directly in Jinja templates.
+The classes of the Python `datetime` module are available directly in Jinja templates:
+`datetime.date`, `datetime.datetime`, `datetime.time`, `datetime.timedelta`,
+`datetime.timezone`, `datetime.tzinfo`, plus `datetime.UTC`, `datetime.MINYEAR` and
+`datetime.MAXYEAR`.
 
 ```jinja
 {{ datetime.datetime.now().strftime("%Y-%m-%d") }}
