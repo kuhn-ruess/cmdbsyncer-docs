@@ -186,6 +186,11 @@ failure reasons:
 
 ## Troubleshooting
 
+**`OIDC login is not available, the reason is in the log`**  
+The Account or the discovery of the IdP could not be used. The reason is in
+the Log of the Syncer as `OIDC login failed`, the login page does not show it
+because it is open to anybody.
+
 **Loop back to `/login` with no flash message**  
 Check the Flask logs for `OIDC client setup failed`. Most common
 cause: wrong issuer URL on the Account (`address` must be the base of the
