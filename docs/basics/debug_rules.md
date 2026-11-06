@@ -96,8 +96,16 @@ To test an export without applying any changes, use `--dry-run`. To save all pla
 
 ```bash
 ./cmdbsyncer checkmk export_hosts myaccount --dry-run
-./cmdbsyncer checkmk export_hosts myaccount --save-requests
+./cmdbsyncer checkmk export_hosts myaccount --save-requests requests.txt
 ```
+
+The file holds the full requests including credentials, so protect it accordingly. To send the saved requests later:
+
+```bash
+./cmdbsyncer request-runner run_request_file requests.txt
+```
+
+A line that fails is reported with its number and the following lines still run; the command then ends with an error. With `--debug` it stops at the first such line.
 
 ## API Request Debugging
 
