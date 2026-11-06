@@ -91,6 +91,14 @@ You can run Ansible now with the wanted Play books. I would recommend to always 
 
 `ansible-playbook -i INVENTORY_SOURCE --limit somehost cmk_agent_mngmt.yml`
 
+## Requirements of the shipped Ansible
+The Ansible shipped with the Syncer is version 14. It needs:
+
+- Python 3.12 or newer on the server running Ansible. With an older Python, `pip install 'cmdbsyncer[ansible]'` finds no matching version.
+- Python 3.9 or newer on the target hosts. RedHat 8 ships Python 3.6 as system Python: install a newer one there and point `ansible_python_interpreter` to it.
+
+If you have your own playbooks, check their conditions. A `when` must give a real true or false, a plain string or number stops the task with `Conditionals must have a boolean result`. Extra Vars given as `name=value` are always strings, so write `when: my_flag | bool`. See the [Ansible porting guides](https://docs.ansible.com/ansible/latest/porting_guides/porting_guides.html) for everything else.
+
 ## Problems with incompatible Python/ Ansible Versions.
 If you are using a current version of Syncer, it will come with the current version of Ansible. But then in some cases, like currently with RedHat 8, certain functions like dnf won't work, and you get an exception.
 

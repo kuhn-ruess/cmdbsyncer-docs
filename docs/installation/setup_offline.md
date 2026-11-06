@@ -71,7 +71,7 @@ script produces:
 | Flag                       | Purpose                                                                                  |
 | -------------------------- | ---------------------------------------------------------------------------------------- |
 | `--with-extras`            | Also bundle the optional extras (`requirements-extras.txt`: LDAP / SQL / MCP / vmware). Not needed for normal operation. |
-| `--with-ansible`           | Also bundle Ansible for Linux/SSH targets (`requirements-ansible.txt`) and the playbook collection |
+| `--with-ansible`           | Also bundle Ansible for Linux/SSH targets (`requirements-ansible.txt`, needs Python 3.12 or newer) and the playbook collection |
 | `--with-ansible-windows`   | Also bundle the Ansible Windows deps (WinRM + Kerberos/NTLM); implies `--with-ansible`   |
 | `--syncer-only`            | Bundle ONLY the `cmdbsyncer` package (no dependencies) and install it with `--no-deps`, keeping the dependencies already installed on the target. Defaults to downloading the released wheel from PyPI (add `--syncer-from-git` to build the local checkout); ignores the `--with-*` flags. |
 | `--include-syncer`         | Also download the `cmdbsyncer` package from PyPI into the bundle                         |
