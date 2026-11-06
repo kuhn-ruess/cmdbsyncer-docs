@@ -30,6 +30,7 @@ config = {
 | `CRYPTOGRAPHY_KEY`    | `None`             | Key used to encrypt stored passwords. **Must be set.**                 |
 | `BASE_PREFIX`         | `'/'`              | URL prefix if the app is mounted at a sub-path, e.g. `'/cmdbsyncer/'`  |
 | `PUBLIC_URL`          | `''`               | Scheme and host of the password reset link, default: Host header       |
+| `MCP_ALLOWED_HOSTS`   | `[]`               | Host names the MCP server answers to beside localhost, see MCP page    |
 | `SESSION_COOKIE_NAME` | `'syncer'`         | Cookie name — change if running multiple instances on the same host    |
 | `ADMIN_SESSION_HOURS` | `2`                | Hours before automatic logout from the admin panel                     |
 | `HEADER_HINT`         | `''`               | Free text string shown in the navigation bar                           |

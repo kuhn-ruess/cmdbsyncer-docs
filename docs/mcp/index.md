@@ -101,6 +101,31 @@ non-localhost is refused with 401.
 | `--host` | `CMDBSYNCER_MCP_HOST` | `127.0.0.1` |
 | `--port` | `CMDBSYNCER_MCP_PORT` | `8765` |
 
+### Host names
+
+The server only answers to `localhost`, `127.0.0.1` and `[::1]` by default. Any
+other `Host` header gets `421 Invalid Host header`, whatever `--host` says. This
+protects against DNS rebinding. A remote client, or a reverse proxy that passes on
+the public name, needs that name listed in `local_config.py`:
+
+```python
+config = {
+    'MCP_ALLOWED_HOSTS': ['syncer.example.com'],
+}
+```
+
+* A name without a port is allowed on every port. `syncer.example.com:8443` only
+  allows that port.
+* Wildcards in names are not supported, list each name. IPv6 addresses go in
+  brackets: `[2001:db8::1]`.
+* A client that sends an `Origin` header, like one in a browser, is refused with
+  403 unless the origin is one of these names.
+* After a change, restart the MCP server.
+
+A refused request with valid credentials writes the name and the setting to the
+server's stderr, so `docker logs` shows it. The check comes after the login:
+without valid credentials the answer stays 401.
+
 The MCP server shares its tool implementations with the REST API (`/api/v1/*`):
 both call the same `iter_rules_of_type`, `import_one_rule`, `import_json_bundle`,
 etc., so a fix in one path applies to all three (CLI, REST, MCP).
@@ -140,6 +165,9 @@ services:
       # already uses.
       # Set this in local_config.py: TRUSTED_PROXIES = 1
 ```
+
+If the proxy passes on the public host name, list it as well, see
+[Host names](#host-names).
 
 For development / internal networks where you really do not want HTTPS,
 set `ALLOW_INSECURE_API_AUTH = True` in `local_config.py`. The MCP
