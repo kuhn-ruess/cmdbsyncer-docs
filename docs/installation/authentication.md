@@ -21,7 +21,8 @@ The login page offers a reset by mail. After setting a new password you log in a
 including 2FA. Disabled users get no mail, and disabling a user ends their running session.
 
 A new password ends all other running sessions of that user, whether it was changed by the
-user, reset by mail or set by an admin. The session that changed it stays logged in.
+user, reset by mail or set by an admin. The session that changed it stays logged in. It also
+revokes the [personal API tokens](#personal-api-tokens) of that user.
 
 The link in the mail takes its address from the `Host` header of the request, unless you set
 `PUBLIC_URL` in the [local config](../basics/lcl_config.md), e.g.
@@ -78,6 +79,13 @@ against the REST API instead of sending their password. A token carries the user
 roles and account scope, is shown once on creation, can be labelled and given an optional
 expiry, and can be revoked any time. See
 [REST API → Personal API tokens](../internal_restapi/index.md#personal-api-tokens).
+
+A new password revokes all tokens of that user, whether it was changed by the user, reset by
+mail, set by an admin or set with `sys create_user`. They stay in the list, marked as revoked,
+and clients using them get a `401`. The owner logs in with the new password and creates a new
+token. A password changed in LDAP or at the OIDC provider never reaches the syncer, so it
+leaves the tokens valid: revoke them by hand. The [MCP server](../mcp/index.md) takes name and
+password only, not these tokens.
 
 ## Read-only users
 <span class="since">Since 4.3</span>

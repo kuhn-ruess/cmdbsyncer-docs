@@ -36,6 +36,7 @@ These changes can affect a running installation. Check them before you update.
 **Logins and permissions**
 
 - Everyone with a local password has to log in once after the update.
+- A new password now revokes the personal API tokens of that user, also when reset by mail or set by an admin. Automation using such a token gets a 401: its owner needs the new password to log in at `/api-tokens` and create a new token.
 - A password reset no longer logs in. Set `PUBLIC_URL`, otherwise the link in the mail depends on the Host header of the request.
 - The Archive needs the Hosts, Objects or hard delete permission, and restoring a host needs a POST request.
 

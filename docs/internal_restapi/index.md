@@ -43,7 +43,9 @@ Instead of sending a password on every call, a user can generate personal API to
 * authenticates **as its owner**, so it carries exactly that user's API roles and
   [account scope](#restricting-a-user-to-accounts);
 * is shown in plaintext **once** on creation (store it safely);
-* can have a label and an optional expiry date, and can be revoked at any time.
+* can have a label and an optional expiry date, and can be revoked at any time;
+* ends with a new password of its owner: clients then get a `401`, and the owner logs in with
+  the new password and creates a new token under **Profile → API Tokens**.
 
 Send it as a Bearer token in the `Authorization` header:
 
