@@ -28,7 +28,7 @@ permissions. Each permission unlocks the matching part of the UI:
 | Permission | Grants access to |
 |------------|------------------|
 | Hosts / Objects | the Host and Objects lists |
-| Account Management | the Accounts views |
+| Account Management | the Accounts views and the values in **View Cache Details** of a host, which can hold account credentials |
 | Projects <span class="since">Since 4.3</span> | the Projects views |
 | Cron <span class="since">Since 4.3</span> | the Cron groups + status views |
 | Data Quality <span class="since">Since 4.3</span> | the Data Quality dashboard |
