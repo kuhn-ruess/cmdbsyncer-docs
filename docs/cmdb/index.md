@@ -335,11 +335,12 @@ config = {
 ```
 
 Whenever a user without the **Skip the approval queue when editing
-critical fields** role saves a host with a change to one of those
-labels, the new value is queued in **Approvals** rather than written.
-Users with the **Approve or reject pending field changes** role decide
-on each entry; an approve applies the change to the host, a reject
-keeps the old value. The navbar shows a "N waiting" badge while the
+critical fields** role changes one of those labels, in the host form or
+with **Bulk Edit Labels**, the new value is queued in **Approvals** rather
+than written. Users with the **Approve or reject pending field changes**
+role decide on each entry; an approve applies the change to the host, a
+reject keeps the old value. Nobody can approve their own change except a
+global admin, so this needs a second person with that role. The navbar shows a "N waiting" badge while the
 queue is non-empty.
 
 Empty list (default) disables the workflow — every change goes straight
