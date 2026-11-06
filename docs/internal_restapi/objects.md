@@ -177,8 +177,8 @@ Paginated listing of every host (objects excluded).
 
 | Parameter | Default | Description |
 |---|---|---|
-| `start` | `1` | Zero-based offset |
-| `limit` | `100` | Page size, maximum `10000` |
+| `start` | `0` | Zero-based offset |
+| `limit` | `100` | Page size, minimum `1`, maximum `10000` |
 
 ```bash
 curl -u "user:password" \
