@@ -8,6 +8,7 @@ nav:
     - Manual Download: installation/setup_code.md
     - Offline Installation: installation/setup_offline.md
     - Local Users: installation/authentication.md
+    - Security Hardening: installation/hardening.md
     - Install Updates: installation/updates.md
     - Update Notes: updates/update_notes.md
     - ... | glob=changelog/*

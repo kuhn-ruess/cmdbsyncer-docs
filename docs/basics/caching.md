@@ -10,6 +10,9 @@ The cache is stored per host in the database. Each plugin or operation that eval
 
 The cache is **automatically invalidated** for a host whenever its attributes are updated by an import. You only need to clear it manually when you change rules.
 
+!!! warning
+    The result of a rule using `{{ACCOUNT:name:field}}` is cached in plain text. Protect the database and its backups, see [Security Hardening](../installation/hardening.md).
+
 ## Clearing the Cache After Rule Changes
 
 When you modify rules, the cached outcomes for existing hosts are stale. Clear the cache in one of two ways:
