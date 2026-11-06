@@ -33,6 +33,8 @@ All string-based conditions are case-insensitive, except `regex`.
 
 Every condition can be **negated** with the corresponding negate checkbox, which inverts the match result.
 
+The table applies to attribute names in _Tag Match_ as well: `equal` on `os` also finds an attribute called `OS`.
+
 One exception to the table: a `regex` in _Hostname Match_ ignores upper and lower case too, while the pattern itself keeps its meaning (`\D` stays "not a digit").
 
 ### Older Than / Newer Than
