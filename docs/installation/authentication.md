@@ -65,13 +65,15 @@ look-but-don't-touch account. It works the other way round from the permissions 
 beats all of them, global admin included: the user keeps every view their roles open up and
 can change nothing.
 
-This covers both ways into the syncer:
+This covers every way into the syncer:
 
 * **Web interface** — no Create, Edit or Delete buttons, no bulk actions, no Commit button,
   no import or clone. Lists, detail pages, the log and the CSV export stay available.
 * **REST API** — every reading call works as before, every writing one is answered with
   `403`. A [personal API token](#personal-api-tokens) authenticates as its owner and carries
   the flag, so it is no way around the restriction.
+* **[MCP server](../mcp/index.md)** — the reading tools work, the writing ones answer with an
+  error.
 
 Two things stay open, because they are the user's own account rather than syncer data: their
 password, 2FA, theme and API tokens, and their own saved searches.

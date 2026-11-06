@@ -21,9 +21,20 @@ same job. After install, the entry point `cmdbsyncer-mcp` is on your
 
 Same model as the REST API: a syncer **User** with the `mcp` (or `all`)
 `api_role` authenticates via HTTP Basic. The role is a single umbrella
-grant — having it opts a user into MCP entirely; granular per-tool
-restrictions are not layered on top, so only grant `mcp` to users you
-trust to operate the syncer.
+grant — having it opts a user into MCP; there are no separate permissions
+per tool, so only grant `mcp` to users you trust to operate the syncer.
+
+The limits set on the user still apply:
+
+- A [read-only user](../installation/authentication.md#read-only-users) can
+  call every reading tool and gets an error from every writing one.
+- A user [restricted to accounts](../installation/authentication.md#restricting-a-user-to-accounts)
+  or [templates](../installation/authentication.md#restricting-a-user-to-cmdb-templates)
+  only reaches those hosts, and can only assign hosts to those accounts. The
+  tools about data that belongs to no host, the accounts, rules, logs and cron
+  groups, answer with an error. `list_rule_types` stays available.
+- `get_account` is limited to global admins who are neither read only nor
+  restricted, because it returns the password in cleartext.
 
 Grant the role from **Profile → Users** in the admin UI by adding `mcp`
 to the user's API roles list.
@@ -172,7 +183,7 @@ or a globally installed copy.
 | `delete_host(hostname)` | Delete a host; frees a Checkmk folder pool seat if held. |
 | `update_host_inventory(hostname, key, inventory)` | Replace one inventory section. Never auto-creates a host. |
 | `list_accounts()` | All accounts with name, type, enabled flag. |
-| `get_account(name)` | Full resolved account record (cleartext password — handle with care). |
+| `get_account(name)` | Full resolved account record (cleartext password — handle with care). Global admins only, see [Authentication](#authentication). |
 
 ### Rules
 
