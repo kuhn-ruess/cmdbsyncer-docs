@@ -8,6 +8,18 @@ To log in, you first need to create a local user. The command to create one is:
 
 You can manage users in the UI under **Settings → User**.
 
+## Password reset
+
+The login page offers a reset by mail. After setting a new password you log in as usual,
+including 2FA. Disabled users get no mail, and disabling a user ends their running session.
+
+The link in the mail takes its address from the `Host` header of the request, unless you set
+`PUBLIC_URL` in the [local config](../basics/lcl_config.md), e.g.
+`'https://syncer.example.com'`, without `BASE_PREFIX`. Set it unless a proxy in front of the
+syncer overwrites that header: otherwise whoever requests a reset mail for somebody else can
+make its link point to a server of their own. Without `PUBLIC_URL` the log has a warning on
+every reset.
+
 ## Permissions (roles)
 
 A user is either a **global admin** (full access to everything) or is granted individual
