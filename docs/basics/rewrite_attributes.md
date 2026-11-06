@@ -52,6 +52,8 @@ Example: `/:0`
 
 Applied to `127.0.0.1/24`: splits at `/` → `['127.0.0.1', '24']` → index 0 → `127.0.0.1`
 
+The index is what follows the last colon, so the separator can be a colon itself: `::1` applied to `192.0.2.1:8080` gives `8080`. If the pattern can't be used or the index does not exist, the attribute keeps its old value.
+
 ## Creating New Attributes
 
 If you specify an attribute name in _Old Attribute Name_ that does not exist on the host, it will be created as a new attribute. All value operations can be used, so you can compose a new attribute from multiple existing ones using Jinja.
