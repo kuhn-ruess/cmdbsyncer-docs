@@ -95,6 +95,8 @@ Then replace the values you want to vary with Jinja placeholders.
 !!! important
     The `name` field must result in a unique value per object — the Syncer uses the name to identify whether a rule already exists and needs to be updated, or is new and needs to be created.
 
+Keep placeholders inside the quotes of a JSON string, as in the examples above. Quotes, backslashes and line breaks in an attribute value are escaped there, so the value arrives unchanged and can't add fields to the rule. Objects ignored by a filter rule are skipped.
+
 ## Object Filter
 
 The Object Filter restricts which objects are used as the basis for rule creation. Set the object type in the account settings of the import that provides the source objects. This prevents the Syncer from generating rules for irrelevant objects in the database.

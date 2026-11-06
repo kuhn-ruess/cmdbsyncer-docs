@@ -8,10 +8,20 @@ To log in, you first need to create a local user. The command to create one is:
 
 You can manage users in the UI under **Settings → User**.
 
+## Forced password change
+
+With **Force password change** set on a user, every page of the web interface leads to the
+password form until the password was changed. Login, logout, the form itself and the 2FA setup
+stay reachable. The REST API and MCP are not affected, as service users and tokens have no way
+to change a password there.
+
 ## Password reset
 
 The login page offers a reset by mail. After setting a new password you log in as usual,
 including 2FA. Disabled users get no mail, and disabling a user ends their running session.
+
+A new password ends all other running sessions of that user, whether it was changed by the
+user, reset by mail or set by an admin. The session that changed it stays logged in.
 
 The link in the mail takes its address from the `Host` header of the request, unless you set
 `PUBLIC_URL` in the [local config](../basics/lcl_config.md), e.g.
