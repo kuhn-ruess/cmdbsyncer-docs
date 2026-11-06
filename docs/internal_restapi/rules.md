@@ -11,9 +11,11 @@ so CLI and API always produce the same format.
 Typical uses: keep the rule set of a test and a production instance in sync, or
 put the configuration under version control.
 
-Accounts and users can be read here, but not imported: `POST /api/v1/rules/accounts`
-and `POST /api/v1/rules/users` answer `403`, and `POST /api/v1/rules/import` skips
-them. Use `cmdbsyncer rules import_rules` for that.
+Accounts and users are not available here, because they hold credentials and
+password hashes: reading or writing `/api/v1/rules/accounts` and `/api/v1/rules/users`
+answers `403`, and so does `GET /api/v1/rules/export` with `include_accounts` or
+`include_users`. `POST /api/v1/rules/import` skips them. Use
+`cmdbsyncer rules export_all_rules` and `cmdbsyncer rules import_rules` for that.
 
 ---
 
@@ -85,8 +87,6 @@ Every rule of every type in one document — the backup format.
 | Parameter | Default | Description |
 |---|---|---|
 | `include_hosts` | off | Also export the host objects. CMDB templates are always exported as their own type. |
-| `include_accounts` | off | Also export the accounts |
-| `include_users` | off | Also export users — contains password hashes and roles, **treat as secret** |
 | `include_passwords` | off | Also export the [Secret Store](../basics/secret_store.md) (formerly the Checkmk password store); entries stay encrypted with this instance's key, **treat as secret**. Ignored for users restricted to accounts or templates |
 
 ```bash

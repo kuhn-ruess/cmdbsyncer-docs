@@ -191,13 +191,15 @@ or a globally installed copy.
 |---|---|
 | `list_rule_types()` | Catalog of supported `rule_type` idents. |
 | `export_rules(rule_type)` | Every rule of one type. |
-| `export_all_rules(include_hosts, include_accounts, include_users)` | Bulk export grouped by type. |
+| `export_all_rules(include_hosts, include_passwords)` | Bulk export grouped by type. |
 | `create_rule(rule_type, rule, override)` | Persist one rule (same shape as the export). With `override` an existing rule with the same id or name is replaced. |
 | `import_rules_bulk(payload, override)` | Replay an export back into the DB. With `override` existing rules are replaced instead of skipped. |
 | `run_autorules(debug)` | Trigger the autorules pass that builds rules from current host data. |
 
-Accounts and users can't be imported over MCP: `create_rule` reports them as `invalid` and
-`import_rules_bulk` skips them. Use `cmdbsyncer rules import_rules` for that.
+Accounts and users can't be exported or imported over MCP: `export_rules` answers with an
+error, `export_all_rules` leaves them out, `create_rule` reports them as `invalid` and
+`import_rules_bulk` skips them. Use `cmdbsyncer rules export_all_rules` and
+`cmdbsyncer rules import_rules` for that.
 
 ### Syncer / cron / logs
 
