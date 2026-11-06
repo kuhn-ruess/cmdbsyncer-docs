@@ -36,6 +36,8 @@ The account type _Git Repository_ is not tied to rules, other features can use t
 
 The token is sent as an HTTP header. It is neither stored in a Git configuration on disk nor visible in the process list.
 
+The rule files and their folder must not be symbolic links: push and pull stop with an error then, and neither write nor read anything.
+
 ## Push to Git
 
 1. Select the repository account.
