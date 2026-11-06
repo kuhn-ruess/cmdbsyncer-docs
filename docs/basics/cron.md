@@ -14,6 +14,8 @@ A Cronjob Group defines:
 
 Jobs inside a group run sequentially. If any job fails, the entire group stops. This is intentional — for example, you do not want hosts to be deleted from Checkmk if the import step failed beforehand.
 
+To run the remaining jobs anyway, enable **Continue On Error** on the group; the group still counts as failed.
+
 ## State Table
 
 Go to: _Settings → Cronjobs → State Table_
