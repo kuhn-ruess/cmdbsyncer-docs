@@ -20,6 +20,8 @@ Refer to [here](../basics/list_mode.md) to learn more.
 ## Decommission Data
 Hosts and Virtual Machines are automatically Decommissioned in case they are not longer part of the Syncer Database, but have been created by it.
 
+An object whose export failed in this run, because of an API error or a faulty rule, is left unchanged: the run cannot know that it is gone. The log names it.
+
 ## From a pasted list
 
 The rules for devices, virtual machines, clusters, prefixes, interfaces, IP
