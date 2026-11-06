@@ -21,7 +21,8 @@ permission.
 
 ## Masking on the debug page
 
-The debug page of a host hides account fields by a fixed list of names: `password`,
+The debug page of a host, the debug page of a Setup Rule, the preview of the Checkmk user
+generation and the Checkmk folder pages hide account fields by a fixed list of names: `password`,
 `password_crypted`, `api_token` and `bakery_passphrase`. Every other field stays readable, so a
 secret in a custom field of your own, such as `my_token`, is shown there. Keep secrets in the
 password field of the account or in the [Secret Store](../basics/secret_store.md), and only give
