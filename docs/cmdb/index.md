@@ -461,7 +461,12 @@ timestamp and reason. From there you can:
 - **Restore** — bring a host back to lifecycle state *Active*. Use the
   per-row <span class="since">Since 4.3</span> Restore button for a single
   host, or the bulk *Restore* action for several at once.
-- **Hard Delete** — irreversible removal; admin role required.
+- **Hard Delete** — irreversible removal; requires the *Permanently delete
+  archived objects* permission.
+
+The Archive itself requires the *Hosts*, *Objects* or that permission. Users
+restricted to accounts or templates only reach archived hosts within their
+restriction.
 
 Archived hosts are excluded from the regular Hosts list, exports and
 sync runs, but they still show up in the API for tooling that wants to
