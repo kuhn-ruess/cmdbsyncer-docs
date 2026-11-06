@@ -461,7 +461,10 @@ timestamp and reason. From there you can:
 
 - **Restore** — bring a host back to lifecycle state *Active*. Use the
   per-row <span class="since">Since 4.3</span> Restore button for a single
-  host, or the bulk *Restore* action for several at once.
+  host, or the bulk *Restore* action for several at once. The days until the
+  host counts as stale or unseen start anew with the restore. With
+  `delete_host_if_not_found_on_import`, the next import archives it again if
+  the source still doesn't deliver it, unless the host has `no_autodelete` set.
 - **Hard Delete** — irreversible removal; requires the *Permanently delete
   archived objects* permission.
 

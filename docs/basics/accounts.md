@@ -96,7 +96,7 @@ Some account types (e.g. CSV or JSON) require additional plugin-specific fields 
 
 Enter a Mongoengine filter in the format `fieldname:value` to automatically delete hosts that are no longer part of an import. Multiple filters can be combined with `||` (logical AND). See the [Mongoengine filter documentation](https://docs.mongoengine.org/guide/querying.html) for the full syntax.
 
-Used by the CSV and NetBox imports. Only a clean import removes hosts: after an error, or when the import delivered no hosts at all, nothing is removed and the log says why. If a source really became empty, archive its hosts by hand.
+Used by the CSV and NetBox imports. Only a clean import removes hosts: after an error, or when the import delivered no hosts at all, nothing is removed and the log says why. If a source really became empty, archive its hosts by hand. Hosts with `no_autodelete` set are never removed this way.
 
 ## SSL Certificate Verification
 
