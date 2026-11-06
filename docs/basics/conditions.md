@@ -33,6 +33,8 @@ All string-based conditions are case-insensitive, except `regex`.
 
 Every condition can be **negated** with the corresponding negate checkbox, which inverts the match result.
 
+One exception to the table: a `regex` in _Hostname Match_ ignores upper and lower case too, while the pattern itself keeps its meaning (`\D` stays "not a digit").
+
 ### Older Than / Newer Than
 
 Since version 4.4, two condition types compare an attribute holding a date against the clock instead of against your text. They are offered under _Value Match_ only: a hostname and an attribute name are never a date, so _Hostname Match_ and _Tag Match_ do not list them.
