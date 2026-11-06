@@ -14,12 +14,48 @@ Every Syncer Rule list in the web interface supports exporting. To export rules 
 2. Select the rules you want to export using the checkboxes on the left. Use the header checkbox to select all rules on the current page.
 3. Choose _Export → JSON_ from the actions menu above the list.
 
-The browser downloads a file named like `CheckmkRule_202604131530.syncer_json`. The first token before the underscore is the model class name of the exported rule type; the rest is a timestamp.
+The browser downloads a file named like `CheckmkRule_202604131530.syncer_json`. The first token before the underscore is the model class name of the exported rule type; the rest is a timestamp. Since version 4.5 the first line of the file names the rule type as well: `{"rule_type": "cmk_export_rules"}`.
 
-!!! warning "Do not rename the exported file"
-    The import command uses the filename to determine which rule type the file belongs to. It parses the part before the first underscore and matches it against the known rule models. If you rename the file, the import will fail with _"Ruletype not supported"_.
+!!! warning "Do not rename an older export"
+    A GUI export from before version 4.5 has no such line. For these files the import command uses the filename to determine which rule type the file belongs to. It parses the part before the first underscore and matches it against the known rule models. If you rename the file, the import will fail with _"Ruletype not supported"_.
 
-    If you really need to rename a GUI export, keep the model class name as the first token — for example `CheckmkRule_backup.syncer_json` still works, but `my_backup.syncer_json` does not.
+    If you really need to rename such a file, keep the model class name as the first token, for example `CheckmkRule_backup.syncer_json` still works, but `my_backup.syncer_json` does not.
+
+## GUI Import
+
+<span class="since">Since 4.5</span>
+
+Every rule list with an _Export_ also has an _Import_ next to it, for example at _Modules → Checkmk → Manage Service Labels_, and Lookup Tables have both. It needs the same permission as editing that rule type and is not offered to read-only users. Hosts, objects and CMDB templates have no import here.
+
+Paste the rules or give the path of a file, then choose:
+
+- _Check_ shows per record what would happen and writes nothing.
+- _Import_ does the same check and then writes.
+
+The page takes what the Export writes, unchanged, as well as line-delimited JSON, a JSON list, a single rule and the bundle of the REST API. It knows the rule type from the page, so an older export works under any file name, and also when pasted. A rule written by hand needs no `_id`, it gets a new one.
+
+```json
+{"name": "Port role", "enabled": true, "condition_typ": "anyway", "outcomes": [{"service_pattern": "^Port", "label_name": "role", "label_value": "{{ HOSTNAME }}"}]}
+```
+
+Good to know:
+
+- **Existing rules stay.** A rule exists if it has the same `_id` or the same name. Its record is skipped and listed as skipped, as on the command line. With _Replace existing rules_ the record replaces it, and the page names every rule it replaced or would replace.
+- **All or nothing.** One bad record, like broken JSON, an unknown field or a value the rule type refuses, means nothing is imported, and the page gives the reason per record. If the database fails during the write, the result lists exactly which rules got in.
+- **Only this rule type.** A file which names another rule type, in a `{"rule_type": "..."}` line or in its file name, is refused, also when it holds several types like an `export_all_rules` file: use `import_rules` for these. Some rule types have the same fields, so a text without any of these hints can't be told apart from them and the page says so.
+- **The same checks as the form**, where a rule type has them: for example a Service Label rule with a broken regular expression or Jinja is refused. Other Jinja which does not compile is shown as a warning. Rules are not run during the import.
+- **Like a save:** the import counts as a change for _Commit_, drops the rule outcomes cached on the hosts, and is written to the log with the user and the rule names.
+
+### Path of a file
+
+The path is read on the server. So it needs the permission for _Files_ on top, and without that permission the field is not shown:
+
+- The file must be in the [Files folder](fileadmin.md) (`FILEADMIN_PATH`). A relative path starts there, every other location is refused.
+- It must end in `.syncer_json`, `.jsonl` or `.json` and be at most 5 MB of UTF-8 text.
+- A symbolic link anywhere below the Files folder is refused.
+- Messages about such a file name positions and fields only, never its content.
+
+Pasting is limited by the form size of the web server, by default 500 kB. Use a path for larger files.
 
 ## CLI Export
 
@@ -96,7 +132,7 @@ A single import command handles all export formats — GUI exports, single-type 
 The import auto-detects the format:
 
 - If the file starts with a `{"rule_type": "..."}` header, the import uses that rule type. Multiple header blocks in the same file are supported — the importer switches rule type whenever a new header appears.
-- If the file has no header (GUI export), the import falls back to guessing the rule type from the filename, as described above.
+- If the file has no header (GUI export from before version 4.5), the import falls back to guessing the rule type from the filename, as described above.
 
 Rules that already exist in the database (same `_id`) are skipped with an _"Already existed"_ message, so re-running the import is safe and idempotent.
 
