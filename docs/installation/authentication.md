@@ -102,6 +102,10 @@ host form and on the Checkmk Data Quality page. Leave it empty for full access.
 Both restrictions can be combined: a user carrying an account *and* a template allowlist only
 reaches hosts that satisfy each of them.
 
+This holds for every bulk action and every page about a host, as well as for the approval
+queue. *Re-apply to matching hosts* goes over all hosts a template matches, so it isn't
+available to restricted users.
+
 !!! note "Secret Store and host import (since 4.5)"
     A restricted user, global admins included, only reaches
     [Secret Store](../basics/secret_store.md#access) entries bound to their own
