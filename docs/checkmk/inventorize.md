@@ -22,6 +22,11 @@ This imports only labels whose key starts with `cmk/`.
 
 To import service data, specify the exact service name. For service labels, regex patterns are also supported.
 
+The source **Labels of Service** stores one value per label name and host, so with several matching services only one of their values remains. The source **Labels per Service** keeps them apart: it takes regular expressions as well and stores the attribute `cmk_svc_label_list__services`, a list with the name and the labels of each matching service, also of services without labels. Label names containing a dot are stored with `_` instead. [Service Labels](service_labels.md) work with this list.
+
+!!! note
+    Checkmk reports the labels in effect. A label set by a rule in Checkmk is read with the value of that rule, the value reported by the check plugin can't be read any more.
+
 ## HW/SW Inventory
 
 Checkmk's HW/SW inventory tree is organized in a dot-notation path. Specify the path to the data you want to import.

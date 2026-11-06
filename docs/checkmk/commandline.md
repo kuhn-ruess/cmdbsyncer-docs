@@ -11,6 +11,7 @@ Access all Checkmk commands with `./cmdbsyncer checkmk <command> <account>`.
 | export_users            | Create, update, or disable users in Checkmk                                                           |
 | export_ldap_connections | Create, update or delete the LDAP connections for the Checkmk login                                   |
 | export_downtimes        | Export scheduled downtimes to Checkmk                                                                 |
+| export_service_labels   | Export the Service Label rules to Checkmk (supports `--dry-run`)                                      |
 | export_notifications    | Export notification rules to Checkmk (2.4 / 2.5 only)                                                 |
 | export_dcd_rules        | Export DCD (Dynamic Configuration) rules to Checkmk                                                   |
 | export_bi_aggregations  | Export BI aggregation rules to Checkmk                                                                |
