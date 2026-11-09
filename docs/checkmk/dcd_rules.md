@@ -9,7 +9,8 @@ Go to: _Modules → Checkmk → Manage DCD Rules_
 
 DCD rules use the same rule system as all other modules. You can use Jinja
 templates in almost every field; the options mirror what you would configure in
-the Checkmk DCD UI.
+the Checkmk DCD UI. Each line of **Restrict Source Hosts** is rendered as well,
+for example `{{ HOSTNAME }}`; a line that renders empty is left out.
 
 !!! note "Edition & versions"
     DCD is part of the Checkmk **Enterprise / Cloud / (2.5) Pro** editions — it is
