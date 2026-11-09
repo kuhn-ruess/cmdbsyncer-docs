@@ -1,9 +1,9 @@
 # DCD Rules
 
 You can manage Checkmk DCD (Dynamic Configuration Daemon) connections through the
-Syncer. Unlike most other Checkmk modules, the DCD API supports creating and
-deleting connections but not updating them in place — so this module creates and
-deletes rules rather than syncing them.
+Syncer. The DCD API can create and delete connections but not change them, so
+the export replaces a connection that no longer matches its rule: it deletes it
+and creates it again. See [Correcting existing connections](#correcting-existing-connections).
 
 Go to: _Modules → Checkmk → Manage DCD Rules_
 
@@ -52,20 +52,57 @@ and the static flag do not apply.
 Column names, separators, the preview while you paste and the checks on
 save are described in [Rules from a Pasted List](../basics/list_source.md).
 
-## Targeting the right site — `{{ cmk_site }}`
+## Targeting the right site
 
-A DCD connection is bound to a Checkmk **site**. When you deploy the same rule to
-more than one Checkmk (for example a test and a production instance) the site
-names usually differ. Set the rule's **Site** field to:
+A DCD connection is bound to a Checkmk **site**. Set the rule's **Site** field
+to:
 
 ```jinja
-{{ cmk_site }}
+{{ HOST_SITE }}
 ```
 
-It resolves to the **exporting account's** Checkmk site — taken from the account
-address (which ends in `/<site>`). So `export_dcd_rules test-cmk` uses the test
-site and `export_dcd_rules prod-cmk` uses the prod site, from one rule. The Site
-field shows this as a placeholder hint.
+It gives the site the host export puts the host on, with or without Site
+Pools. The Syncer takes it from, in this order:
+
+1. a `site` attribute the export rules send as it is,
+2. a `site` custom attribute, also the one a Site Pool sets,
+3. the `site` in the options of the host's folder, the deepest level first.
+
+Without any of them, and in a static rule or a rule from a list, it is the site
+of the exporting account. A site that is only set on the folder in Checkmk
+itself is not known to the Syncer. The Site field shows this as a placeholder
+hint.
+
+| Variable               | Value                                                                |
+| ---------------------- | -------------------------------------------------------------------- |
+| `{{ HOST_SITE }}`      | the site the host export gives the host, else the account's site     |
+| `{{ cmk_site }}`       | the site of the **exporting account**, from its address (`/<site>`)  |
+| `{{ HOST_POOL_SITE }}` | only the site a [Site Pool](site_pools.md) gave the host, else empty |
+
+`{{ cmk_site }}` is the same for every host: it is the site the account talks
+to, usually the central site. Its use is one rule for a test and a production
+instance with different site names: `export_dcd_rules test-cmk` uses the test
+site and `export_dcd_rules prod-cmk` the prod site.
+
+Give a per host rule a **DCD ID** that differs per site too, for example
+`piggyback_{{ HOST_SITE }}`. Of several hosts rendering one DCD ID differently
+only the first is used, and the export reports it.
+
+## Correcting existing connections
+
+The export compares every connection Checkmk already has with the one the rule
+renders. When the **site**, **title**, **comment** or **disabled** state differs,
+the connection is deleted and created again with the same DCD ID; the output
+shows `Replace Rule <id>, changed: site`. The hosts the connection created stay
+in Checkmk, only the connection is replaced.
+
+The connector settings (interval, creation rules, cache times) are not
+compared. To change one of them on an existing connection, delete the
+connection in Checkmk, the next export creates it with the new settings.
+
+A rule that names a site Checkmk does not know leaves the existing connection
+as it is and reports an error, so a typo in the Site field never removes a
+working connection.
 
 ## Using account attributes — `{{ account.<field> }}`
 
