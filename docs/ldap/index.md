@@ -15,6 +15,9 @@ Create an [Account](../basics/accounts.md) of type _LDAP_ and configure the fiel
 | `hostname_field` | Attribute to use as the host identifier                                    |
 | `encoding`       | `utf-8` or `ascii`, depending on your LDAP server                          |
 
+!!! warning "Leave out binary attributes"
+    An empty `attributes` field asks the server for every attribute. Active Directory then also sends binary ones like `objectGUID` or `objectSid`, which are no text, and the import stops with a decoding error. List the attributes you need instead: `debug_query -A` (see below) prints that list ready to paste.
+
 !!! tip
     If you are importing objects that are not hosts (contacts, groups, etc.), enable _Is Object_ on the account and select an appropriate Object Type. This makes it easier to filter them in rules and exports.
 
