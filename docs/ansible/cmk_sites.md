@@ -31,6 +31,7 @@ When you create a rule, you find the following options:
 | Option | Description |
 |:-------|:------------|
 | Name | Name of config set |
+| Enabled | Disabled settings take all their sites out of the inventory, the playbook does not touch them. Can also be switched in the list |
 | Server User | User for Ansible to connect to the Server. Sudo needs to be possibe |
 | CMK Version | Version's String like 2.1.0p19 |
 | CMK Edition | The edition as `omd` names it. Up to 2.4: Enterprise, RAW, Cloud or MSP. From 2.5 on: Community, Pro, Ultimate or Ultimate with Multi-Tenancy |
@@ -90,7 +91,7 @@ use the selected settings, and the page of the run opens with its log.
 Every selected settings entry gets a run of its own. Settings whose sites
 share a server are refused together, so two installations never run on
 the same server at once: start them one after another.
-Starting it needs the Ansible right in addition to the Checkmk right.
+Starting it needs the Ansible right in addition to the Checkmk right. Disabled settings show no button and are skipped in the action.
 
 On the command line:
 
