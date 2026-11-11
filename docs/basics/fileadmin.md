@@ -30,10 +30,10 @@ volumes:
 
 ## Supported File Types
 
-| Operation | Supported Extensions                                    |
-| :-------- | :------------------------------------------------------ |
-| Upload    | `.md`, `.txt`, `.csv`, `.yml`, `.json`, `.pem`, `.cert` |
-| Edit      | `.md`, `.txt`, `.csv`, `.yml`, `.json`, `.pem`          |
+| Operation | Supported Extensions                                                            |
+| :-------- | :------------------------------------------------------------------------------ |
+| Upload    | `.md`, `.txt`, `.csv`, `.yml`, `.json`, `.pem`, `.cert`, `.deb`, `.rpm`, `.cma` |
+| Edit      | `.md`, `.txt`, `.csv`, `.yml`, `.json`, `.pem`                                  |
 
 ## Features
 
@@ -49,5 +49,6 @@ Access to the Fileadmin is controlled by user rights. A user needs the **fileadm
 ## Common Use Cases
 
 - Upload CA certificate files (`.pem`, `.cert`) and copy their path into the [SSL certificate fields](accounts.md#ssl-certificate-verification) of an account
+- Upload Checkmk installation packages (`.deb`, `.rpm`, `.cma`) for the [Checkmk site management](../ansible/cmk_sites.md): put the directory shown in the list into *Installation Staging Path* of the CMK Server Settings, the file name must match *CMK Version Filename*
 - Manage CSV import files without shell access
 - Store YAML or JSON configuration files referenced by import plugins

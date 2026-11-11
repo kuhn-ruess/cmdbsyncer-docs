@@ -19,7 +19,7 @@ Here you set the Target Version you want to use. The needed information can be f
 
 ![](img/cmk_download.png)
 
-If you place the Checkmk Installation Package in the staging directory (see *Installation Staging Path* below, `/tmp` by default) it will be used. If not, the System will try to download it, using the supplied credentials. Then it's transferred to your remote server. That means these servers do not need an internet connection.
+If you place the Checkmk Installation Package in the staging directory (see *Installation Staging Path* below, `/tmp` by default) it will be used. The package can be uploaded through **Files** in the web interface, set the staging path to that directory then, see [Fileadmin](../basics/fileadmin.md). If not, the System will try to download it, using the supplied credentials. Then it's transferred to your remote server. That means these servers do not need an internet connection.
 
 !!! note "Staging outside `/tmp`"
     The installer is staged **on the controller** (the Syncer host). When the web UI runs under mod_wsgi the worker gets a private `/tmp` (`PrivateTmp=yes`) that later steps can't see, and it is wiped on restart. If a run fails because the copied file "can't be found on the Ansible Controller", set *Installation Staging Path* to a directory outside `/tmp` (e.g. `/var/cmdbsyncer/files`) that the web user can read and write.
