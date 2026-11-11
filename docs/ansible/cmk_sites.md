@@ -24,6 +24,8 @@ If you place the Checkmk Installation Package in the staging directory (see *Ins
 !!! note "Staging outside `/tmp`"
     The installer is staged **on the controller** (the Syncer host). When the web UI runs under mod_wsgi the worker gets a private `/tmp` (`PrivateTmp=yes`) that later steps can't see, and it is wiped on restart. If a run fails because the copied file "can't be found on the Ansible Controller", set *Installation Staging Path* to a directory outside `/tmp` (e.g. `/var/cmdbsyncer/files`) that the web user can read and write.
 
+    The log of every run names where the file is looked for: the full path on the controller and its host name, with *Found* or *Not found, downloading to*. A relative staging path is resolved against the working directory of the run, which differs between a pip installation, the container and the web interface, so prefer an absolute path.
+
 When you create a rule, you find the following options:
 
 | Option | Description |
