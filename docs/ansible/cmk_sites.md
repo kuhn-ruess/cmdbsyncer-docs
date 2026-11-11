@@ -61,11 +61,16 @@ Make sure that the operating system will match to the Server Settings.
 
 | Option | Description |
 |:-------|:------------|
-| name | Site Name |
+| name | Site Name, once per server |
 | Server Address | Address of Server for SSH (without protocoll) |
 | Settings Master | Select the CMK Server Settings Entry |
 
-As a current limit, the System can only manage one Checkmk Site per Server. 
+A server can run one site per CMK Server Settings entry. To run a
+production and a test site on the same server, create two settings
+entries, for example `Prod` and `Test`, and add the server once with each.
+The same site name may be used on several servers, but only once per
+server. Each settings entry gets its own inventory, so a run for `Test`
+only sees the test sites.
 
 #### Custom Ansible Variables
 For each Site, you can set Ansible Custom Variables if you need special Settings to reach the site. That could be every Variable, supported by Ansible
@@ -80,9 +85,17 @@ entry in **Rules → Checkmk → CMK Server Settings**. For several entries at
 once, select them and choose **Run Manage OMD Server** in the action menu.
 The playbook then only runs on the servers of the enabled sites that
 use the selected settings, and the page of the run opens with its log.
+Every selected settings entry gets a run of its own. Settings whose sites
+share a server are refused together, so two installations never run on
+the same server at once: start them one after another.
 Starting it needs the Ansible right in addition to the Checkmk right.
 
 On the command line:
 
 `ansible-playbook -i cmk_server_inventory cmk_server_mngmt.yml`
+
+The provider `cmk_sites` holds all enabled sites; a server with sites of
+several settings shows up with only one of them there. To run for one
+settings entry, use the provider `cmk_sites:<settings name>`, for example
+`cmk_sites:Test`, see [Inventory Providers](inventory_providers.md).
 
